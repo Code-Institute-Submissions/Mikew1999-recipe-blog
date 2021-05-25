@@ -8,7 +8,7 @@
 }
 
 
-.navbar-brand, .nav-link, .navbar-text {
+.navbar-brand, .nav-link {
     color: blueviolet!important;
 }
 
@@ -18,9 +18,15 @@
 
 .jumbotron {
     margin-bottom: 0rem;
+    height: 60vh;
 }
 
-.signup {
-    color: rgb(5, 5, 58);
-    height: 93vh;
+#recipe-image {
+    background: url('../images/food-3270461_1280.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.width-80 {
+    width: 80vw;
 }
