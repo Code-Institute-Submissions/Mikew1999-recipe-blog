@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+
+<header class="jumbotron text-center" style="background-image: url('static/images/cupcake.jpg');">
+    <div class="jumbotron-content">
+        <div class="container">
+            <h1 class="masthead-heading mb-0">Food Blog</h1>
+            <h2 class="masthead-subheading mb-0">Share recipes</h2>
+            <a class="btn btn-primary btn-xl rounded-pill mt-5" href="#!">Sign up</a>
+        </div>
+    </div>
+</header>
+
+<h3 class="text-center">Top Recipes</h3>
+<hr>
+
+<div class="container-fluid">
+    <div class="row text-center">
+        <div class="col-sm-12 col-md-4 card">
+            <h5>Recipe 1</h5>
+        </div>
+        <div class="col-sm-12 col-md-4 card">
+            <h5>Recipe 2</h5>
+        </div>
+        <div class="col-sm-12 col-md-4 card">
+            <h5>Recipe 3</h5>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
