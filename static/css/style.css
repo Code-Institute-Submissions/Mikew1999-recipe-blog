@@ -12,6 +12,10 @@
     color: blueviolet!important;
 }
 
+.jumbotron {
+    color: rgb(255, 255, 255);
+}
+
 .nav-link .navbar-text {
     padding: 8px!important;
 }
@@ -19,12 +23,6 @@
 .jumbotron {
     margin-bottom: 0rem;
     height: 60vh;
-}
-
-#recipe-image {
-    background: url('../images/food-3270461_1280.jpg');
-    background-repeat: no-repeat;
-    background-size: cover;
 }
 
 .width-80 {
