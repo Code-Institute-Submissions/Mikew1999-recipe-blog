@@ -28,3 +28,25 @@
 .width-80 {
     width: 80vw;
 }
+
+.width-100 {
+    width: 100vw;
+}
+
+.padding-top-1 {
+    padding-top: 1rem;
+}
+
+label {
+    margin: 0 auto;
+}
+
+.signup-card {
+    width: 80vw;
+    margin: 0 auto;
+}
+
+.signup-background {
+    background-image: url("../images/pasta.jpg");
+    height: 95vh;
+}

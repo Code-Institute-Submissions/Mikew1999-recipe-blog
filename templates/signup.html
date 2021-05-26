@@ -1,4 +1,55 @@
 {% extends "base.html" %}
 {% block content %}
 
-{% end block %}
+<!--Sign up form with background image-->
+<main class="signup-background">
+    <!--Iterates Through flashed messages and places them in paragraphs-->
+    {% with messages = get_flashed_messages() %}  
+         {% if messages %}  
+            {% for message in messages %}  
+                <p class="text-center"><strong>{{ message.upper() }}</strong></p>
+            {% endfor %}  
+        {% endif %}  
+    {% endwith %}
+
+    <h3 class="text-center text-white padding-top-1">Sign Up</h3>
+
+    <!--Sign Up Card-->
+    <div class="card signup-card">
+        <div class="card-body">
+            <!--Sign Up Form-->
+            <form method="POST" action="{{ url_for('register') }}">
+                <!--Username-->
+                <div class="mb-2">
+                    <label for="username">Username</label><br>
+                    <input type="text" class="form-control" id="username" name="username">
+                </div>
+                <!--First name-->
+                <div class="mb-2">
+                    <label for="fname">First name</label><br>
+                    <input type="text" class="form-control" id="fname"  name="fname" placeholder="John">
+                </div>
+                <!--Surname-->
+                <div class="mb-2">
+                    <label for="lname">Surname</label><br>
+                    <input type="text" class="form-control" id="lname"  name="lname" placeholder="Doe">
+                </div>
+                <!--Email Address-->
+                <div class="mb-2">
+                    <label for="email">Email address</label><br>
+                    <input type="email" class="form-control" id="email"  name="email" placeholder="name@example.com">
+                </div>
+                <!--Password-->
+                <div>
+                    <label for="password">Password</label><br>
+                    <input type="password" class="form-control" id="password" name="password" placeholder="Password">
+                    <br>
+                </div>
+                <!--Submit Button-->
+                <input class="btn btn-primary w-100" type="submit" value="Register">
+            </form>
+        </div>
+    </div>
+</main>
+
+{% endblock %}
