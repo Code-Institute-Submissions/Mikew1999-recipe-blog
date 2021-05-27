@@ -41,12 +41,12 @@ label {
     margin: 0 auto;
 }
 
-.signup-card {
+.login-signup-card {
     width: 80vw;
     margin: 0 auto;
 }
 
-.signup-background {
+.login-signup-background {
     background-image: url("../images/pasta.jpg");
     height: 95vh;
 }

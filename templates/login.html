@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block content %}
+
+<!--Sign up form with background image-->
+<main class="login-signup-background">
+    <!--Iterates Through flashed messages and places them in paragraphs-->
+    {% with messages = get_flashed_messages() %}  
+         {% if messages %}  
+            {% for message in messages %}  
+                <p class="text-center"><strong>{{ message.upper() }}</strong></p>
+            {% endfor %}  
+        {% endif %}  
+    {% endwith %}
+
+    <h3 class="text-center text-white padding-top-1">Login</h3>
+
+    <!--Login Card-->
+    <div class="card login-signup-card">
+        <div class="card-body">
+            <!--Login Form-->
+            <form method="POST" action="#">
+                <!--Username-->
+                <div class="mb-2">
+                    <label for="username">Username</label><br>
+                    <input type="text" class="form-control" id="username" name="username">
+                </div>
+                <!--Password-->
+                <div class="mb-2">
+                    <label for="password">Password</label><br>
+                    <input type="text" class="form-control" id="fname"  name="fname" placeholder="John">
+                </div>
+                <!--Submit Button-->
+                <input class="btn btn-primary w-100" type="submit" value="Register">
+            </form>
+            <!--Link to login page-->
+            <p class="text-center">Don't have an account? <a href="#">Signup</a></p>
+        </div>
+    </div>
+</main>
+
+{% endblock %}

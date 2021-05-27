@@ -29,6 +29,11 @@ def signup():
     return render_template("signup.html")
 
 
+@app.route("/login")
+def login():
+    return render_template("login.html")
+
+
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
@@ -42,7 +47,7 @@ def register():
             return redirect(url_for("register"))
 
         else:
-            #pulls fields from form
+            # pulls fields from form
             create_account = {
                 "username": request.form.get("username").lower(),
                 "fname": request.form.get("fname").lower(),
@@ -51,7 +56,7 @@ def register():
                 "password": generate_password_hash(
                     request.form.get("password"))
             }
-            #inserts new user info into users collection
+            # inserts new user info into users collection
             mongo.db.users.insert_one(create_account)
 
     return render_template("signup.html")
