@@ -1,6 +1,9 @@
 import os
-from flask import Flask, render_template, flash, request, redirect, session
+from flask import (
+    Flask, render_template, flash,
+    request, redirect, session, url_for)
 from flask_pymongo import PyMongo
+from werkzeug.security import generate_password_hash, check_password_hash
 if os.path.exists("env.py"):
     import env
 
@@ -36,7 +39,22 @@ def register():
         # if user exists flash message and return to signup page
         if is_user:
             flash("Username already exists")
-            return render_template("signup.html")
+            return redirect(url_for("register"))
+
+        else:
+            #pulls fields from form
+            create_account = {
+                "username": request.form.get("username").lower(),
+                "fname": request.form.get("fname").lower(),
+                "lname": request.form.get("lname").lower(),
+                "email": request.form.get("email").lower(),
+                "password": generate_password_hash(
+                    request.form.get("password"))
+            }
+            #inserts new user info into users collection
+            mongo.db.users.insert_one(create_account)
+
+    return render_template("signup.html")
 
 
 if __name__ == "__main__":
