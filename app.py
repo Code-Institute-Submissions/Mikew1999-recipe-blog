@@ -29,9 +29,21 @@ def signup():
     return render_template("signup.html")
 
 
-@app.route("/login")
-def login():
+@app.route("/log-in")
+def log_in():
     return render_template("login.html")
+
+
+@app.route("/profile/profile/<username>", methods=["GET", "POST"])
+def profile(username):
+    # grab the session user's username from db
+    username = mongo.db.users.find_one(
+        {"username": session["user"]})["username"]
+
+    if session["user"]:
+        return render_template("profile.html", username=username)
+
+    return redirect(url_for("login"))
 
 
 @app.route("/register", methods=["GET", "POST"])
@@ -59,7 +71,34 @@ def register():
             # inserts new user info into users collection
             mongo.db.users.insert_one(create_account)
 
+            # creates user session cookie
+            session["user"] = request.form.get("username").lower()
+            flash("Registration Successful!")
+            return redirect(url_for("profile", username=session["user"]))
+
     return render_template("signup.html")
+
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        is_user = mongo.db.users.find_one(
+            {"username": request.form.get("username").lower()})
+
+        if is_user:
+            if check_password_hash(
+                is_user["password"],
+                    request.form.get("password")):
+                session["user"] = request.form.get("username").lower()
+                flash("Welcome, {}".format(request.form.get("username")))
+                return redirect(url_for("profile",
+                                        username=session["user"]))
+
+            else:
+                flash("Incorrect Password")
+                return render_template("login")
+
+    return render_template("login.html")
 
 
 if __name__ == "__main__":

@@ -18,7 +18,7 @@
     <div class="card login-signup-card">
         <div class="card-body">
             <!--Login Form-->
-            <form method="POST" action="#">
+            <form method="POST" action="{{ url_for('log_in') }}">
                 <!--Username-->
                 <div class="mb-2">
                     <label for="username">Username</label><br>
@@ -27,13 +27,13 @@
                 <!--Password-->
                 <div class="mb-2">
                     <label for="password">Password</label><br>
-                    <input type="text" class="form-control" id="fname"  name="fname" placeholder="John">
+                    <input type="password" class="form-control" id="password"  name="password">
                 </div>
                 <!--Submit Button-->
                 <input class="btn btn-primary w-100" type="submit" value="Register">
             </form>
             <!--Link to login page-->
-            <p class="text-center">Don't have an account? <a href="#">Signup</a></p>
+            <p class="text-center">Don't have an account? <a href="{{ url_for('signup') }}">Signup</a></p>
         </div>
     </div>
 </main>
