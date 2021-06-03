@@ -34,18 +34,6 @@ def log_in():
     return render_template("login.html")
 
 
-@app.route("/profile/profile/<username>", methods=["GET", "POST"])
-def profile(username):
-    # grab the session user's username from db
-    username = mongo.db.users.find_one(
-        {"username": session["user"]})["username"]
-
-    if session["user"]:
-        return render_template("profile.html", username=username)
-
-    return redirect(url_for("login"))
-
-
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
@@ -91,14 +79,25 @@ def login():
                     request.form.get("password")):
                 session["user"] = request.form.get("username").lower()
                 flash("Welcome, {}".format(request.form.get("username")))
-                return redirect(url_for("profile",
-                                        username=session["user"]))
+                return redirect(url_for("profile", username=session["user"]))
 
             else:
                 flash("Incorrect Password")
                 return render_template("login")
 
     return render_template("login.html")
+
+
+@app.route("/profile/profile/<username>", methods=["GET", "POST"])
+def profile(username):
+    # grab the session user's username from db
+    username = mongo.db.users.find_one(
+        {"username": session["user"]})["username"]
+
+    if session["user"]:
+        return render_template("profile.html", username=username)
+
+    return redirect(url_for("login"))
 
 
 if __name__ == "__main__":
