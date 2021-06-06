@@ -67,6 +67,12 @@ def register():
     return render_template("signup.html")
 
 
+@app.route("/recipes")
+def recipes():
+    recipe = mongo.db.recipes.find()
+    return render_template("recipes.html", recipe=recipe)
+
+
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
@@ -98,6 +104,12 @@ def profile(username):
         return render_template("profile.html", username=username)
 
     return redirect(url_for("login"))
+
+
+@app.route("/logout")
+def logout():
+    session.pop("user")
+    return render_template("index.html")
 
 
 if __name__ == "__main__":

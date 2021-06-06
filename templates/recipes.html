@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h3 class="text-center">Recipes</h3>
+
+{% for i in recipes %}
+
+<h5 class="text-center uppercase">{{ recipe.recipeName }}</h5>
+
+{% endfor %}
+
+<!--Create recipe button-->
+<div class="text-center">
+    <button type="button" onclick="addRecipeButton()" class="add-recipe">Add Recipe</button>
+</div>
+
+<div id="add-recipe-card" class="card hide">
+    <div class="card-body">
+        <!--Add Recipe Form-->
+        <form method="POST" action="#">
+
+            <h2>Add recipe</h2>
+
+            <!--Recipe Name-->
+            <div class="mb-2">
+                <label for="recipeName">Recipe Name</label>
+                <input type="text" name="recipeName" id="recipeName" class="form-control" placeholder="Carbonara"><br>
+            </div>
+            <!--Ingredients-->
+            <h5 class="ingredients-header">Ingredients</h5>
+
+            <div id="ingredient-container">
+                <div id="ingredients">
+                    <div>
+                        <label for="ingredientName">Ingredient Name</label>
+                        <input type="text" name="ingredientName" id="ingredientName" class="form-control"
+                            placeholder="Carbonara"><br>
+                    </div>
+
+                    <div class="mb-2">
+                        <label for="quantity">Quantity</label><br>
+                        <input type="text" name="quantity" id="quantity" class="form-control" placeholder="100">
+                        <select name="units" class="form-select" size="1" aria-label="units">
+                            <option value="grams" selected>grams</option>
+                            <option value="kg">kg</option>
+                            <option value="tsp">tsp</option>
+                            <option value="tbsp">tbsp</option>
+                        </select>
+
+                        <hr>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="text-center">
+                <button onclick="addIngredient()" class="add-ingredient" type="button">Add Ingredient</button>
+                <br>
+                <br>
+                <!--Submit Button-->
+                <input class="btn btn-primary" type="submit" value="Upload recipe">
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

@@ -41,7 +41,7 @@ label {
     margin: 0 auto;
 }
 
-.login-signup-card {
+.login-signup-card, #add-recipe-card {
     width: 80vw;
     margin: 0 auto;
 }
@@ -49,4 +49,22 @@ label {
 .login-signup-background {
     background-image: url("../images/pasta.jpg");
     height: 95vh;
+}
+
+.ingredients-header {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+#quantity {
+    width: 70%;
+    display: inline-block;
+}
+
+.hide {
+    display: none;
+}
+
+.center-aligned {
+    margin: 0 auto;
 }
