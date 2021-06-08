@@ -68,9 +68,9 @@ def register():
 
 
 @app.route("/recipes")
-def recipes():
-    recipe = mongo.db.recipes.find()
-    return render_template("recipes.html", recipe=recipe)
+def recipess():
+    recipes = mongo.db.recipes.find()
+    return render_template("recipes.html", recipes=recipes)
 
 
 @app.route("/login", methods=["GET", "POST"])

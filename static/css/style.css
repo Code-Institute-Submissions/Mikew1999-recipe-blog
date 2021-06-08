@@ -68,3 +68,7 @@ label {
 .center-aligned {
     margin: 0 auto;
 }
+
+.close {
+    right: 5px;
+}

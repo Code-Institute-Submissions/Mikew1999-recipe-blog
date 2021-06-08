@@ -3,21 +3,18 @@
 
 <h3 class="text-center">Recipes</h3>
 
-{% for i in recipes %}
-
-<h5 class="text-center uppercase">{{ recipe.recipeName }}</h5>
-
-{% endfor %}
-
 <!--Create recipe button-->
 <div class="text-center">
-    <button type="button" onclick="addRecipeButton()" class="add-recipe">Add Recipe</button>
+    <button type="button" onclick="addRecipeButton()" class="btn btn-primary" id="add-recipe">Add Recipe</button>
 </div>
 
-<div id="add-recipe-card" class="card hide">
+<div id="add-recipe-card" class="card hide position-relative" data-closable="
+slide-out-right">
     <div class="card-body">
         <!--Add Recipe Form-->
         <form method="POST" action="#">
+
+            <button type="button" aria-label="Close" onclick="hide()" class="close position-absolute">&times;</button>
 
             <h2>Add recipe</h2>
 
@@ -25,6 +22,11 @@
             <div class="mb-2">
                 <label for="recipeName">Recipe Name</label>
                 <input type="text" name="recipeName" id="recipeName" class="form-control" placeholder="Carbonara"><br>
+            </div>
+
+            <div class="mb-2">
+                <label for="serves">Serves:</label>
+                <input class="form-control" type="number" name="serves" id="serves">
             </div>
             <!--Ingredients-->
             <h5 class="ingredients-header">Ingredients</h5>
@@ -34,12 +36,12 @@
                     <div>
                         <label for="ingredientName">Ingredient Name</label>
                         <input type="text" name="ingredientName" id="ingredientName" class="form-control"
-                            placeholder="Carbonara"><br>
+                            placeholder="Cheese"><br>
                     </div>
 
                     <div class="mb-2">
                         <label for="quantity">Quantity</label><br>
-                        <input type="text" name="quantity" id="quantity" class="form-control" placeholder="100">
+                        <input type="number" name="quantity" id="quantity" class="form-control" placeholder="100">
                         <select name="units" class="form-select" size="1" aria-label="units">
                             <option value="grams" selected>grams</option>
                             <option value="kg">kg</option>
@@ -52,9 +54,45 @@
 
                 </div>
             </div>
+            <button onclick="addIngredient()" class="add-ingredient btn btn-sm btn-primary" type="button">Add Another
+                Ingredient</button>
+            <div>
+                <label for="step1">Step 1</label>
+                <input class="form-control" name="step1" type="text">
+
+                <label for="step2">Step 2</label>
+                <input class="form-control" name="step2" type="text">
+
+                <label for="step3">Step 3</label>
+                <input class="form-control" name="step3" type="text">
+
+                <label for="step4">Step 4</label>
+                <input class="form-control" name="step4" type="text">
+
+                <label for="step5">Step 5</label>
+                <input class="form-control" name="step5" type="text">
+
+                <button onclick="moreSteps()" class="btn btn-sm btn-primary more-steps-button" type="button">More Steps</button>
+
+                <div class="hide more-steps">
+                    <label for="step6">Step 6</label>
+                    <input class="form-control" name="step6" type="text">
+
+                    <label for="step7">Step 7</label>
+                    <input class="form-control" name="step7" type="text">
+
+                    <label for="step8">Step 8</label>
+                    <input class="form-control" name="step8" type="text">
+
+                    <label for="step9">Step 9</label>
+                    <input class="form-control" name="step9" type="text">
+
+                    <label for="step10">Step 10</label>
+                    <input class="form-control" name="step10" type="text">
+                </div>
+            </div>
 
             <div class="text-center">
-                <button onclick="addIngredient()" class="add-ingredient" type="button">Add Ingredient</button>
                 <br>
                 <br>
                 <!--Submit Button-->
@@ -63,5 +101,8 @@
         </form>
     </div>
 </div>
+
+
+<p class="text-center uppercase">{{ recipes[0].recipeName }}</p>
 
 {% endblock %}
