@@ -15,16 +15,24 @@
                     <h4 class="card-title">{{ recipe.recipeName }}</h4>
 
                     <!-- Serves -->
-                    <p class="card-text">Serves {{ recipe.serves }}</p>
-
-                    <!-- Prep time -->
-                    <p>Preparation time: {{ recipe.prepTime }}</p>
-
-                    <!-- Cooking time -->
-                    <p>Cooking time: {{ recipe.cookingTime }}</p>
+                    <p class="card-text">
+                        Serves {{ recipe.serves }}
+                        <br>
+                        Preparation time: {{ recipe.prepTime }}
+                        <br>
+                        Cooking time: {{ recipe.cookingTime }}
+                    </p>                
 
                     <h5 class="card-title">Ingredients</h5>
-                    <hr>
+                    
+                    <ul>
+                        <li>
+                            Ingredient 1: {{ recipe.ingredient1 }}
+                        </li>
+                        <li>
+
+                        </li>
+                    </ul>
                     <a href="#" class="btn btn-primary"></a>
                 </div>
             </div>
