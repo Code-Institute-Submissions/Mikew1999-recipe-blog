@@ -1,25 +1,24 @@
-// Makes copy of ingredients section
-var $ingredientClone = $('#ingredients').children().clone();
-function addIngredient() {
-    // adds another ingredient section for user to add another ingredient
-    $('#ingredients').append($ingredientClone.slice(0,2))
-}
-
 // add recipe button
-function addRecipeButton() {
+function createRecipeButton() {
     // shows recipe form
     $('#add-recipe-card').removeClass('hide');
     // hides add recipe button
-    $('#add-recipe').addClass('hide');
+    $('#create-recipe').addClass('hide');
+}
+
+function addIngredient() {    
+    // adds another ingredient section for user to add another ingredient
+    
 }
 
 // close button, closes recipe form
 function hide() {
     $('#add-recipe-card').addClass('hide');
-    $('#add-recipe').removeClass('hide');
+    $('#create-recipe').removeClass('hide');
 }
 
+// adds more steps to recipe form
 function moreSteps() {
     $('.more-steps').removeClass('hide');
-    $('.more-steps-button').pop();
+    $('.more-steps-button').toggle();
 }

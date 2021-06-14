@@ -1,12 +1,14 @@
+.uppercase {
+    text-transform: uppercase;
+}
+
 .grey-bg {
     background-color: rgb(244, 232, 255);
 }
 
-
 .navbar {
     padding: 0!important;
 }
-
 
 .navbar-brand, .nav-link {
     color: blueviolet!important;

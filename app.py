@@ -67,12 +67,6 @@ def register():
     return render_template("signup.html")
 
 
-@app.route("/recipes")
-def recipess():
-    recipes = mongo.db.recipes.find()
-    return render_template("recipes.html", recipes=recipes)
-
-
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
@@ -104,6 +98,29 @@ def profile(username):
         return render_template("profile.html", username=username)
 
     return redirect(url_for("login"))
+
+
+@app.route("/recipes")
+def recipe():
+    recipes = mongo.db.recipes.find()
+    return render_template("recipes.html", recipes=recipes)
+
+
+@app.route("/addrecipe", methods=["GET", "POST"])
+def addrecipe():
+    if request.method == "POST":
+        recipes = mongo.db.recipes.find()
+        recipe = {
+            "recipeName": request.form.get("recipeName"),
+            "serves": request.form.get("serves"),
+            "ingredient": request.form.get("ingredientName"),
+            "quantity": request.form.get("quantity"),
+            "units": request.form.get("unit")
+        }
+
+        mongo.db.recipes.insert_one(recipe)
+
+    return render_template("recipes.html", recipes=recipes)
 
 
 @app.route("/logout")
