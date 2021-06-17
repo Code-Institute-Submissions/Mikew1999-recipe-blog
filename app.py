@@ -110,17 +110,49 @@ def recipe():
 def addrecipe():
     if request.method == "POST":
         recipes = mongo.db.recipes.find()
+        recipemethod = mongo.db.recipemethod.find()
+
         recipe = {
             "recipeName": request.form.get("recipeName"),
             "serves": request.form.get("serves"),
-            "ingredient": request.form.get("ingredientName"),
-            "quantity": request.form.get("quantity"),
-            "units": request.form.get("unit")
+            "cookingTime": request.form.get("cookingTime"),
+            "prepTime": request.form.get("prepTime"),
+            "ingredient1": request.form.get("ingredientName1"),
+            "quantity1": request.form.get("quantity1"),
+            "units1": request.form.get("units1"),
+            "ingredient2": request.form.get("ingredientName2"),
+            "quantity2": request.form.get("quantity2"),
+            "units2": request.form.get("units2"),
+            "ingredient3": request.form.get("ingredientName3"),
+            "quantity3": request.form.get("quantity3"),
+            "units3": request.form.get("units3"),
+            "ingredient4": request.form.get("ingredientName4"),
+            "quantity4": request.form.get("quantity4"),
+            "units4": request.form.get("units4"),
+            "ingredient5": request.form.get("ingredientName5"),
+            "quantity5": request.form.get("quantity5"),
+            "units5": request.form.get("units5"),
+            "ingredient6": request.form.get("ingredientName6"),
+            "quantity6": request.form.get("quantity6"),
+            "units6": request.form.get("units6"),
+            "ingredient7": request.form.get("ingredientName7"),
+            "quantity7": request.form.get("quantity7"),
+            "units7": request.form.get("units7"),
+            "ingredient8": request.form.get("ingredientName8"),
+            "quantity8": request.form.get("quantity8"),
+            "units8": request.form.get("units8"),
+            "ingredient9": request.form.get("ingredientName9"),
+            "quantity9": request.form.get("quantity9"),
+            "units9": request.form.get("units9"),
+            "ingredient10": request.form.get("ingredientName10"),
+            "quantity10": request.form.get("quantity10"),
+            "units10": request.form.get("units10")
         }
 
         mongo.db.recipes.insert_one(recipe)
 
-    return render_template("recipes.html", recipes=recipes)
+    return render_template(
+        "recipes.html", recipes=recipes, recipemethod=recipemethod)
 
 
 @app.route("/logout")

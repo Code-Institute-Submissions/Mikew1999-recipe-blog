@@ -1,15 +1,23 @@
 {% extends "base.html" %}
 {% block content %}
 
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        {% for message in messages %}
+            <p class="text-center"><strong>{{ message }}</strong></p>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
 <h3 class="text-center uppercase"><strong>Recipes</strong></h3>
 
-
-
-<div class="container">
-    {% for recipe in recipes %}
+<div class="container-fluid">
     <div class="row">
+        {% for recipe in recipes %}
         <div class="col">
+            
             <div class="card text-center mb-2">
+                
                 <div class="card-body">
                     <!-- Recipe Name -->
                     <h4 class="card-title">{{ recipe.recipeName }}</h4>
@@ -21,24 +29,47 @@
                         Preparation time: {{ recipe.prepTime }}
                         <br>
                         Cooking time: {{ recipe.cookingTime }}
-                    </p>                
+                    </p>
 
-                    <h5 class="card-title">Ingredients</h5>
-                    
                     <ul>
                         <li>
-                            Ingredient 1: {{ recipe.ingredient1 }}
+                            Ingredient 1: {{ recipe.ingredient1 }} 
+                            <span> {{recipe.quantity1 }} {{ recipe.units1 }} </span>
                         </li>
                         <li>
-
+                            Ingredient 2: {{ recipe.ingredient2 }}
+                            <span> {{recipe.quantity2 }} {{ recipe.units2 }} </span>
+                        </li>
+                        <li>
+                            Ingredient 3: {{ recipe.ingredient3 }}
+                            <span> {{recipe.quantity3 }} {{ recipe.units3 }} </span>
+                        </li>
+                        <li>
+                            Ingredient 4: {{ recipe.ingredient4 }}
+                            <span> {{recipe.quantity4 }} {{ recipe.units4 }} </span>
+                        </li>
+                        <li>
+                            Ingredient 5: {{ recipe.ingredient5 }}
+                            <span> {{recipe.quantity5 }} {{ recipe.units5 }} </span>
+                        </li>
+                        <li>
+                            Ingredient 6: {{ recipe.ingredient6 }}
+                            <span> {{recipe.quantity6 }} {{ recipe.units6 }} </span>
+                        </li>
+                        <li>
+                            Ingredient 7: {{ recipe.ingredient7 }}
+                            <span> {{recipe.quantity7 }} {{ recipe.units7 }} </span>
+                        </li>
+                        <li>
+                            Ingredient 8: {{ recipe.ingredient8 }}
+                            <span> {{recipe.quantity8 }} {{ recipe.units8 }} </span>
                         </li>
                     </ul>
-                    <a href="#" class="btn btn-primary"></a>
                 </div>
-            </div>
+            </div>            
         </div>
+        {% endfor %}
     </div>
-    {% endfor %}
 </div>
 
 <!--Create recipe button-->
@@ -60,86 +91,178 @@ slide-out-right">
             <!--Recipe Name-->
             <div class="mb-2">
                 <label for="recipeName">Recipe Name</label>
-                <input type="text" name="recipeName" id="recipeName" class="form-control" placeholder="Carbonara"><br>
+                <input type="text" name="recipeName" id="recipeName" class="form-control" placeholder="Carbonara" required><br>
             </div>
 
             <div class="mb-2">
                 <label for="serves">Serves:</label>
-                <input class="form-control" type="number" name="serves" id="serves">
+                <input class="form-control" type="number" name="serves" id="serves" required>
             </div>
+
+            <div class="mb-2">
+                <label for="serves">Prep Time: </label>
+                <input class="form-control" type="text" name="prepTime" id="prepTime" required>
+            </div>
+
+            <div class="mb-2">
+                <label for="serves">Cooking Time: </label>
+                <input class="form-control" type="text" name="cookingTime" id="cookingTime" required>
+            </div>
+
             <!--Ingredients-->
             <h5 class="ingredients-header">Ingredients</h5>
 
-            <div id="ingredient-container">
-                <div id="ingredients">
-                    <div>
-                        <label for="ingredientName">Ingredient Name</label>
-                        <input type="text" name="ingredientName" id="ingredientName" class="form-control"
-                            placeholder="Cheese"><br>
-                    </div>
+            <div class="mb-2">
+                <label for="ingredientName1">Ingredient Name</label>
+                <input type="text" name="ingredientName1" class="form-control ingredient-name" placeholder="Cheese" required>
 
-                    <div class="mb-2">
-                        <label for="quantity">Quantity</label><br>
-                        <input type="number" name="quantity" id="quantity" class="form-control" placeholder="100">
-                        <select name="units" class="form-select" size="1" aria-label="units">
-                            <option value="grams" selected>grams</option>
-                            <option value="kg">kg</option>
-                            <option value="tsp">tsp</option>
-                            <option value="tbsp">tbsp</option>
-                        </select>
-
-                        <hr>
-                    </div>
-
-                </div>
+                <label for="quantity1">Quantity</label><br>
+                <input type="number" name="quantity1" class="form-control quantity" placeholder="100" required>
+                <select name="units1" class="form-select" size="1" aria-label="units">
+                    <option value="grams" selected>grams</option>
+                    <option value="kg">kg</option>
+                    <option value="tsp">tsp</option>
+                    <option value="tbsp">tbsp</option>
+                </select>
             </div>
-            <button onclick="addIngredient()" class="add-ingredient btn btn-sm btn-primary" type="button">Add Another
-                Ingredient</button>
-            <div>
-                <label for="step1">Step 1</label>
-                <input class="form-control" name="step1" type="text">
+            <div class="mb-2">
+                <label for="ingredientName2">Ingredient Name</label>
+                <input type="text" name="ingredientName2" class="form-control ingredient-name" placeholder="Cheese" required>
 
-                <label for="step2">Step 2</label>
-                <input class="form-control" name="step2" type="text">
-
-                <label for="step3">Step 3</label>
-                <input class="form-control" name="step3" type="text">
-
-                <label for="step4">Step 4</label>
-                <input class="form-control" name="step4" type="text">
-
-                <label for="step5">Step 5</label>
-                <input class="form-control" name="step5" type="text">
-
-                <button onclick="moreSteps()" class="btn btn-sm btn-primary more-steps-button" type="button">More
-                    Steps</button>
-
-                <div class="hide more-steps">
-                    <label for="step6">Step 6</label>
-                    <input class="form-control" name="step6" type="text">
-
-                    <label for="step7">Step 7</label>
-                    <input class="form-control" name="step7" type="text">
-
-                    <label for="step8">Step 8</label>
-                    <input class="form-control" name="step8" type="text">
-
-                    <label for="step9">Step 9</label>
-                    <input class="form-control" name="step9" type="text">
-
-                    <label for="step10">Step 10</label>
-                    <input class="form-control" name="step10" type="text">
-                </div>
+                <label for="quantity2">Quantity</label><br>
+                <input type="number" name="quantity2" class="form-control quantity" placeholder="100" required>
+                <select name="units2" class="form-select" size="1" aria-label="units">
+                    <option value="grams" selected>grams</option>
+                    <option value="kg">kg</option>
+                    <option value="tsp">tsp</option>
+                    <option value="tbsp">tbsp</option>
+                </select>
             </div>
+            <div class="mb-2">
+                <label for="ingredientName3">Ingredient Name</label>
+                <input type="text" name="ingredientName3" class="form-control ingredient-name" placeholder="Cheese" required>
 
-            <div class="text-center">
-                <br>
-                <br>
-                <!--Submit Button-->
-                <input class="btn btn-primary" type="submit" value="Add recipe">
+                <label for="quantity3">Quantity</label><br>
+                <input type="number" name="quantity3" class="form-control quantity" placeholder="100" required>
+                <select name="units3" class="form-select" size="1" aria-label="units">
+                    <option value="grams" selected>grams</option>
+                    <option value="kg">kg</option>
+                    <option value="tsp">tsp</option>
+                    <option value="tbsp">tbsp</option>
+                </select>
             </div>
-        </form>
+            <div class="mb-2">
+                <label for="ingredientName4">Ingredient Name</label>
+                <input type="text" name="ingredientName4" class="form-control ingredient-name" placeholder="Cheese" required>
+
+                <label for="quantity4">Quantity</label><br>
+                <input type="number" name="quantity4" class="form-control quantity" placeholder="100" required>
+                <select name="units4" class="form-select" size="1" aria-label="units">
+                    <option value="grams" selected>grams</option>
+                    <option value="kg">kg</option>
+                    <option value="tsp">tsp</option>
+                    <option value="tbsp">tbsp</option>
+                </select>
+            </div>
+            <div class="mb-2">
+                <label for="ingredientName5">Ingredient Name</label>
+                <input type="text" name="ingredientName5" class="form-control ingredient-name" placeholder="Cheese" required>
+
+                <label for="quantity5">Quantity</label><br>
+                <input type="number" name="quantity5" class="form-control quantity" placeholder="100" required>
+                <select name="units5" class="form-select" size="1" aria-label="units">
+                    <option value="grams" selected>grams</option>
+                    <option value="kg">kg</option>
+                    <option value="tsp">tsp</option>
+                    <option value="tbsp">tbsp</option>
+                </select>
+            </div>
+            <div class="mb-2">
+                <label for="ingredientName6">Ingredient Name</label>
+                <input type="text" name="ingredientName6" class="form-control ingredient-name" placeholder="Cheese" required>
+
+                <label for="quantity6">Quantity</label><br>
+                <input type="number" name="quantity6" class="form-control quantity" placeholder="100" required>
+                <select name="units6" class="form-select" size="1" aria-label="units">
+                    <option value="grams" selected>grams</option>
+                    <option value="kg">kg</option>
+                    <option value="tsp">tsp</option>
+                    <option value="tbsp">tbsp</option>
+                </select>
+            </div>
+            <div class="mb-2">
+                <label for="ingredientName7">Ingredient Name</label>
+                <input type="text" name="ingredientName7" class="form-control ingredient-name" placeholder="Cheese" required>
+
+                <label for="quantity7">Quantity</label><br>
+                <input type="number" name="quantity7" class="form-control quantity" placeholder="100" required>
+                <select name="units7" class="form-select" size="1" aria-label="units">
+                    <option value="grams" selected>grams</option>
+                    <option value="kg">kg</option>
+                    <option value="tsp">tsp</option>
+                    <option value="tbsp">tbsp</option>
+                </select>
+            </div>
+            <div class="mb-2">
+                <label for="ingredientName8">Ingredient Name</label>
+                <input type="text" name="ingredientName8" class="form-control ingredient-name" placeholder="Cheese" required>
+
+                <label for="quantity8">Quantity</label><br>
+                <input type="number" name="quantity8" class="form-control quantity" placeholder="100" required>
+                <select name="units8" class="form-select" size="1" aria-label="units">
+                    <option value="grams" selected>grams</option>
+                    <option value="kg">kg</option>
+                    <option value="tsp">tsp</option>
+                    <option value="tbsp">tbsp</option>
+                </select>
+            </div>
     </div>
+
+    <div>
+        <label for="step1">Step 1</label>
+        <input class="form-control" name="step1" type="text">
+
+        <label for="step2">Step 2</label>
+        <input class="form-control" name="step2" type="text">
+
+        <label for="step3">Step 3</label>
+        <input class="form-control" name="step3" type="text">
+
+        <label for="step4">Step 4</label>
+        <input class="form-control" name="step4" type="text">
+
+        <label for="step5">Step 5</label>
+        <input class="form-control" name="step5" type="text">
+
+        <button onclick="moreSteps()" class="btn btn-sm btn-primary more-steps-button" type="button">More
+            Steps</button>
+
+        <div class="hide more-steps">
+            <label for="step6">Step 6</label>
+            <input class="form-control" name="step6" type="text">
+
+            <label for="step7">Step 7</label>
+            <input class="form-control" name="step7" type="text">
+
+            <label for="step8">Step 8</label>
+            <input class="form-control" name="step8" type="text">
+
+            <label for="step9">Step 9</label>
+            <input class="form-control" name="step9" type="text">
+
+            <label for="step10">Step 10</label>
+            <input class="form-control" name="step10" type="text">
+        </div>
+    </div>
+
+    <div class="text-center">
+        <br>
+        <br>
+        <!--Submit Button-->
+        <input class="btn btn-primary" type="submit" value="Add recipe">
+    </div>
+    </form>
+</div>
 </div>
 
 

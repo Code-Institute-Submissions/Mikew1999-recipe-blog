@@ -6,11 +6,6 @@ function createRecipeButton() {
     $('#create-recipe').addClass('hide');
 }
 
-function addIngredient() {    
-    // adds another ingredient section for user to add another ingredient
-    
-}
-
 // close button, closes recipe form
 function hide() {
     $('#add-recipe-card').addClass('hide');
