@@ -43,14 +43,14 @@ label {
     margin: 0 auto;
 }
 
-.login-signup-card, #add-recipe-card {
+.form-card, #add-recipe-card {
     width: 80vw;
     margin: 0 auto;
 }
 
-.login-signup-background {
+.form-background {
     background-image: url("../images/pasta.jpg");
-    height: 95vh;
+    min-height: 95vh;
 }
 
 .ingredients-header {

@@ -2,7 +2,7 @@
 {% block content %}
 
 <!--Sign up form with background image-->
-<main class="login-signup-background">
+<main class="form-background">
     <!--Iterates Through flashed messages and places them in paragraphs-->
     {% with messages = get_flashed_messages() %}  
          {% if messages %}  
@@ -15,7 +15,7 @@
     <h3 class="text-center text-white padding-top-1">Login</h3>
 
     <!--Login Card-->
-    <div class="card login-signup-card">
+    <div class="card form-card">
         <div class="card-body">
             <!--Login Form-->
             <form method="POST" action="{{ url_for('login') }}">

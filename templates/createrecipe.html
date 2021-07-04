@@ -1,30 +1,68 @@
 {% extends "base.html" %}
 {% block content %}
-    <h2 class="text-center"><strong>Create Recipe</strong></h2>
+<main class="form-background">
 
-    <form method="POST" action="{{ url_for('add_recipe') }}">
-        <div id="recipe-details">
-            <label for="recipeName">Recipe Name:</label>
-            <input type="text" name="recipeName">
+    <div class="card form-card">
+        <div class="card-body">
+            
+            <h2 class="text-center uppercase text-primary"><strong>Create Recipe</strong></h2>
 
-            <label for="serves">Serves:</label>
-            <input type="text" name="serves">
+            <form method="POST" action="{{ url_for('add_recipe') }}">
+                <!-- Recipe Details -->
+                <div id="recipe-details" class="text-primary">
+                    <label for="recipeName">Recipe Name:</label>
+                    <input class="form-control" type="text" name="recipeName">
 
-            <label for="prepTime">Preparation Time</label>
-            <input type="text" name="prepTime">
+                    <h4 class="text-center uppercase">Recipe Details</h4>
 
-            <label for="cookingTime">Cooking Time:</label>
-            <input type="text" name="cookingTime">
+                    <label for="serves">Serves:</label>
+                    <input class="form-control" type="text" name="serves">
+
+                    <label for="prepTime">Preparation Time</label>
+                    <input class="form-control" type="text" name="prepTime">
+
+                    <label for="cookingTime">Cooking Time:</label>
+                    <input class="form-control" type="text" name="cookingTime">
+                </div>
+
+                <!-- Ingredients -->
+                <div id="ingredients" class="text-primary">
+                    <div class="mb-2">
+
+                        <h4 class="text-center uppercase">Ingredients</h4>
+
+                        <label class="ingredient" for="ingredient1">Ingredient 1:</label>
+                        <input class="form-control" type="text" name="ingredient1">
+
+                        <label class="ingredient" for="ingredient2">Ingredient 2:</label>
+                        <input class="form-control" type="text" name="ingredient2">
+                    </div>
+                    <!-- Adds another ingredient item -->
+                    <button class="btn btn-primary w-100" onclick="moreIngredients()" id="moreingredientsbutton" type="button">Add another
+                        ingredient</button>
+                </div>
+
+                <!-- Steps -->
+                <div id="steps" class="text-primary">
+                    <div class="mb-2">
+                        <h4 class="text-center uppercase">Steps</h4>
+
+                        <label class="step" for="step1">Step 1:</label>
+                        <input class="form-control" type="text" name="step1">
+
+                        <label class="step" for="step2">Step 2:</label>
+                        <input class="form-control" type="text" name="step2">
+                    </div>
+                    <!-- Adds another step item -->
+                    <button class="btn btn-primary w-100" onclick="moresteps()" id="morestepsbutton" type="button">Add another step</button>
+                </div>
+
+                <div class="text-center mt-2">
+                    <button class="btn btn-primary" type="submit">Submit Recipe</button>
+                </div>
+            </form>
         </div>
-
-        <div id="ingredients">
-            <label class="ingredient" for="ingredient1">Ingredient 1:</label>
-            <input type="text" name="ingredient1">
-
-            <button onclick="moreIngredients()" id="moreingredientsbutton" type="button">Add another ingredient</button>
-        </div>
-
-        <button type="submit">Submit Recipe</button>
-    </form>
+    </div>
+</main>
 
 {% endblock %}
