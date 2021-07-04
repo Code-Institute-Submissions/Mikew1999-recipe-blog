@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block content %}
+    <h2 class="text-center"><strong>Create Recipe</strong></h2>
+
+    <form method="POST" action="{{ url_for('add_recipe') }}">
+        <div id="recipe-details">
+            <label for="recipeName">Recipe Name:</label>
+            <input type="text" name="recipeName">
+
+            <label for="serves">Serves:</label>
+            <input type="text" name="serves">
+
+            <label for="prepTime">Preparation Time</label>
+            <input type="text" name="prepTime">
+
+            <label for="cookingTime">Cooking Time:</label>
+            <input type="text" name="cookingTime">
+        </div>
+
+        <div id="ingredients">
+            <label class="ingredient" for="ingredient1">Ingredient 1:</label>
+            <input type="text" name="ingredient1">
+
+            <button onclick="moreIngredients()" id="moreingredientsbutton" type="button">Add another ingredient</button>
+        </div>
+
+        <button type="submit">Submit Recipe</button>
+    </form>
+
+{% endblock %}

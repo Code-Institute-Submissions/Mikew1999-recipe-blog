@@ -106,53 +106,67 @@ def recipe():
     return render_template("recipes.html", recipes=recipes)
 
 
-@app.route("/addrecipe", methods=["GET", "POST"])
-def addrecipe():
-    if request.method == "POST":
-        recipes = mongo.db.recipes.find()
-        recipemethod = mongo.db.recipemethod.find()
+@app.route("/createrecipe")
+def create_recipe():
+    return render_template(
+        "createrecipe.html")
 
-        recipe = {
+
+@app.route("/addrecipe", methods=["GET", "POST"])
+def add_recipe():
+    if request.method == "POST":
+        recipeDetails = {
             "recipeName": request.form.get("recipeName"),
             "serves": request.form.get("serves"),
-            "cookingTime": request.form.get("cookingTime"),
             "prepTime": request.form.get("prepTime"),
-            "ingredient1": request.form.get("ingredientName1"),
-            "quantity1": request.form.get("quantity1"),
-            "units1": request.form.get("units1"),
-            "ingredient2": request.form.get("ingredientName2"),
-            "quantity2": request.form.get("quantity2"),
-            "units2": request.form.get("units2"),
-            "ingredient3": request.form.get("ingredientName3"),
-            "quantity3": request.form.get("quantity3"),
-            "units3": request.form.get("units3"),
-            "ingredient4": request.form.get("ingredientName4"),
-            "quantity4": request.form.get("quantity4"),
-            "units4": request.form.get("units4"),
-            "ingredient5": request.form.get("ingredientName5"),
-            "quantity5": request.form.get("quantity5"),
-            "units5": request.form.get("units5"),
-            "ingredient6": request.form.get("ingredientName6"),
-            "quantity6": request.form.get("quantity6"),
-            "units6": request.form.get("units6"),
-            "ingredient7": request.form.get("ingredientName7"),
-            "quantity7": request.form.get("quantity7"),
-            "units7": request.form.get("units7"),
-            "ingredient8": request.form.get("ingredientName8"),
-            "quantity8": request.form.get("quantity8"),
-            "units8": request.form.get("units8"),
-            "ingredient9": request.form.get("ingredientName9"),
-            "quantity9": request.form.get("quantity9"),
-            "units9": request.form.get("units9"),
-            "ingredient10": request.form.get("ingredientName10"),
-            "quantity10": request.form.get("quantity10"),
-            "units10": request.form.get("units10")
+            "cookingTime": request.form.get("cookingTime")
         }
 
-        mongo.db.recipes.insert_one(recipe)
+        _id = mongo.db.recipes.insert_one(recipeDetails).inserted_id
 
-    return render_template(
-        "recipes.html", recipes=recipes, recipemethod=recipemethod)
+        ingredients = {
+            "recipeName": request.form.get("recipeName"),
+            "foreignID": _id,
+            "ingredient1": request.form.get("ingredient1"),
+            "ingredient2": request.form.get("ingredient2"),
+            "ingredient3": request.form.get("ingredient3"),
+            "ingredient4": request.form.get("ingredient4"),
+            "ingredient5": request.form.get("ingredient5"),
+            "ingredient6": request.form.get("ingredient6"),
+            "ingredient7": request.form.get("ingredient7"),
+            "ingredient8": request.form.get("ingredient8"),
+            "ingredient9": request.form.get("ingredient9"),
+            "ingredient10": request.form.get("ingredient10")
+        }
+
+        for x in ingredients:
+            if x.value == "null" or "None":
+                x.value = 1
+
+        mongo.db.ingredients.insert_one(ingredients)
+
+        steps = {
+            "recipeName": request.form.get("recipeName"),
+            "foreignID": _id,
+            "step1": request.form.get("step1"),
+            "step2": request.form.get("step2"),
+            "step3": request.form.get("step3"),
+            "step4": request.form.get("step4"),
+            "step5": request.form.get("step5"),
+            "step6": request.form.get("step6"),
+            "step7": request.form.get("step7"),
+            "step8": request.form.get("step8"),
+            "step9": request.form.get("step9"),
+            "step10": request.form.get("step10")
+        }
+
+        for x in steps:
+            if x.value == "null" or "None":
+                x.value = 1
+
+        mongo.db.steps.insert_one(steps)
+
+    return render_template("recipes.html")
 
 
 @app.route("/logout")
