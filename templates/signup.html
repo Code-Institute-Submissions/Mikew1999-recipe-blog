@@ -4,12 +4,12 @@
 <!--Sign up form with background image-->
 <main class="form-background">
     <!--Iterates Through flashed messages and places them in paragraphs-->
-    {% with messages = get_flashed_messages() %}  
-         {% if messages %}  
-            {% for message in messages %}  
-                <p class="text-center"><strong>{{ message.upper() }}</strong></p>
-            {% endfor %}  
-        {% endif %}
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    {% for message in messages %}
+    <p class="text-center"><strong>{{ message.upper() }}</strong></p>
+    {% endfor %}
+    {% endif %}
     {% endwith %}
 
     <h3 class="text-center text-white padding-top-1">Sign Up</h3>
@@ -27,17 +27,18 @@
                 <!--First name-->
                 <div class="mb-2">
                     <label for="fname">First name</label><br>
-                    <input type="text" class="form-control" id="fname"  name="fname" placeholder="John">
+                    <input type="text" class="form-control" id="fname" name="fname" placeholder="John">
                 </div>
                 <!--Surname-->
                 <div class="mb-2">
                     <label for="lname">Surname</label><br>
-                    <input type="text" class="form-control" id="lname"  name="lname" placeholder="Doe">
+                    <input type="text" class="form-control" id="lname" name="lname" placeholder="Doe">
                 </div>
                 <!--Email Address-->
                 <div class="mb-2">
                     <label for="email">Email address</label><br>
-                    <input type="email" class="form-control" id="email"  name="email" placeholder="name@example.com">
+                    <input type="email" class="form-control" id="email" name="email"
+                        pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" placeholder="name@example.com">
                 </div>
                 <!--Password-->
                 <div>

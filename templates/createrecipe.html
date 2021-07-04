@@ -2,40 +2,49 @@
 {% block content %}
 <main class="form-background">
 
+    <h2 class="text-center uppercase text-white"><strong>Create Recipe</strong></h2>
+
     <div class="card form-card">
         <div class="card-body">
-            
-            <h2 class="text-center uppercase text-primary"><strong>Create Recipe</strong></h2>
-
-            <form method="POST" action="{{ url_for('add_recipe') }}">
+            <form class="position-relative" method="POST" action="{{ url_for('add_recipe') }}" enctype="multipart/form-data">
                 <!-- Recipe Details -->
-                <div id="recipe-details" class="text-primary">
+                <div id="recipe-details">
                     <label for="recipeName">Recipe Name:</label>
-                    <input class="form-control" type="text" name="recipeName">
+                    <input class="form-control" type="text" name="recipeName" required>
 
-                    <h4 class="text-center uppercase">Recipe Details</h4>
+                    <label for="recipeImage">Recipe Image:</label>
+                    <br>
+                    <input type="file" name="recipeImage" accept="image/jpg">
+                    <br>
+                    <small>Image must be .jpg</small>
+
+                    <h4 class="text-center uppercase text-primary">Recipe Details</h4>
 
                     <label for="serves">Serves:</label>
-                    <input class="form-control" type="text" name="serves">
+                    <input class="form-control" type="text" name="serves" required>
 
                     <label for="prepTime">Preparation Time</label>
-                    <input class="form-control" type="text" name="prepTime">
+                    <input class="form-control" type="text" name="prepTime" required>
 
                     <label for="cookingTime">Cooking Time:</label>
-                    <input class="form-control" type="text" name="cookingTime">
+                    <input class="form-control" type="text" name="cookingTime" required>
                 </div>
 
                 <!-- Ingredients -->
-                <div id="ingredients" class="text-primary">
+                <div id="ingredients">
                     <div class="mb-2">
 
-                        <h4 class="text-center uppercase">Ingredients</h4>
+                        <h4 class="text-center uppercase text-primary">Ingredients</h4>
 
                         <label class="ingredient" for="ingredient1">Ingredient 1:</label>
-                        <input class="form-control" type="text" name="ingredient1">
+                        <input class="form-control" type="text" name="ingredient1" required>
 
+                        <div class="position-absolute close">
+                            <a onclick="closeform()">&#10005;</a>
+                        </div>
+                        
                         <label class="ingredient" for="ingredient2">Ingredient 2:</label>
-                        <input class="form-control" type="text" name="ingredient2">
+                        <input class="form-control" type="text" name="ingredient2" required>
                     </div>
                     <!-- Adds another ingredient item -->
                     <button class="btn btn-primary w-100" onclick="moreIngredients()" id="moreingredientsbutton" type="button">Add another
@@ -43,15 +52,15 @@
                 </div>
 
                 <!-- Steps -->
-                <div id="steps" class="text-primary">
+                <div id="steps">
                     <div class="mb-2">
-                        <h4 class="text-center uppercase">Steps</h4>
+                        <h4 class="text-center uppercase text-primary">Steps</h4>
 
                         <label class="step" for="step1">Step 1:</label>
-                        <input class="form-control" type="text" name="step1">
+                        <input class="form-control" type="text" name="step1" required>
 
                         <label class="step" for="step2">Step 2:</label>
-                        <input class="form-control" type="text" name="step2">
+                        <input class="form-control" type="text" name="step2" required>
                     </div>
                     <!-- Adds another step item -->
                     <button class="btn btn-primary w-100" onclick="moresteps()" id="morestepsbutton" type="button">Add another step</button>
