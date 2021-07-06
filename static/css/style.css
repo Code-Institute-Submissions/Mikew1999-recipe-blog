@@ -74,3 +74,12 @@ label {
 .close {
     right: 5px;
 }
+
+.create-recipe-title {
+    text-shadow: 2px 2px black;
+}
+
+.create-recipe-headers {
+    text-shadow: 1px 1px black;
+}
+

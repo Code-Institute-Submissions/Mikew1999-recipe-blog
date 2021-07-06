@@ -4,6 +4,7 @@ from flask import (
     request, redirect, session, url_for)
 from flask_pymongo import PyMongo
 from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.utils import secure_filename
 if os.path.exists("env.py"):
     import env
 
@@ -124,9 +125,14 @@ def add_recipe():
 
         _id = mongo.db.recipes.insert_one(recipeDetails).inserted_id
 
+        if 'recipeImage' in request.files:
+            recipeImage = request.files['recipeImage']
+            securedImage = secure_filename(recipeImage.filename)
+            mongo.save_file(securedImage, recipeImage)
+
         ingredients = {
             "recipeName": request.form.get("recipeName"),
-            "foreignID": _id,
+            "recipeID": _id,
             "ingredient1": request.form.get("ingredient1"),
             "ingredient2": request.form.get("ingredient2"),
             "ingredient3": request.form.get("ingredient3"),
@@ -139,15 +145,11 @@ def add_recipe():
             "ingredient10": request.form.get("ingredient10")
         }
 
-        for x in ingredients:
-            if x.value == "null" or "None":
-                x.value = 1
-
         mongo.db.ingredients.insert_one(ingredients)
 
         steps = {
             "recipeName": request.form.get("recipeName"),
-            "foreignID": _id,
+            "recipeID": _id,
             "step1": request.form.get("step1"),
             "step2": request.form.get("step2"),
             "step3": request.form.get("step3"),
@@ -159,10 +161,6 @@ def add_recipe():
             "step9": request.form.get("step9"),
             "step10": request.form.get("step10")
         }
-
-        for x in steps:
-            if x.value == "null" or "None":
-                x.value = 1
 
         mongo.db.steps.insert_one(steps)
 

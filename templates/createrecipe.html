@@ -2,7 +2,7 @@
 {% block content %}
 <main class="form-background">
 
-    <h2 class="text-center uppercase text-white"><strong>Create Recipe</strong></h2>
+    <h2 class="text-center uppercase text-primary create-recipe-title"><strong>Create Recipe</strong></h2>
 
     <div class="card form-card">
         <div class="card-body">
@@ -16,9 +16,11 @@
                     <br>
                     <input type="file" name="recipeImage" accept="image/jpg">
                     <br>
-                    <small>Image must be .jpg</small>
+                    <small>Must be .jpg and under 16Mb</small>
 
-                    <h4 class="text-center uppercase text-primary">Recipe Details</h4>
+                    <hr class="w-100">
+                    
+                    <h4 class="text-center uppercase text-primary create-recipe-headers">Recipe Details</h4>
 
                     <label for="serves">Serves:</label>
                     <input class="form-control" type="text" name="serves" required>
@@ -34,7 +36,7 @@
                 <div id="ingredients">
                     <div class="mb-2">
 
-                        <h4 class="text-center uppercase text-primary">Ingredients</h4>
+                        <h4 class="text-center uppercase text-primary create-recipe-headers">Ingredients</h4>
 
                         <label class="ingredient" for="ingredient1">Ingredient 1:</label>
                         <input class="form-control" type="text" name="ingredient1" required>
@@ -54,7 +56,7 @@
                 <!-- Steps -->
                 <div id="steps">
                     <div class="mb-2">
-                        <h4 class="text-center uppercase text-primary">Steps</h4>
+                        <h4 class="text-center uppercase text-primary create-recipe-headers">Steps</h4>
 
                         <label class="step" for="step1">Step 1:</label>
                         <input class="form-control" type="text" name="step1" required>
