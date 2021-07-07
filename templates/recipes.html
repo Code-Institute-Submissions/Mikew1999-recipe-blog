@@ -14,12 +14,14 @@
 <div class="container-fluid">
     <div class="row">
         {% for recipe in recipes %}
-        <div class="col">
+        <div class="col-sm-12 col-lg-6 col-xl-4">
             
             <div class="card text-center mb-2">
                 
                 <div class="card-body">
                     <!-- Recipe Name -->
+                    {{ imageHTML }}
+
                     <h4 class="card-title">{{ recipe.recipeName }}</h4>
 
                     <!-- Serves -->
@@ -30,46 +32,10 @@
                         <br>
                         Cooking time: {{ recipe.cookingTime }}
                     </p>
-
-                    <ul>
-                        <li>
-                            Ingredient 1: {{ recipe.ingredient1 }} 
-                            <span> {{recipe.quantity1 }} {{ recipe.units1 }} </span>
-                        </li>
-                        <li>
-                            Ingredient 2: {{ recipe.ingredient2 }}
-                            <span> {{recipe.quantity2 }} {{ recipe.units2 }} </span>
-                        </li>
-                        <li>
-                            Ingredient 3: {{ recipe.ingredient3 }}
-                            <span> {{recipe.quantity3 }} {{ recipe.units3 }} </span>
-                        </li>
-                        <li>
-                            Ingredient 4: {{ recipe.ingredient4 }}
-                            <span> {{recipe.quantity4 }} {{ recipe.units4 }} </span>
-                        </li>
-                        <li>
-                            Ingredient 5: {{ recipe.ingredient5 }}
-                            <span> {{recipe.quantity5 }} {{ recipe.units5 }} </span>
-                        </li>
-                        <li>
-                            Ingredient 6: {{ recipe.ingredient6 }}
-                            <span> {{recipe.quantity6 }} {{ recipe.units6 }} </span>
-                        </li>
-                        <li>
-                            Ingredient 7: {{ recipe.ingredient7 }}
-                            <span> {{recipe.quantity7 }} {{ recipe.units7 }} </span>
-                        </li>
-                        <li>
-                            Ingredient 8: {{ recipe.ingredient8 }}
-                            <span> {{recipe.quantity8 }} {{ recipe.units8 }} </span>
-                        </li>
-                    </ul>
                 </div>
             </div>            
         </div>
         {% endfor %}
     </div>
 </div>
-
 {% endblock %}

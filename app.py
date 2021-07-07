@@ -20,21 +20,19 @@ app.secret_key = os.environ.get("SECRET_KEY")
 mongo = PyMongo(app)
 
 
+# home page
 @app.route("/")
 def index():
     return render_template("index.html")
 
 
+# sign up page
 @app.route("/signup")
 def signup():
     return render_template("signup.html")
 
 
-@app.route("/log-in")
-def log_in():
-    return render_template("login.html")
-
-
+# sign up form handling
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
@@ -68,6 +66,13 @@ def register():
     return render_template("signup.html")
 
 
+# log in page
+@app.route("/log-in")
+def log_in():
+    return render_template("login.html")
+
+
+# log in form handling
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
@@ -89,9 +94,10 @@ def login():
     return render_template("login.html")
 
 
+# profile page
 @app.route("/profile/profile/<username>", methods=["GET", "POST"])
 def profile(username):
-    # grab the session user's username from db
+    # grab the session users username from db
     username = mongo.db.users.find_one(
         {"username": session["user"]})["username"]
 
@@ -101,72 +107,100 @@ def profile(username):
     return redirect(url_for("login"))
 
 
-@app.route("/recipes")
-def recipe():
-    recipes = mongo.db.recipes.find()
-    return render_template("recipes.html", recipes=recipes)
-
-
+# create recipe page
 @app.route("/createrecipe")
 def create_recipe():
     return render_template(
         "createrecipe.html")
 
 
+# create recipe form handling
 @app.route("/addrecipe", methods=["GET", "POST"])
 def add_recipe():
     if request.method == "POST":
-        recipeDetails = {
-            "recipeName": request.form.get("recipeName"),
-            "serves": request.form.get("serves"),
-            "prepTime": request.form.get("prepTime"),
-            "cookingTime": request.form.get("cookingTime")
-        }
-
-        _id = mongo.db.recipes.insert_one(recipeDetails).inserted_id
-
         if 'recipeImage' in request.files:
             recipeImage = request.files['recipeImage']
             securedImage = secure_filename(recipeImage.filename)
             mongo.save_file(securedImage, recipeImage)
 
-        ingredients = {
-            "recipeName": request.form.get("recipeName"),
-            "recipeID": _id,
-            "ingredient1": request.form.get("ingredient1"),
-            "ingredient2": request.form.get("ingredient2"),
-            "ingredient3": request.form.get("ingredient3"),
-            "ingredient4": request.form.get("ingredient4"),
-            "ingredient5": request.form.get("ingredient5"),
-            "ingredient6": request.form.get("ingredient6"),
-            "ingredient7": request.form.get("ingredient7"),
-            "ingredient8": request.form.get("ingredient8"),
-            "ingredient9": request.form.get("ingredient9"),
-            "ingredient10": request.form.get("ingredient10")
-        }
+            recipeDetails = {
+                "recipeImageName": securedImage,
+                "recipeName": request.form.get("recipeName"),
+                "serves": request.form.get("serves"),
+                "prepTime": request.form.get("prepTime"),
+                "cookingTime": request.form.get("cookingTime")
+            }
 
-        mongo.db.ingredients.insert_one(ingredients)
+            _id = mongo.db.recipes.insert_one(recipeDetails).inserted_id
 
-        steps = {
-            "recipeName": request.form.get("recipeName"),
-            "recipeID": _id,
-            "step1": request.form.get("step1"),
-            "step2": request.form.get("step2"),
-            "step3": request.form.get("step3"),
-            "step4": request.form.get("step4"),
-            "step5": request.form.get("step5"),
-            "step6": request.form.get("step6"),
-            "step7": request.form.get("step7"),
-            "step8": request.form.get("step8"),
-            "step9": request.form.get("step9"),
-            "step10": request.form.get("step10")
-        }
+            ingredients = {
+                "recipeName": request.form.get("recipeName"),
+                "recipeID": _id,
+                "ingredient1": request.form.get("ingredient1"),
+                "ingredient2": request.form.get("ingredient2"),
+                "ingredient3": request.form.get("ingredient3"),
+                "ingredient4": request.form.get("ingredient4"),
+                "ingredient5": request.form.get("ingredient5"),
+                "ingredient6": request.form.get("ingredient6"),
+                "ingredient7": request.form.get("ingredient7"),
+                "ingredient8": request.form.get("ingredient8"),
+                "ingredient9": request.form.get("ingredient9"),
+                "ingredient10": request.form.get("ingredient10")
+            }
 
-        mongo.db.steps.insert_one(steps)
+            mongo.db.ingredients.insert_one(ingredients)
 
-    return render_template("recipes.html")
+            steps = {
+                "recipeName": request.form.get("recipeName"),
+                "recipeID": _id,
+                "step1": request.form.get("step1"),
+                "step2": request.form.get("step2"),
+                "step3": request.form.get("step3"),
+                "step4": request.form.get("step4"),
+                "step5": request.form.get("step5"),
+                "step6": request.form.get("step6"),
+                "step7": request.form.get("step7"),
+                "step8": request.form.get("step8"),
+                "step9": request.form.get("step9"),
+                "step10": request.form.get("step10")
+            }
+
+            mongo.db.steps.insert_one(steps)
+
+            recipes = mongo.db.recipes.find()
+
+    return render_template("recipes.html", recipes=recipes)
 
 
+# function to retrieve file
+@app.route('/file/<filename>')
+def file(filename):
+    return mongo.send_file(filename, base='fs.files', version=1)
+
+
+# recipes page
+@app.route("/recipes")
+def recipe():
+    recipeList = mongo.db.recipes.find()
+    recipes = mongo.db.recipes.find()
+
+    for recipe in recipeList:
+        recipeImageName = recipe['recipeImageName']
+
+        recipeImages = mongo.db.fs.files.find_one({
+                        "filename": recipeImageName})
+        image = recipeImages['filename']
+        imageHTML = f'''
+            <img src="{{url_for('file'), filename='{image}'}}>
+        '''
+
+    return render_template(
+                        "recipes.html",
+                        recipes=recipes,
+                        imageHTML=imageHTML)
+
+
+# logs user out
 @app.route("/logout")
 def logout():
     session.pop("user")
