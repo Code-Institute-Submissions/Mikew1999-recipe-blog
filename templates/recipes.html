@@ -18,28 +18,33 @@
         {% for recipe in recipes %}
         <div class="col-sm-12 col-lg-6 col-xl-4">
             
-            <div class="card text-center mb-2">
+            <div class="card mb-2">
                 
                 <div class="card-body">
                     <!-- Recipe Name -->
                     {% set imageName = recipe.recipeImageName %}
                     
-                    <img class="card-img-top" src="{{ url_for('file', filename=imageName) }}" alt="">
+                    <img class="card-img-top" src="{{ url_for('file', filename=imageName) }}" alt="recipe Image">
 
-                    <h1>{{ recipe.recipeImageName }}</h1>
+                    <h4 class="card-title  text-center">{{ recipe.recipeName }}</h4>
 
-                    <h4 class="card-title">{{ recipe.recipeName }}</h4>
+                    <!-- Recipe Details -->
 
-                    <!-- Serves -->
                     <p class="card-text">
-                        Serves {{ recipe.serves }}
+                        <i class="fas fa-utensils"></i> Serves {{ recipe.serves }}
                         <br>
-                        Preparation time: {{ recipe.prepTime }}
+                        <i class="far fa-clock"></i> Preparation time: {{ recipe.prepTime }}
                         <br>
-                        Cooking time: {{ recipe.cookingTime }}
+                        <i class="far fa-clock"></i> Cooking time: {{ recipe.cookingTime }}
+                    </p>
+
+                    <h5 class="text-center">Recipe Description</h5>
+
+                    <p class="card-text recipe-description">
+                        {{ recipe.recipeDescription }}
                     </p>
                 </div>
-            </div>            
+            </div>
         </div>
         {% endfor %}
     </div>

@@ -3,7 +3,6 @@
 
 <!--Sign up form with background image-->
 <main class="form-background">
-    <!--Iterates Through flashed messages and places them in paragraphs-->
     {% with messages = get_flashed_messages() %}  
          {% if messages %}  
             {% for message in messages %}  
@@ -12,7 +11,7 @@
         {% endif %}  
     {% endwith %}
 
-    <h3 class="text-center text-white padding-top-1">Login</h3>
+    <h3 class="text-center uppercase text-primary login-title">Login</h3>
 
     <!--Login Card-->
     <div class="card form-card">
@@ -24,13 +23,14 @@
                     <label for="username">Username</label><br>
                     <input type="text" class="form-control" id="username" name="username">
                 </div>
+
                 <!--Password-->
                 <div class="mb-2">
                     <label for="password">Password</label><br>
                     <input type="password" class="form-control" id="password"  name="password">
                 </div>
                 <!--Submit Button-->
-                <input class="btn btn-primary w-100" type="submit" value="Register">
+                <input class="btn btn-primary w-100" type="submit" value="Log In">
             </form>
             <!--Link to login page-->
             <p class="text-center">Don't have an account? <a href="{{ url_for('signup') }}">Signup</a></p>

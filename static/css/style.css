@@ -75,7 +75,7 @@ label {
     right: 5px;
 }
 
-.create-recipe-title {
+.create-recipe-title, .signup-title, .login-title {
     text-shadow: 2px 2px black;
 }
 
@@ -83,3 +83,11 @@ label {
     text-shadow: 1px 1px black;
 }
 
+.recipe-details {
+    float: left;
+}
+
+.recipe-description {
+    max-height: 20vh;
+    overflow-y: auto;
+}

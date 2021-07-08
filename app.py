@@ -119,14 +119,7 @@ def create_recipe():
 def add_recipe():
     if request.method == "POST":
         recipeList = mongo.db.recipes.find()
-        # loops through recipes
-        for recipe in recipeList:
-            # finds recipe image name
-            recipeImageName = recipe['recipeImageName']
-            # finds document where recipe image name
-            # matches above recipeImageName
-            recipeImages = mongo.db.fs.files.find_one({
-                            "filename": recipeImageName})
+        recipes = mongo.db.recipes.find()
 
         if 'recipeImage' in request.files:
             recipeImage = request.files['recipeImage']
@@ -138,7 +131,8 @@ def add_recipe():
                 "recipeName": request.form.get("recipeName"),
                 "serves": request.form.get("serves"),
                 "prepTime": request.form.get("prepTime"),
-                "cookingTime": request.form.get("cookingTime")
+                "cookingTime": request.form.get("cookingTime"),
+                "recipeDescription": request.form.get("recipeDescription")
             }
 
             _id = mongo.db.recipes.insert_one(recipeDetails).inserted_id
@@ -181,8 +175,9 @@ def add_recipe():
 
     return render_template(
                     "recipes.html",
+                    recipeList=recipeList,
                     recipes=recipes,
-                    recipeImages=recipeImages)
+                    mongo=mongo)
 
 
 # function to retrieve file

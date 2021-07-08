@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
+
 <main class="form-background">
 
     <h2 class="text-center uppercase text-primary create-recipe-title"><strong>Create Recipe</strong></h2>
@@ -7,11 +8,12 @@
     <div class="card form-card">
         <div class="card-body">
             <form class="position-relative" method="POST" action="{{ url_for('add_recipe') }}" enctype="multipart/form-data">
-                <!-- Recipe Details -->
                 <div id="recipe-details">
+                    <!-- Recipe Name -->
                     <label for="recipeName">Recipe Name:</label>
                     <input class="form-control" type="text" name="recipeName" required>
 
+                    <!-- Recipe Image-->
                     <label for="recipeImage">Recipe Image:</label>
                     <br>
                     <input type="file" name="recipeImage" accept="image/jpg" required>
@@ -19,6 +21,7 @@
                     <small>Must be .jpg and under 16Mb</small>
 
                     <hr class="w-100">
+                    
                     
                     <h4 class="text-center uppercase text-primary create-recipe-headers">Recipe Details</h4>
 
@@ -30,6 +33,12 @@
 
                     <label for="cookingTime">Cooking Time:</label>
                     <input class="form-control" type="text" name="cookingTime" required>
+
+                    <label for="recipeDescription">Recipe Description:</label>
+                    <textarea class="form-control" type="text" name="recipeDescription" required></textarea>
+
+                    <label for="category">Categories:</label>
+                    
                 </div>
 
                 <!-- Ingredients -->
