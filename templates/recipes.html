@@ -11,6 +11,8 @@
 
 <h3 class="text-center uppercase"><strong>Recipes</strong></h3>
 
+
+
 <div class="container-fluid">
     <div class="row">
         {% for recipe in recipes %}
@@ -20,7 +22,11 @@
                 
                 <div class="card-body">
                     <!-- Recipe Name -->
-                    {{ imageHTML }}
+                    {% set imageName = recipe.recipeImageName %}
+                    
+                    <img class="card-img-top" src="{{ url_for('file', filename=imageName) }}" alt="">
+
+                    <h1>{{ recipe.recipeImageName }}</h1>
 
                     <h4 class="card-title">{{ recipe.recipeName }}</h4>
 

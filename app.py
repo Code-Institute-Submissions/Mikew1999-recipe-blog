@@ -118,6 +118,16 @@ def create_recipe():
 @app.route("/addrecipe", methods=["GET", "POST"])
 def add_recipe():
     if request.method == "POST":
+        recipeList = mongo.db.recipes.find()
+        # loops through recipes
+        for recipe in recipeList:
+            # finds recipe image name
+            recipeImageName = recipe['recipeImageName']
+            # finds document where recipe image name
+            # matches above recipeImageName
+            recipeImages = mongo.db.fs.files.find_one({
+                            "filename": recipeImageName})
+
         if 'recipeImage' in request.files:
             recipeImage = request.files['recipeImage']
             securedImage = secure_filename(recipeImage.filename)
@@ -169,13 +179,16 @@ def add_recipe():
 
             recipes = mongo.db.recipes.find()
 
-    return render_template("recipes.html", recipes=recipes)
+    return render_template(
+                    "recipes.html",
+                    recipes=recipes,
+                    recipeImages=recipeImages)
 
 
 # function to retrieve file
 @app.route('/file/<filename>')
 def file(filename):
-    return mongo.send_file(filename, base='fs.files', version=1)
+    return mongo.send_file(filename)
 
 
 # recipes page
@@ -184,20 +197,11 @@ def recipe():
     recipeList = mongo.db.recipes.find()
     recipes = mongo.db.recipes.find()
 
-    for recipe in recipeList:
-        recipeImageName = recipe['recipeImageName']
-
-        recipeImages = mongo.db.fs.files.find_one({
-                        "filename": recipeImageName})
-        image = recipeImages['filename']
-        imageHTML = f'''
-            <img src="{{url_for('file'), filename='{image}'}}>
-        '''
-
     return render_template(
                         "recipes.html",
+                        recipeList=recipeList,
                         recipes=recipes,
-                        imageHTML=imageHTML)
+                        mongo=mongo)
 
 
 # logs user out
