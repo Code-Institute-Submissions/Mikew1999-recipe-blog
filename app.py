@@ -104,7 +104,7 @@ def profile(username):
     if session["user"]:
         return render_template("profile.html", username=username)
 
-    return redirect(url_for("login"))
+    return url_for("login")
 
 
 # create recipe page

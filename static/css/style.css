@@ -75,7 +75,7 @@ label {
     right: 5px;
 }
 
-.create-recipe-title, .signup-title, .login-title {
+.create-recipe-title, .signup-title, .login-title, .recipe-title {
     text-shadow: 2px 2px black;
 }
 
