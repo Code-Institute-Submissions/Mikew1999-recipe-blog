@@ -91,3 +91,9 @@ label {
     max-height: 20vh;
     overflow-y: auto;
 }
+
+.profile-image {
+    border-radius: 50%;
+    height: 300px;
+    width: 400px;
+}

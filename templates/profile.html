@@ -9,4 +9,10 @@
     {% endif %}
 {% endwith %}
 
+<div class="text-center">
+    <h2>Hi {{ username }}</h2>
+
+    <img class="img-fluid profile-image" src="{{ url_for('file', filename=profileimage) }}" alt="Profile Image">
+</div>
+
 {% endblock %}

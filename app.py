@@ -40,28 +40,36 @@ def register():
         is_user = mongo.db.users.find_one(
             {"username": request.form.get("username").lower()})
 
-        # if user exists flash message and return to signup page
+        # if user exists flash message and return to login page
         if is_user:
             flash("Username already exists")
-            return redirect(url_for("register"))
+            return redirect(url_for("log_in"))
 
         else:
             # pulls fields from form
-            create_account = {
-                "username": request.form.get("username").lower(),
-                "fname": request.form.get("fname").lower(),
-                "lname": request.form.get("lname").lower(),
-                "email": request.form.get("email").lower(),
-                "password": generate_password_hash(
-                    request.form.get("password"))
-            }
-            # inserts new user info into users collection
-            mongo.db.users.insert_one(create_account)
+            if 'profilepic' in request.files:
+                profileImage = request.files['profilepic']
+                securedImage = secure_filename(profileImage.filename)
+                mongo.save_file(securedImage, profileImage)
 
-            # creates user session cookie
-            session["user"] = request.form.get("username").lower()
-            flash("Registration Successful!")
-            return redirect(url_for("profile", username=session["user"]))
+                create_account = {
+                    "profileImageName": securedImage,
+                    "username": request.form.get("username").lower(),
+                    "fname": request.form.get("fname").lower(),
+                    "lname": request.form.get("lname").lower(),
+                    "email": request.form.get("email").lower(),
+                    "password": generate_password_hash(
+                        request.form.get("password"))
+                }
+                # inserts new user info into users collection
+                mongo.db.users.insert_one(create_account)
+
+                image = securedImage
+
+                # creates user session cookie
+                session["user"] = request.form.get("username").lower()
+                flash("Registration Successful!")
+                return redirect(url_for("profile", username=session["user"], image=image))
 
     return render_template("signup.html")
 
@@ -101,8 +109,12 @@ def profile(username):
     username = mongo.db.users.find_one(
         {"username": session["user"]})["username"]
 
+    image = mongo.db.users.find_one({"username": username})
+
+    profileimage = image['profileImageName']
+
     if session["user"]:
-        return render_template("profile.html", username=username)
+        return render_template("profile.html", username=username, profileimage=profileimage)
 
     return url_for("login")
 
