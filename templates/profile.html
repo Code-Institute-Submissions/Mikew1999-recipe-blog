@@ -12,7 +12,18 @@
 <div class="text-center">
     <h2>Hi {{ username }}</h2>
 
-    <img class="img-fluid profile-image" src="{{ url_for('file', filename=profileimage) }}" alt="Profile Image">
+    {% if profileImage %}
+        <div class="profile-pic">
+            <img class="img-fluid profile-image" src="{{ url_for('file', filename=profileImage) }}" alt="Profile Image">
+        </div>
+    {% else %}
+        <div class="text-center">
+            <i class="fas fa-user-circle fa-10x"></i>
+        </div>
+    {% endif %}
+
+    <button type="button" class="btn btn-outline-primary uppercase mt-1">Edit Profile Picture</button>
+
 </div>
 
 {% endblock %}

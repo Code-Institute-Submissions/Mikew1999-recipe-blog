@@ -46,12 +46,15 @@ def register():
             return redirect(url_for("log_in"))
 
         else:
-            # pulls fields from form
-            if 'profilepic' in request.files:
-                profileImage = request.files['profilepic']
+            profileImage = request.files['profilepic']
+            # checks if profile image has been selected
+            if profileImage:
+                # generates secure filename
                 securedImage = secure_filename(profileImage.filename)
+                # saves file to mongodb
                 mongo.save_file(securedImage, profileImage)
 
+                # document to insert to users collection
                 create_account = {
                     "profileImageName": securedImage,
                     "username": request.form.get("username").lower(),
@@ -59,17 +62,53 @@ def register():
                     "lname": request.form.get("lname").lower(),
                     "email": request.form.get("email").lower(),
                     "password": generate_password_hash(
-                        request.form.get("password"))
-                }
+                        request.form.get("password")),
+                    "hasProfileImage": "1"}
+
                 # inserts new user info into users collection
                 mongo.db.users.insert_one(create_account)
 
+                newUser = mongo.db.users.find_one({
+                                    "username": request.form.get("username").lower()})
+                hasProfilePic = newUser['hasProfileImage']
+                # image variable to pass into profile page
                 image = securedImage
 
                 # creates user session cookie
                 session["user"] = request.form.get("username").lower()
+                # flashes message to new user
                 flash("Registration Successful!")
-                return redirect(url_for("profile", username=session["user"], image=image))
+                return redirect(url_for(
+                                        "profile",
+                                        username=session["user"],
+                                        image=image,
+                                        hasProfilePic=hasProfilePic))
+            # if no profile image has been selected
+            else:
+                # document to insert to users collection
+                create_account = {
+                    "username": request.form.get("username").lower(),
+                    "fname": request.form.get("fname").lower(),
+                    "lname": request.form.get("lname").lower(),
+                    "email": request.form.get("email").lower(),
+                    "password": generate_password_hash(
+                        request.form.get("password")),
+                    "hasProfileImage": "0"}
+
+                # inserts new user info into users collection
+                mongo.db.users.insert_one(create_account)
+
+                newUser = mongo.db.users.find_one({
+                                    "username": request.form.get("username").lower()})
+                hasProfilePic = newUser['hasProfileImage']
+                # creates user session cookie
+                session["user"] = request.form.get("username").lower()
+                # flashes message to new user
+                flash("Registration Successful!")
+                return redirect(url_for(
+                                        "profile",
+                                        username=session["user"],
+                                        hasProfilePic=hasProfilePic))
 
     return render_template("signup.html")
 
@@ -103,20 +142,29 @@ def login():
 
 
 # profile page
-@app.route("/profile/profile/<username>", methods=["GET", "POST"])
+@app.route("/profile/<username>", methods=["GET"])
 def profile(username):
     # grab the session users username from db
     username = mongo.db.users.find_one(
         {"username": session["user"]})["username"]
+    user = mongo.db.users.find_one({"username": username})
+    hasImage = str(user['hasProfileImage'])
 
-    image = mongo.db.users.find_one({"username": username})
-
-    profileimage = image['profileImageName']
 
     if session["user"]:
-        return render_template("profile.html", username=username, profileimage=profileimage)
+        if hasImage == "1":
+            profileImage = user['profileImageName']
+            return render_template(
+                            "profile.html",
+                            username=username,
+                            profileImage=profileImage)
+        else:
+            return render_template(
+                            "profile.html",
+                            username=username,
+                            hasImage=hasImage)
 
-    return url_for("login")
+    return render_template("login.html")
 
 
 # create recipe page
