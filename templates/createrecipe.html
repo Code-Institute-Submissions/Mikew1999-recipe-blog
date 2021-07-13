@@ -1,13 +1,14 @@
 {% extends "base.html" %}
 {% block content %}
 
+{% if session.user %}
 <main class="form-background">
-
     <h2 class="text-center uppercase text-primary create-recipe-title"><strong>Create Recipe</strong></h2>
 
     <div class="card form-card">
         <div class="card-body">
-            <form class="position-relative" method="POST" action="{{ url_for('add_recipe') }}" enctype="multipart/form-data">
+            <form class="position-relative" method="POST" action="{{ url_for('add_recipe') }}"
+                enctype="multipart/form-data">
                 <div id="recipe-details">
                     <!-- Recipe Name -->
                     <label for="recipeName">Recipe Name:</label>
@@ -21,8 +22,8 @@
                     <small>Must be .jpg and under 16Mb</small>
 
                     <hr class="w-100">
-                    
-                    
+
+
                     <h4 class="text-center uppercase text-primary create-recipe-headers">Recipe Details</h4>
 
                     <label for="serves">Serves:</label>
@@ -38,7 +39,7 @@
                     <textarea class="form-control" type="text" name="recipeDescription" required></textarea>
 
                     <label for="category">Categories:</label>
-                    
+
                 </div>
 
                 <!-- Ingredients -->
@@ -53,12 +54,13 @@
                         <div class="position-absolute close">
                             <a onclick="closeform()">&#10005;</a>
                         </div>
-                        
+
                         <label class="ingredient" for="ingredient2">Ingredient 2:</label>
                         <input class="form-control" type="text" name="ingredient2" required>
                     </div>
                     <!-- Adds another ingredient item -->
-                    <button class="btn btn-primary w-100" onclick="moreIngredients()" id="moreingredientsbutton" type="button">Add another
+                    <button class="btn btn-primary w-100" onclick="moreIngredients()" id="moreingredientsbutton"
+                        type="button">Add another
                         ingredient</button>
                 </div>
 
@@ -74,15 +76,17 @@
                         <input class="form-control" type="text" name="step2" required>
                     </div>
                     <!-- Adds another step item -->
-                    <button class="btn btn-primary w-100" onclick="moresteps()" id="morestepsbutton" type="button">Add another step</button>
+                    <button class="btn btn-primary w-100" onclick="moresteps()" id="morestepsbutton" type="button">Add
+                        another step</button>
                 </div>
 
                 <div class="text-center mt-2">
                     <button class="btn btn-primary" type="submit">Submit Recipe</button>
                 </div>
+
             </form>
         </div>
     </div>
 </main>
-
+{% endif %}
 {% endblock %}

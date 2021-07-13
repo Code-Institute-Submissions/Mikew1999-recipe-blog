@@ -141,6 +141,11 @@ def login():
     return render_template("login.html")
 
 
+@app.route("/blog")
+def blog():
+    return render_template('blog.html')
+
+
 # profile page
 @app.route("/profile/<username>", methods=["GET"])
 def profile(username):
@@ -149,7 +154,6 @@ def profile(username):
         {"username": session["user"]})["username"]
     user = mongo.db.users.find_one({"username": username})
     hasImage = str(user['hasProfileImage'])
-
 
     if session["user"]:
         if hasImage == "1":

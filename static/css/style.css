@@ -2,8 +2,18 @@
     text-transform: uppercase;
 }
 
+.height-95 {
+    height: 95vh;
+}
+
+.align-middle {
+    position: absolute;
+    top: 35%;
+    left: 40%;
+}
+
 .grey-bg {
-    background-color: rgb(244, 232, 255);
+    background-color: rgb(68, 7, 126);
 }
 
 .navbar {
@@ -96,4 +106,12 @@ label {
     border-radius: 50%;
     height: 300px;
     width: 400px;
+}
+
+.x {
+    margin: 0 auto;
+    height: inherit;
+    position: absolute;
+    top: 50%;
+    left: 50%;
 }
