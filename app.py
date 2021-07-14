@@ -168,7 +168,77 @@ def profile(username):
                             username=username,
                             hasImage=hasImage)
 
-    return render_template("login.html")
+    return render_template("login.html", username=username)
+
+
+@app.route("/profile/<username>/edit_profile_picture", methods=["GET", "POST"])
+def edit_profile_picture(username):
+    if request.method == "POST":
+        if 'newProfilePic' not in request.files:
+            flash("No file selected! Please select a file to upload.")
+            return render_template("profile.html")
+
+        if 'newProfilePic' in request.files:
+            username = mongo.db.users.find_one(
+            {"username": session["user"]})["username"]
+            user = mongo.db.users.find_one({"username": username})
+            hasImage = str(user['hasProfileImage'])
+
+            # pulls new profile pic from form
+            new = request.files['newProfilePic']
+
+            # if user has a profile image
+            if hasImage == "1":
+                # finds old profile image
+                oldProfileImage = mongo.db.users.find_one({"username": user}['profileImageName'])
+                oldProfileImageID = oldProfileImage['_id']
+
+                # deletes old profile image from fs.files
+                mongo.db.fs.files.delete_one({"_id": oldProfileImageID})
+
+                # finds record where profile image name matches oldProfileImage variable
+                old = mongo.db.users.find_one({"profileImageName": oldProfileImage})
+
+                # generates secure filename
+                securedImage = secure_filename(new.filename)
+                # saves file to mongodb
+                mongo.save_file(securedImage, new)
+                # new image
+                image = securedImage
+
+                update = {"$set": {"profileImageName": image}}
+
+                mongo.db.users.update_one(old, update)
+                # flashes message to user
+                flash("Profile image successfully changed!")
+                return render_template("profile.html")
+
+            # if user doesn't have a profile pic
+            if hasImage == "0":
+                # generates secure filename
+                securedImage = secure_filename(new.filename)
+                # saves file to mongodb
+                mongo.save_file(securedImage, new)
+                # finds user record
+                userRecord = mongo.db.users.find_one({"username": username})
+                # info to update
+                update = {"$set": {"profileImageName": securedImage}}
+                # updates profile image name to new profile image name
+                mongo.db.users.update_one(userRecord, update)
+
+                value = "1"
+                setHasImage = {"$set": {"hasProfileImage": value}}
+
+                mongo.db.users.update_one(userRecord, setHasImage)
+
+                profileImage = mongo.db.users.find_one({"username": username}['profileImageName'])
+
+                # flashes message to user
+                flash("Profile image successfully uploaded!")
+                return redirect(render_template( url_for('profile',
+                                                        username=username,
+                                                        profileImage=profileImage)))
+    return render_template("profile.html")
 
 
 # create recipe page
