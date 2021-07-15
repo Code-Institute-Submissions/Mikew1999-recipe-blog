@@ -15,22 +15,22 @@
 
     <!-- Checks if user has profile pic -->
     {% if profileImage %}
-        <!-- Profile image -->
-        <div class="profile-pic">
-            <img class="img-fluid profile-image" src="{{ url_for('file', filename=profileImage) }}" alt="Profile Image">
-        </div>
-        
-        <!-- Delete profile pic form-->
-        <form action="{{ url_for('deleteProfileImage', username=username) }}" method="POST">
-            <button type="submit">Delete profile picture</button>
-        </form>
+    <!-- Profile image -->
+    <div class="profile-pic">
+        <img class="img-fluid profile-image" src="{{ url_for('file', filename=profileImage) }}" alt="Profile Image">
+    </div>
+
+    <!-- Delete profile pic form-->
+    <form action="{{ url_for('deleteProfileImage', username=username) }}" method="POST">
+        <button type="submit">Delete profile picture</button>
+    </form>
 
     <!-- if user doesn't have profile pic -->
     {% else %}
-        <div class="text-center">
-            <!-- Placeholder profile pic -->
-            <i class="fas fa-user-circle fa-10x"></i>
-        </div>
+    <div class="text-center">
+        <!-- Placeholder profile pic -->
+        <i class="fas fa-user-circle fa-10x"></i>
+    </div>
     {% endif %}
 
     <!-- Edit profile image form -->
@@ -42,4 +42,40 @@
     </form>
 </div>
 
+<!-- Personal Details -->
+<div class="personal-details mt-2">
+
+    <h4 class="text-center">Personal Details</h4>
+
+    <div class="container">
+        <div class="row text-center">
+            <div class="col">
+                <p>
+                    Username: {{ user['username'] }}
+                    <br>
+                    First Name: {{ user['fname'] }}
+                </p>
+            </div>
+            <div class="col">
+                <p>
+                    Email Address: {{ user['email'] }}
+                    <br>
+                    Surname: {{ user['lname'] }}
+                </p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col text-center">
+                <!-- Edit profile button -->
+                <a class="btn btn-outline-primary" href="#">Edit Profile</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- My recipes -->
+<div class="my-recipes">
+    <h2 class="text-center">My Recipes</h2>
+    
+</div>
 {% endblock %}

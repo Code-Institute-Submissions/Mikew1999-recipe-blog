@@ -1,4 +1,5 @@
 import os
+import time
 from flask import (
     Flask, render_template, flash,
     request, redirect, session, url_for)
@@ -154,7 +155,7 @@ def profile(username):
     username = mongo.db.users.find_one(
         {"username": session["user"]})["username"]
     user = mongo.db.users.find_one({"username": username})
-    hasImage = str(user['hasProfileImage'])
+    hasImage = user['hasProfileImage']
 
     if session["user"]:
         if hasImage == "1":
@@ -162,14 +163,16 @@ def profile(username):
             return render_template(
                 "profile.html",
                 username=username,
-                profileImage=profileImage)
+                profileImage=profileImage,
+                user=user)
         else:
             return render_template(
                 "profile.html",
                 username=username,
-                hasImage=hasImage)
+                hasImage=hasImage,
+                user=user)
 
-    return render_template("login.html", username=username)
+    return render_template("login.html", username=username, user=user)
 
 
 @app.route("/profile/<username>/edit_profile_picture", methods=["GET", "POST"])
@@ -216,7 +219,7 @@ def edit_profile_picture(username):
                 mongo.db.users.update_one(old, update)
                 # flashes message to user
                 flash("Profile image successfully changed!")
-                return render_template("profile.html")
+                return render_template("profile.html", profileImage=image)
 
             # if user doesn't have a profile pic
             if hasImage == "0":
@@ -225,25 +228,24 @@ def edit_profile_picture(username):
                 # saves file to mongodb
                 mongo.save_file(securedImage, new)
                 # finds user record
-                userRecord = mongo.db.users.find_one({"username": username})
+                user = mongo.db.users.find_one({"username": username})
                 # info to update
                 update = {"$set": {"profileImageName": securedImage}}
                 # updates profile image name to new profile image name
-                mongo.db.users.update_one(userRecord, update)
+                mongo.db.users.update_one(user, update)
 
-                value = "1"
-                setHasImage = {"$set": {"hasProfileImage": value}}
+                setHasImage = {"$set": {"hasProfileImage": "1"}}
 
-                mongo.db.users.update_one(userRecord, setHasImage)
-
-                profileImage = mongo.db.users.find_one(
-                    {"username": username}['profileImageName'])
-
+                mongo.db.users.update_one(user, setHasImage)
+                profileImage = securedImage
                 # flashes message to user
                 flash("Profile image successfully uploaded!")
-                return redirect(render_template(url_for('profile',
-                                                username=username,
-                                                profileImage=profileImage)))
+                time.sleep(20)
+                return render_template(
+                                    "profile.html",
+                                    username=username,
+                                    profileImage=profileImage,
+                                    user=user)
     return render_template("profile.html")
 
 
@@ -253,14 +255,28 @@ def deleteProfileImage(username):
     user = mongo.db.users.find_one({"username": username})
     # finds profile image name
     profileImage = user['profileImageName']
-
     # finds profile image record
     file = mongo.db.fs.files.find_one({"filename": profileImage})
     # finds file_id
-    file_id = file['']
+    file_id = file['_id']
+    # deletes file from db
     mongo.db.fs.files.delete_one({"_id": file_id})
-    print(file_id)
-    return render_template("profile.html", profileImage=profileImage)
+
+    value = "0"
+    # changes to update
+    setHasImage = {"$set": {"hasProfileImage": value}}
+    # updates hasProfileImage in users collection
+    mongo.db.users.update_one(user, setHasImage)
+    # changes to update
+    removeProfilePic = {"$set": {"profileImageName": ""}}
+    # removes profile pic from users collection
+    mongo.db.users.update_one(user, removeProfilePic)
+
+    time.sleep(15)
+    return render_template(
+                        "profile.html", 
+                        profileImage=profileImage,
+                        user=user)
 
 
 # create recipe page
