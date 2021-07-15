@@ -69,7 +69,7 @@ def register():
                 mongo.db.users.insert_one(create_account)
 
                 newUser = mongo.db.users.find_one({
-                                    "username": request.form.get("username").lower()})
+                    "username": request.form.get("username").lower()})
                 hasProfilePic = newUser['hasProfileImage']
                 # image variable to pass into profile page
                 image = securedImage
@@ -79,10 +79,10 @@ def register():
                 # flashes message to new user
                 flash("Registration Successful!")
                 return redirect(url_for(
-                                        "profile",
-                                        username=session["user"],
-                                        image=image,
-                                        hasProfilePic=hasProfilePic))
+                    "profile",
+                    username=session["user"],
+                    image=image,
+                    hasProfilePic=hasProfilePic))
             # if no profile image has been selected
             else:
                 # document to insert to users collection
@@ -99,16 +99,17 @@ def register():
                 mongo.db.users.insert_one(create_account)
 
                 newUser = mongo.db.users.find_one({
-                                    "username": request.form.get("username").lower()})
+                    "username": request.form.get(
+                        "username").lower()})
                 hasProfilePic = newUser['hasProfileImage']
                 # creates user session cookie
                 session["user"] = request.form.get("username").lower()
                 # flashes message to new user
                 flash("Registration Successful!")
                 return redirect(url_for(
-                                        "profile",
-                                        username=session["user"],
-                                        hasProfilePic=hasProfilePic))
+                    "profile",
+                    username=session["user"],
+                    hasProfilePic=hasProfilePic))
 
     return render_template("signup.html")
 
@@ -159,14 +160,14 @@ def profile(username):
         if hasImage == "1":
             profileImage = user['profileImageName']
             return render_template(
-                            "profile.html",
-                            username=username,
-                            profileImage=profileImage)
+                "profile.html",
+                username=username,
+                profileImage=profileImage)
         else:
             return render_template(
-                            "profile.html",
-                            username=username,
-                            hasImage=hasImage)
+                "profile.html",
+                username=username,
+                hasImage=hasImage)
 
     return render_template("login.html", username=username)
 
@@ -180,7 +181,7 @@ def edit_profile_picture(username):
 
         if 'newProfilePic' in request.files:
             username = mongo.db.users.find_one(
-            {"username": session["user"]})["username"]
+                {"username": session["user"]})["username"]
             user = mongo.db.users.find_one({"username": username})
             hasImage = str(user['hasProfileImage'])
 
@@ -190,14 +191,17 @@ def edit_profile_picture(username):
             # if user has a profile image
             if hasImage == "1":
                 # finds old profile image
-                oldProfileImage = mongo.db.users.find_one({"username": user}['profileImageName'])
+                oldProfileImage = mongo.db.users.find_one(
+                    {"username": user}['profileImageName'])
                 oldProfileImageID = oldProfileImage['_id']
 
                 # deletes old profile image from fs.files
                 mongo.db.fs.files.delete_one({"_id": oldProfileImageID})
 
-                # finds record where profile image name matches oldProfileImage variable
-                old = mongo.db.users.find_one({"profileImageName": oldProfileImage})
+                # finds record where profile image name
+                # matches oldProfileImage variable
+                old = mongo.db.users.find_one(
+                    {"profileImageName": oldProfileImage})
 
                 # generates secure filename
                 securedImage = secure_filename(new.filename)
@@ -206,6 +210,7 @@ def edit_profile_picture(username):
                 # new image
                 image = securedImage
 
+                # updates image to new image
                 update = {"$set": {"profileImageName": image}}
 
                 mongo.db.users.update_one(old, update)
@@ -231,14 +236,31 @@ def edit_profile_picture(username):
 
                 mongo.db.users.update_one(userRecord, setHasImage)
 
-                profileImage = mongo.db.users.find_one({"username": username}['profileImageName'])
+                profileImage = mongo.db.users.find_one(
+                    {"username": username}['profileImageName'])
 
                 # flashes message to user
                 flash("Profile image successfully uploaded!")
-                return redirect(render_template( url_for('profile',
-                                                        username=username,
-                                                        profileImage=profileImage)))
+                return redirect(render_template(url_for('profile',
+                                                username=username,
+                                                profileImage=profileImage)))
     return render_template("profile.html")
+
+
+@app.route("/profile/<username>/delete_profile_image", methods=["GET", "POST"])
+def deleteProfileImage(username):
+    # grabs users account
+    user = mongo.db.users.find_one({"username": username})
+    # finds profile image name
+    profileImage = user['profileImageName']
+
+    # finds profile image record
+    file = mongo.db.fs.files.find_one({"filename": profileImage})
+    # finds file_id
+    file_id = file['']
+    mongo.db.fs.files.delete_one({"_id": file_id})
+    print(file_id)
+    return render_template("profile.html", profileImage=profileImage)
 
 
 # create recipe page
@@ -308,10 +330,10 @@ def add_recipe():
             recipes = mongo.db.recipes.find()
 
     return render_template(
-                    "recipes.html",
-                    recipeList=recipeList,
-                    recipes=recipes,
-                    mongo=mongo)
+        "recipes.html",
+        recipeList=recipeList,
+        recipes=recipes,
+        mongo=mongo)
 
 
 # function to retrieve file
@@ -327,10 +349,10 @@ def recipe():
     recipes = mongo.db.recipes.find()
 
     return render_template(
-                        "recipes.html",
-                        recipeList=recipeList,
-                        recipes=recipes,
-                        mongo=mongo)
+        "recipes.html",
+        recipeList=recipeList,
+        recipes=recipes,
+        mongo=mongo)
 
 
 # logs user out
