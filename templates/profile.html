@@ -1,67 +1,79 @@
 {% extends "base.html" %}
 
 {% block content %}
-<!-- Flashed messages -->
+
 {% with messages = get_flashed_messages() %}
-    {% if messages %}
-        {% for message in messages %}
-            <p class="text-center"><strong>{{ message }}</strong></p>
-        {% endfor %}
-    {% endif %}
+{% if messages %}
+{% for message in messages %}
+<p class="text-center"><strong>{{ message }}</strong></p>
+{% endfor %}
+{% endif %}
 {% endwith %}
 
-<div class="text-center">
-    <h2>Hi {{ username }}</h2>
+<div class="jumbotron">
+    <div class="jumbotron-content">
+        <div class="container text-center">
+            <!-- Flashed messages -->
+            <h1 class="masthead-heading mb-0">Hi {{ username }}</h1>
 
-    <!-- Checks if user has profile pic -->
-    {% if profileImage %}
-    <!-- Profile image -->
-    <div class="profile-pic">
-        <img class="img-fluid profile-image" src="{{ url_for('file', filename=profileImage) }}" alt="Profile Image">
+            <!-- Checks if user has profile pic -->
+            {% if profileImage %}
+            <!-- Profile image -->
+            <div class="profile-pic">
+                <img class="img-fluid profile-image" src="{{ url_for('file', filename=profileImage) }}"
+                    alt="Profile Image">
+            </div>
+
+            <!-- Deletes profile pic -->
+            <form action="{{ url_for('deleteProfileImage', username=username) }}" method="POST">
+                <button type="submit">Delete profile picture</button>
+            </form>
+
+            <!-- if user doesn't have profile pic -->
+            {% else %}
+            <div class="text-center">
+                <!-- Placeholder profile pic -->
+                <i class="fas fa-user-circle fa-10x"></i>
+            </div>
+            {% endif %}
+
+            <!-- Edit profile image form -->
+            <form action="{{ url_for('edit_profile_picture', username=username) }}" method="POST"
+                enctype="multipart/form-data">
+                <!-- file input -->
+                <input name="newProfilePic" accept="image/jpg" type="file" required>
+                <br>
+                <button type="submit" class="btn btn-outline-primary uppercase mt-1">Upload New Profile Picture</button>
+            </form>
+        </div>
     </div>
-
-    <!-- Delete profile pic form-->
-    <form action="{{ url_for('deleteProfileImage', username=username) }}" method="POST">
-        <button type="submit">Delete profile picture</button>
-    </form>
-
-    <!-- if user doesn't have profile pic -->
-    {% else %}
-    <div class="text-center">
-        <!-- Placeholder profile pic -->
-        <i class="fas fa-user-circle fa-10x"></i>
-    </div>
-    {% endif %}
-
-    <!-- Edit profile image form -->
-    <form action="{{ url_for('edit_profile_picture', username=username) }}" method="POST" enctype="multipart/form-data">
-        <!-- file input -->
-        <input name="newProfilePic" accept="image/jpg" type="file">
-        <br>
-        <button type="submit" class="btn btn-outline-primary uppercase mt-1">Upload New Profile Picture</button>
-    </form>
 </div>
 
 <!-- Personal Details -->
 <div class="personal-details mt-2">
 
-    <h4 class="text-center">Personal Details</h4>
+    <h2 class="masthead-heading text-center">Personal Details</h2>
 
     <div class="container">
-        <div class="row text-center">
-            <div class="col">
+        <div class="row">
+            <div class="col-4">
+            </div>
+            <div class="col-2">
                 <p>
-                    Username: {{ user['username'] }}
+                    <b>Username:</b> {{ user['username'] }}
                     <br>
-                    First Name: {{ user['fname'] }}
+                    <b>First Name:</b> {{ user['fname'] }}
                 </p>
             </div>
-            <div class="col">
+            <div class="col-2">
                 <p>
-                    Email Address: {{ user['email'] }}
+                    <b>Email Address:</b> {{ user['email'] }}
                     <br>
-                    Surname: {{ user['lname'] }}
+                    <b>Surname:</b> {{ user['lname'] }}
                 </p>
+            </div>
+            <div class="col-4">
+
             </div>
         </div>
         <div class="row">
@@ -76,6 +88,48 @@
 <!-- My recipes -->
 <div class="my-recipes">
     <h2 class="text-center">My Recipes</h2>
-    
+    {% if hasUploadedRecipe == "1" %}
+    {% for x in userRecipes %}
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <div class="card mb-2">
+
+                    <div class="card-body">
+                        <!-- Recipe Name -->
+                        {% set imageName = x.recipeImageName %}
+
+                        <img class="card-img-top" src="{{ url_for('file', filename=imageName) }}" alt="recipe Image">
+
+                        <h4 class="card-title  text-center">{{ x.recipeName }}</h4>
+
+                        <!-- Recipe Details -->
+
+                        <p class="card-text">
+                            <i class="fas fa-utensils"></i> Serves {{ x.serves }}
+                            <br>
+                            <i class="far fa-clock"></i> Preparation time: {{ x.prepTime }}
+                            <br>
+                            <i class="far fa-clock"></i> Cooking time: {{ x.cookingTime }}
+                        </p>
+
+                        <h5 class="text-center">Recipe Description</h5>
+
+                        <p class="card-text recipe-description">
+                            {{ x.recipeDescription }}
+                        </p>
+
+                        <div class="text-center">
+                            <a class="btn btn-outline-primary btn-lg">Go to Recipe</a>
+                        </div>
+                    </div>
+
+                    <a href="#"><i class="far fa-heart"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    {% endif %}
 </div>
 {% endblock %}
