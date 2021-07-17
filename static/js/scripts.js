@@ -23,3 +23,21 @@ function moresteps() {
     // adds new step item before more ingredient button
     $(step).insertBefore('#morestepsbutton');
 }
+
+// shows edit profile pic form
+function showEditPicForm() {
+    // hides edit pic button
+    $('#show-edit-pic-form').css("display", "none");
+    // shows edit pic form
+    $('#edit-pic-form').css("display", "block");
+}
+
+// shows edit profile form to edit personal details
+function showEditPersonalDetailsForm() {
+    // shows edit personal details form
+    $('#edit-personal-details-form').css("display", "block");
+    // hides edit profile button
+    $('.edit-personal-details-button').css("display", "none");
+    // hides personal details section
+    $('.personal-details').css("display", "none");
+}
