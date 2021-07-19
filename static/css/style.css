@@ -2,6 +2,10 @@
     text-transform: uppercase;
 }
 
+main {
+    scroll-behavior: ;
+}
+
 .height-95 {
     height: 95vh;
 }
@@ -126,10 +130,8 @@ label {
     width: 400px;
 }
 
-.x {
-    margin: 0 auto;
-    height: inherit;
-    position: absolute;
-    top: 50%;
-    left: 50%;
+.nav-fill .nav-item .nav-link {
+    background-color: rgb(68, 7, 126);
+    margin: 2px;
+    color: #fff!important;
 }
