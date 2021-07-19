@@ -12,16 +12,8 @@
     left: 40%;
 }
 
-.grey-bg {
-    background-color: rgb(68, 7, 126);
-}
-
 .navbar {
     padding: 0!important;
-}
-
-.navbar-brand, .nav-link {
-    color: blueviolet!important;
 }
 
 .jumbotron {

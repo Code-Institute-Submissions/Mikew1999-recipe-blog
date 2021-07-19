@@ -161,7 +161,8 @@ def register():
                     "password": generate_password_hash(
                         request.form.get("password")),
                     "hasProfileImage": "1",
-                    "hasUploadedRecipe": "0"
+                    "hasUploadedRecipe": "0",
+                    "hasPosted": "0"
                 }
 
                 # inserts new user info into users collection
@@ -193,7 +194,8 @@ def register():
                     "password": generate_password_hash(
                         request.form.get("password")),
                     "hasProfileImage": "0",
-                    "hasUploadedRecipe": "0"}
+                    "hasUploadedRecipe": "0",
+                    "hasPosted": "0"}
 
                 # inserts new user info into users collection
                 mongo.db.users.insert_one(create_account)
@@ -407,6 +409,7 @@ def add_recipe():
                 "prepTime": request.form.get("prepTime"),
                 "cookingTime": request.form.get("cookingTime"),
                 "recipeDescription": request.form.get("recipeDescription"),
+                "likes": 1,
                 "author": user
             }
 
@@ -451,19 +454,24 @@ def add_recipe():
     return render_template(
         "recipes.html",
         recipeList=recipeList,
-        recipes=recipes,
-        mongo=mongo)
+        recipes=recipes)
 
 
+# Searches recipes
 @app.route("/recipes/search_recipes", methods=["GET", "POST"])
 def searchRecipes():
+    # creates search index
     mongo.db.recipes.create_index(
         [
             ("recipeName", "text"),
             ("recipeDescription", "text"),
             ("author", "text")])
+
+    # gets text input from search form
     query = request.form.get("searchRecipes")
+    # performs search
     search = ({"$text": {"$search": query}})
+    # finds results
     results = mongo.db.recipes.find(search)
 
     return render_template(

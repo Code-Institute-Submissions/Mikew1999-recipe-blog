@@ -16,48 +16,49 @@
 
 <body>
     <header>
-        <nav class="navbar navbar-expand-lg grey-bg bg-light navbar-light">
-            <div class="container-fluid">
-                <a class="navbar-brand" href="{{ url_for('index') }}">Food Space</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
-                    aria-expanded="false" aria-label="Toggle navigation">
+        <nav id="nav" class="navbar navbar-light grey-bg navbar-expand-lg">
+            <a class="navbar-brand" href="{{ url_for('index') }}">Food Space</a>
+    
+            <!--Navbar collapse button-->
+            <div id="nav-collapse-button">
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#nav-collapse">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-
-                <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('index') }}">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('blog' )}}">Blog</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('recipe') }}"> Recipes</a>
-                        </li>
-                        {% if session.user %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('create_recipe') }}">Create Recipe</a>
-                        </li>
-                        <li class="nav-item">
-                            {% set username = session.user %}
-                            <a class="nav-link" href="{{ url_for('profile', username=username) }}">Profile</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('logout') }}"> Logout</a>
-                        </li>
-                        {% endif %}
-                        {% if not session.user %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('login') }}"> Login</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('signup') }}"> Sign Up</a>
-                        </li>
-                        {% endif %}
-                    </ul>
-                </div>
+            </div>
+    
+            <!--links collapsed into collapse button on smaller devices-->
+            <div class="navbar-collapse collapse w-100" id="nav-collapse">
+                <ul class="nav navbar-nav ml-auto w-100 justify-content-end">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('index') }}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('blog' )}}">Blog</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('recipe') }}"> Recipes</a>
+                    </li>
+                    {% if session.user %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('create_recipe') }}">Create Recipe</a>
+                    </li>
+                    <li class="nav-item">
+                        {% set username = session.user %}
+                        <a class="nav-link" href="{{ url_for('profile', username=username) }}">Profile</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('logout') }}"> Logout</a>
+                    </li>
+                    {% endif %}
+                    {% if not session.user %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('login') }}"> Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('signup') }}"> Sign Up</a>
+                    </li>
+                    {% endif %}
+                </ul>
             </div>
         </nav>
     </header>
@@ -75,6 +76,7 @@
         integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous">
     </script>
     <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+
 </body>
 
 </html>

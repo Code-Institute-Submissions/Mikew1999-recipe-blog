@@ -58,8 +58,11 @@
                         <a class="btn btn-outline-primary btn-lg">Go to Recipe</a>
                     </div>
                 </div>
-
-                <a href="#"><i class="far fa-heart"></i></a>
+                <form action="{{ url_for('likeRecipe'), recipeName=recipe.recipeName }}">
+                    <p>
+                        <a href="#"><i class="far fa-heart"></i></a> <span>Likes: {{recipe.likes }} </span>
+                    </p>
+                </form>
             </div>
         </div>
         {% endfor %}

@@ -18,7 +18,12 @@
 
             <h2 class="masthead-subheading mb-0">Find and share tasty recipes!</h2>
 
-            <a class="btn btn-primary btn-xl rounded-pill mt-5" href="{{ url_for('signup')}}">Sign up</a>
+            {% if not session.user %}
+                <a class="btn btn-primary btn-xl rounded-pill mt-5" href="{{ url_for('signup')}}">Sign up</a>
+            {% endif %}
+            {% if session.user %}
+                <a class="btn btn-primary btn-xl rounded-pill mt-5" href="{{ url_for('profile', username=session.user)}}">View Profile</a>
+            {% endif %}
         </div>
     </div>
 </div>
