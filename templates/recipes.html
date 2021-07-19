@@ -58,9 +58,10 @@
                         <a class="btn btn-outline-primary btn-lg">Go to Recipe</a>
                     </div>
                 </div>
-                <form action="{{ url_for('likeRecipe'), recipeName=recipe.recipeName }}">
+                {% set recipeName = recipe.recipeName %}
+                <form action="{{ url_for('likeRecipe', recipeName=recipeName) }}" method="POST">
                     <p>
-                        <a href="#"><i class="far fa-heart"></i></a> <span>Likes: {{recipe.likes }} </span>
+                        <a href="#"><i class="far fa-heart"></i></a> <input type="checkbox"><span>Likes: {{recipe.likes }} </span>
                     </p>
                 </form>
             </div>

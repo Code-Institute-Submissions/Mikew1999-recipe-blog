@@ -9,4 +9,55 @@
     {% endif %}
 {% endwith %}
 
+{% if results %}
+    <div class="container">
+        <div class="row">
+            {% set numberOfRecipes = results.count() %}
+            <p>{{ numberOfRecipes }}</p>
+            {% for recipe in results %}
+            <div class="col-sm-12 col-lg-6 col-xl-4">
+            
+                <div class="card mb-2">
+                    
+                    <div class="card-body">
+                        <!-- Recipe Name -->
+                        {% set imageName = recipe.recipeImageName %}
+                        
+                        <img class="card-img-top" src="{{ url_for('file', filename=imageName) }}" alt="recipe Image">
+    
+                        <h4 class="card-title  text-center">{{ recipe.recipeName }}</h4>
+    
+                        <!-- Recipe Details -->
+    
+                        <p class="card-text">
+                            <i class="fas fa-utensils"></i> Serves {{ recipe.serves }}
+                            <br>
+                            <i class="far fa-clock"></i> Preparation time: {{ recipe.prepTime }}
+                            <br>
+                            <i class="far fa-clock"></i> Cooking time: {{ recipe.cookingTime }}
+                        </p>
+    
+                        <h5 class="text-center">Recipe Description</h5>
+    
+                        <p class="card-text recipe-description">
+                            {{ recipe.recipeDescription }}
+                        </p>
+    
+                        <div class="text-center">
+                            <a class="btn btn-outline-primary btn-lg">Go to Recipe</a>
+                        </div>
+                    </div>
+                    {% set recipeName = recipe.recipeName %}
+                    <form action="{{ url_for('likeRecipe', recipeName=recipeName) }}" method="POST">
+                        <p>
+                            <a href="#"><i class="far fa-heart"></i></a> <input type="checkbox"><span>Likes: {{recipe.likes }} </span>
+                        </p>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endif %}
+
 {% endblock %}

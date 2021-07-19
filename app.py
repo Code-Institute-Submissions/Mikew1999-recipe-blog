@@ -476,7 +476,12 @@ def searchRecipes():
 
     return render_template(
         "searchedrecipes.html",
-        recipes=results)
+        results=results)
+
+
+@app.route("/recipes/<recipeName>/like_recipe")
+def likeRecipe(recipeName):
+    print(recipeName)
 
 
 if __name__ == "__main__":
