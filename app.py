@@ -87,6 +87,8 @@ def profile(username):
     hasProfileImage = user['hasProfileImage']
     hasUploadedRecipe = user['hasUploadedRecipe']
     allRecipes = mongo.db.recipes.find()
+    userRecipes = mongo.db.recipes.find({"author": username})
+    hasPosted = user['hasPosted']
 
     if session["user"]:
         if hasProfileImage == "1":
@@ -98,6 +100,8 @@ def profile(username):
                     hasProfileImage=hasProfileImage,
                     profileImage=profileImage,
                     allRecipes=allRecipes,
+                    userRecipes=userRecipes,
+                    hasPosted=hasPosted,
                     hasUploadedRecipe=hasUploadedRecipe,
                     user=user)
             if hasUploadedRecipe == "0":
@@ -106,6 +110,7 @@ def profile(username):
                     username=username,
                     hasProfileImage=hasProfileImage,
                     hasUploadedRecipe=hasUploadedRecipe,
+                    hasPosted=hasPosted,
                     profileImage=profileImage,
                     user=user)
         else:
@@ -115,6 +120,8 @@ def profile(username):
                     username=username,
                     hasProfileImage=hasProfileImage,
                     allRecipes=allRecipes,
+                    userRecipes=userRecipes,
+                    hasPosted=hasPosted,
                     hasUploadedRecipe=hasUploadedRecipe,
                     user=user)
             if hasUploadedRecipe == "0":
@@ -122,6 +129,7 @@ def profile(username):
                     "profile.html",
                     username=username,
                     hasProfileImage=hasProfileImage,
+                    hasPosted=hasPosted,
                     hasUploadedRecipe=hasUploadedRecipe,
                     user=user)
 
@@ -182,6 +190,7 @@ def register():
                     "profile",
                     username=session["user"],
                     image=image,
+                    hasPosted="0",
                     hasProfilePic=hasProfilePic))
             # if no profile image has been selected
             else:
@@ -211,6 +220,7 @@ def register():
                 return redirect(url_for(
                     "profile",
                     username=session["user"],
+                    hasPosted="0",
                     hasProfilePic=hasProfilePic))
 
     return render_template("signup.html")
@@ -232,7 +242,7 @@ def login():
                 return redirect(url_for("profile", username=session["user"]))
 
             else:
-                flash("Incorrect Password")
+                flash("Incorrect username / password")
                 return render_template("login")
 
     return render_template("login.html")

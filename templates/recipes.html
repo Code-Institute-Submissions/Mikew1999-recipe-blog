@@ -11,16 +11,16 @@
 
 <h3 class="text-center uppercase text-primary recipe-title"><strong>Recipes</strong></h3>
 
-<div class="text-center mb-2">
-    <form action="{{ url_for('searchRecipes') }}" method="POST">
+<div class="text-center mt-4 mb-2">
+    <form action="{{ url_for('searchRecipes') }}" method="POST" style="line-height: 1.5;">
         <label for="searchRecipes">Search recipes:</label>
         <input type="text" name="searchRecipes" placeholder="Spaghetti Bolognaise" required>
-        <button type="submit" class="btn btn-sm btn-primary">Search</button>
+        <button type="submit" class="btn search-button"><i class="fas fa-search text-primary"></i></button>
     </form>
 </div>
 
 <div class="text-center mb-2">
-    <button type="button" class="btn btn-primary">Categories</button>
+    <button type="button" class="btn btn-primary">Filter</button>
 </div>
 
 <div class="container">
@@ -29,13 +29,10 @@
         <div class="col-sm-12 col-lg-6 col-xl-4">
             
             <div class="card mb-2">
-                
+                {% set imageName = recipe.recipeImageName %}
+                <img class="card-img-top" src="{{ url_for('file', filename=imageName) }}" alt="recipe Image">
                 <div class="card-body">
                     <!-- Recipe Name -->
-                    {% set imageName = recipe.recipeImageName %}
-                    
-                    <img class="card-img-top" src="{{ url_for('file', filename=imageName) }}" alt="recipe Image">
-
                     <h4 class="card-title  text-center">{{ recipe.recipeName }}</h4>
 
                     <!-- Recipe Details -->
@@ -57,13 +54,14 @@
                     <div class="text-center">
                         <a class="btn btn-outline-primary btn-lg">Go to Recipe</a>
                     </div>
+                    {% set recipeName = recipe.recipeName %}
+                    <form class="mt-4 text-center" action="{{ url_for('likeRecipe', recipeName=recipeName) }}" method="POST">
+                        <p>
+                            <a href="#"><i class="far fa-heart"></i></a> <input type="checkbox"><span>Likes: {{recipe.likes }} </span>
+                        </p>
+                    </form>
                 </div>
-                {% set recipeName = recipe.recipeName %}
-                <form action="{{ url_for('likeRecipe', recipeName=recipeName) }}" method="POST">
-                    <p>
-                        <a href="#"><i class="far fa-heart"></i></a> <input type="checkbox"><span>Likes: {{recipe.likes }} </span>
-                    </p>
-                </form>
+                
             </div>
         </div>
         {% endfor %}

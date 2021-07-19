@@ -25,9 +25,8 @@
             </div>
 
             <!-- Deletes profile pic -->
-            <form action="{{ url_for('deleteProfileImage', username=username) }}" method="POST">
-                <button type="submit">Delete profile picture</button>
-                <br>
+            <form class="mb-4" action="{{ url_for('deleteProfileImage', username=username) }}" method="POST">
+                <button class="btn btn-outline-primary" type="submit">Delete profile picture</button>
             </form>
 
             <!-- if user doesn't have profile pic -->
@@ -79,8 +78,7 @@
         <div class="row">
             <div class="col text-center edit-personal-details-button">
                 <!-- Edit profile button -->
-                <a class="btn btn-outline-primary"
-                    onclick="showEditPersonalDetailsForm()">Edit Profile</a>
+                <a class="btn btn-outline-primary" onclick="showEditPersonalDetailsForm()">Edit Profile</a>
             </div>
         </div>
         <div class="hide" id="edit-personal-details-form">
@@ -116,7 +114,7 @@
 </div>
 
 <!-- Secondary Navbar -->
-<ul class="nav nav-pills nav-fill">
+<ul class="nav nav-fill navbar-light grey-bg">
     <li class="nav-item">
         <a class="nav-link" href="#my-recipes" onclick="showMyRecipes()">My recipes</a>
     </li>
@@ -128,58 +126,76 @@
 <!-- My recipes -->
 <div id="my-recipes" class="my-recipes">
     <h2 class="text-center">My Recipes</h2>
+
+    <!-- Checks if user has uploaded recipe -->
     {% if hasUploadedRecipe == "1" %}
-    {% for recipe in allRecipes %}
-    {% if recipe.author == username %}
-    <div class="container">
-        <div class="row">
-            <div class="col-6">
-                <div class="card mb-2">
+        <div class="container-fluid">
+            <div class="row">
+            <!-- Counts number of recipes uploaded by this user -->
+            {% set numberOfRecipes = userRecipes.count() %}
+            
+            <!-- Check if number of recipes is divisible by 3 -->
+            {% if numberOfRecipes %3 == 0 %}
+                {% set column = "col-md-12 col-lg-4" %}
+            {% elif numberOfRecipes %2 == 0 %}
+                {% set column = "col-md-12 col-lg-6" %}
+            {% else %}
+                {% set column = "col-6 offset-3" %}
+            {% endif %}
 
-                    <div class="card-body">
-                        <!-- Recipe Name -->
+            {% for recipe in userRecipes %}
+                <div class="{{ column }}">
+                    <div class="card mb-2">
                         {% set imageName = recipe.recipeImageName %}
-
                         <img class="img-fluid" src="{{ url_for('file', filename=imageName) }}" alt="recipe Image">
 
-                        <h4 class="card-title  text-center">{{ recipe.recipeName }}</h4>
+                        <div class="card-body">
+                            <!-- Recipe Name -->
+                            <h4 class="card-title  text-center">{{ recipe.recipeName }}</h4>
 
-                        <!-- Recipe Details -->
+                            <!-- Recipe Details -->
 
-                        <p class="card-text">
-                            <i class="fas fa-utensils"></i> Serves {{ recipe.serves }}
-                            <br>
-                            <i class="far fa-clock"></i> Preparation time: {{ recipe.prepTime }}
-                            <br>
-                            <i class="far fa-clock"></i> Cooking time: {{ recipe.cookingTime }}
-                        </p>
+                            <p class="card-text">
+                                <i class="fas fa-utensils"></i> Serves {{ recipe.serves }}
+                                <br>
+                                <i class="far fa-clock"></i> Preparation time: {{ recipe.prepTime }}
+                                <br>
+                                <i class="far fa-clock"></i> Cooking time: {{ recipe.cookingTime }}
+                            </p>
 
-                        <h5 class="text-center">Recipe Description</h5>
+                            <h5 class="text-center">Recipe Description</h5>
 
-                        <p class="card-text recipe-description">
-                            {{ recipe.recipeDescription }}
-                        </p>
+                            <p class="card-text recipe-description">
+                                {{ recipe.recipeDescription }}
+                            </p>
 
-                        <div class="text-center">
-                            <a class="btn btn-outline-primary btn-lg">Go to Recipe</a>
+                            <p>
+                                {{ recipe.author }}
+                            </p>
+
+                            <div class="text-center">
+                                <a class="btn btn-outline-primary btn-lg">Go to Recipe</a>
+                            </div>
                         </div>
                     </div>
                 </div>
+            {% endfor %}
             </div>
         </div>
-    </div>
-    {% endif %}
-    {% endfor %}
     {% else %}
-    <div class="text-center">
-        <p>You have not uploaded any recipes yet. You can upload a new recipe <a
-                href="{{ url_for('create_recipe') }}">here</a></p>
-    </div>
+        <div class="text-center">
+            <p>You have not uploaded any recipes yet. You can upload a new recipe <a
+                    href="{{ url_for('create_recipe') }}">here</a></p>
+        </div>
     {% endif %}
 </div>
 
 <div class="my-posts hide" id="my-posts">
     <h2 class="text-center">My Posts</h2>
-    
+    {% if hasPosted == "0" %}
+        <div class="text-center">
+            <p>You have not made any posts yet. You can create a new post <a href="#">here</a></p>
+        </div>
+    {% endif %}
 </div>
 {% endblock %}
