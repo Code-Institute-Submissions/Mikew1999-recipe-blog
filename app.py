@@ -23,6 +23,12 @@ mongo = PyMongo(app)
 recipes = mongo.db.recipes.find()
 
 
+# function to retrieve file
+@app.route('/file/<filename>')
+def file(filename):
+    return mongo.send_file(filename)
+
+
 # home page
 @app.route("/")
 def index():
@@ -35,7 +41,95 @@ def signup():
     return render_template("signup.html")
 
 
-# sign up form handling
+# log in page
+@app.route("/log-in")
+def log_in():
+    return render_template("login.html")
+
+
+# blog page
+@app.route("/blog")
+def blog():
+    return render_template('blog.html')
+
+
+# create recipe page
+@app.route("/createrecipe")
+def create_recipe():
+    return render_template(
+        "createrecipe.html")
+
+
+# recipes page
+@app.route("/recipes")
+def recipe():
+    recipes = mongo.db.recipes.find()
+
+    return render_template(
+        "recipes.html",
+        recipes=recipes)
+
+
+# logs user out
+@app.route("/logout")
+def logout():
+    session.pop("user")
+    return render_template("index.html")
+
+
+# profile page
+@app.route("/profile/<username>", methods=["GET"])
+def profile(username):
+    # grab the session users username from db
+    username = mongo.db.users.find_one(
+        {"username": session["user"]})["username"]
+    user = mongo.db.users.find_one({"username": username})
+    hasProfileImage = user['hasProfileImage']
+    hasUploadedRecipe = user['hasUploadedRecipe']
+    allRecipes = mongo.db.recipes.find()
+
+    if session["user"]:
+        if hasProfileImage == "1":
+            profileImage = user['profileImageName']
+            if hasUploadedRecipe == "1":
+                return render_template(
+                    "profile.html",
+                    username=username,
+                    hasProfileImage=hasProfileImage,
+                    profileImage=profileImage,
+                    allRecipes=allRecipes,
+                    hasUploadedRecipe=hasUploadedRecipe,
+                    user=user)
+            if hasUploadedRecipe == "0":
+                return render_template(
+                    "profile.html",
+                    username=username,
+                    hasProfileImage=hasProfileImage,
+                    hasUploadedRecipe=hasUploadedRecipe,
+                    profileImage=profileImage,
+                    user=user)
+        else:
+            if hasUploadedRecipe == "1":
+                return render_template(
+                    "profile.html",
+                    username=username,
+                    hasProfileImage=hasProfileImage,
+                    allRecipes=allRecipes,
+                    hasUploadedRecipe=hasUploadedRecipe,
+                    user=user)
+            if hasUploadedRecipe == "0":
+                return render_template(
+                    "profile.html",
+                    username=username,
+                    hasProfileImage=hasProfileImage,
+                    hasUploadedRecipe=hasUploadedRecipe,
+                    user=user)
+
+    flash("Please login to view your profile")
+    return render_template("login.html", username=username, user=user)
+
+
+# sign up function
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
@@ -120,13 +214,7 @@ def register():
     return render_template("signup.html")
 
 
-# log in page
-@app.route("/log-in")
-def log_in():
-    return render_template("login.html")
-
-
-# log in form handling
+# log in function
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
@@ -148,63 +236,7 @@ def login():
     return render_template("login.html")
 
 
-@app.route("/blog")
-def blog():
-    return render_template('blog.html')
-
-
-# profile page
-@app.route("/profile/<username>", methods=["GET"])
-def profile(username):
-    # grab the session users username from db
-    username = mongo.db.users.find_one(
-        {"username": session["user"]})["username"]
-    user = mongo.db.users.find_one({"username": username})
-    hasProfileImage = user['hasProfileImage']
-    hasUploadedRecipe = user['hasUploadedRecipe']
-    allRecipes = mongo.db.recipes.find()
-
-    if session["user"]:
-        if hasProfileImage == "1":
-            profileImage = user['profileImageName']
-            if hasUploadedRecipe == "1":
-                return render_template(
-                    "profile.html",
-                    username=username,
-                    hasProfileImage=hasProfileImage,
-                    profileImage=profileImage,
-                    allRecipes=allRecipes,
-                    hasUploadedRecipe=hasUploadedRecipe,
-                    user=user)
-            if hasUploadedRecipe == "0":
-                return render_template(
-                    "profile.html",
-                    username=username,
-                    hasProfileImage=hasProfileImage,
-                    hasUploadedRecipe=hasUploadedRecipe,
-                    profileImage=profileImage,
-                    user=user)
-        else:
-            if hasUploadedRecipe == "1":
-                return render_template(
-                    "profile.html",
-                    username=username,
-                    hasProfileImage=hasProfileImage,
-                    allRecipes=allRecipes,
-                    hasUploadedRecipe=hasUploadedRecipe,
-                    user=user)
-            if hasUploadedRecipe == "0":
-                return render_template(
-                    "profile.html",
-                    username=username,
-                    hasProfileImage=hasProfileImage,
-                    hasUploadedRecipe=hasUploadedRecipe,
-                    user=user)
-
-    flash("Please login to view your profile")
-    return render_template("login.html", username=username, user=user)
-
-
+# edit profile picture
 @app.route("/profile/<username>/edit_profile_picture", methods=["GET", "POST"])
 def edit_profile_picture(username):
     user = mongo.db.users.find_one({"username": username})
@@ -280,6 +312,7 @@ def edit_profile_picture(username):
     return render_template("profile.html")
 
 
+# deletes profile picture
 @app.route("/profile/<username>/delete_profile_image", methods=["GET", "POST"])
 def deleteProfileImage(username):
     # grabs users account
@@ -311,6 +344,7 @@ def deleteProfileImage(username):
         user=user)
 
 
+# edits personal details
 @app.route("/profile/<username>/edit_personal_details",
            methods=["GET", "POST"])
 def editPersonalDetails(username):
@@ -327,6 +361,7 @@ def editPersonalDetails(username):
 
     mongo.db.users.update_one(user, changes)
 
+    time.sleep(7)
     if hasProfileImage == "1":
         profileImage = user['profileImageName']
         return render_template(
@@ -345,13 +380,6 @@ def editPersonalDetails(username):
             user=user)
 
     return render_template(url_for('profile', username=username))
-
-
-# create recipe page
-@app.route("/createrecipe")
-def create_recipe():
-    return render_template(
-        "createrecipe.html")
 
 
 # create recipe form handling
@@ -427,30 +455,20 @@ def add_recipe():
         mongo=mongo)
 
 
-# function to retrieve file
-@app.route('/file/<filename>')
-def file(filename):
-    return mongo.send_file(filename)
-
-
-# recipes page
-@app.route("/recipes")
-def recipe():
-    recipeList = mongo.db.recipes.find()
-    recipes = mongo.db.recipes.find()
+@app.route("/recipes/search_recipes", methods=["GET", "POST"])
+def searchRecipes():
+    mongo.db.recipes.create_index(
+        [
+            ("recipeName", "text"),
+            ("recipeDescription", "text"),
+            ("author", "text")])
+    query = request.form.get("searchRecipes")
+    search = ({"$text": {"$search": query}})
+    results = mongo.db.recipes.find(search)
 
     return render_template(
-        "recipes.html",
-        recipeList=recipeList,
-        recipes=recipes,
-        mongo=mongo)
-
-
-# logs user out
-@app.route("/logout")
-def logout():
-    session.pop("user")
-    return render_template("index.html")
+        "searchedrecipes.html",
+        recipes=results)
 
 
 if __name__ == "__main__":
