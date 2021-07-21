@@ -10,11 +10,9 @@
 {% endif %}
 {% endwith %}
 
-<div class="jumbotron">
-    <div class="jumbotron-content">
         <div class="container text-center">
             <!-- Flashed messages -->
-            <h1 class="masthead-heading mb-0">Hi {{ username }}</h1>
+            <h3 class="masthead-heading mb-0">Hi {{ username }}</h3>
 
             <!-- Checks if user has profile pic -->
             {% if hasProfileImage == "1" %}
@@ -50,8 +48,6 @@
                 <button type="submit" class="btn btn-outline-primary uppercase mt-1">Upload New Profile Picture</button>
             </form>
         </div>
-    </div>
-</div>
 
 <!-- Personal Details -->
 <div class="mt-2">

@@ -57,7 +57,7 @@
                     {% set recipeName = recipe.recipeName %}
                     <form class="mt-4 text-center" action="{{ url_for('likeRecipe', recipeName=recipeName) }}" method="POST">
                         <p>
-                            <a href="#"><i class="far fa-heart"></i></a> <input type="checkbox"><span>Likes: {{recipe.likes }} </span>
+                            <a href="#">&#x1F44D;<input type="checkbox"></a> <span>Likes: {{recipe.likes }} </span>
                         </p>
                     </form>
                 </div>

@@ -2,62 +2,42 @@
 {% block content %}
 
 {% with messages = get_flashed_messages() %}
-    {% if messages %}
-        {% for message in messages %}
-            <p class="text-center"><strong>{{ message }}</strong></p>
-        {% endfor %}
-    {% endif %}
+{% if messages %}
+{% for message in messages %}
+<p class="text-center"><strong>{{ message }}</strong></p>
+{% endfor %}
+{% endif %}
 {% endwith %}
 
-<div class="jumbotron text-center" id="recipe-image">
-    <div class="jumbotron-content">
-        <div class="container">
-            <h1 class="masthead-heading mb-0">Food Space</h1>
+<div style="background-image: url('static/images/platter.jpg'); height: 60vh;">
+    <div class="mb-4">
+        <div class="col text-center text-white">
+            <h2 class="text-white p-4">Food Space</h2>
 
-            <hr class="width-80">
+            <p class="lead display-6 mt-4 fst-italic">
+                <b>
+                    {% if session.user %}
+                        Welcome back {{ username }}
+                    {% else %}
+                        Find, create and share recipes!
+                        <br>
+                        Join our growing list of users to make friends and find great food!
+                    {% endif %}
+                </b>
+            </p>
 
-            <h2 class="masthead-subheading mb-0">Find and share tasty recipes!</h2>
+            <p class="lead mt-2"></p>
 
-            {% if not session.user %}
-                <a class="btn btn-primary btn-xl rounded-pill mt-5" href="{{ url_for('signup')}}">Sign up</a>
-            {% endif %}
-            {% if session.user %}
-                <a class="btn btn-primary btn-xl rounded-pill mt-5" href="{{ url_for('profile', username=session.user)}}">View Profile</a>
-            {% endif %}
-        </div>
-    </div>
-</div>
-
-<h3 class="text-center">Top Recipes</h3>
-<hr class="width-80">
-
-<div class="container-fluid">
-    <div class="row text-center">
-        
-        <div class="col-sm-12 col-md-4 card">
-            <img src="static/images/carbonara.jpg" class="card-img-top" alt="carbonara">
-            <div class="card-body">
-                <h5>Spaghetti Carbonara</h5>
-
+            <div class="col">
+                {% if not session.user %}
+                <a class="btn btn-outline-white btn-xl rounded-pill mb-4" href="{{ url_for('signup')}}">Sign up</a>
+                {% endif %}
+                {% if session.user %}
+                <a class="btn btn-outline-white btn-xl rounded-pill mb-4"
+                    href="{{ url_for('profile', username=session.user)}}">Go to my profile</a>
+                {% endif %}
             </div>
         </div>
-        
-        <div class="col-sm-12 col-md-4 card">
-            <img src="static/images/paella-398968_640.jpg" class="card-img-top" alt="carbonara">
-            <div class="card-body">
-                <h5>Paella</h5>
-
-            </div>
-        </div>
-        
-        <div class="col-sm-12 col-md-4 card">
-            <img src="static/images/chicken-319233_640.jpg" class="card-img-top" alt="carbonara">
-            <div class="card-body">
-                <h5>Sesame Chicken</h5>
-
-            </div>
-        </div>
-    
     </div>
 </div>
 
