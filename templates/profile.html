@@ -12,10 +12,12 @@
 
 <div class="container-fluid text-center text-white profile-background">
     <!-- Flashed messages -->
-    <h3 class="masthead-heading mb-0">Hi {{ username }}!</h3>
+    {% set hasProfileImage = user.hasProfileImage %}
+    <h3 class="masthead-heading mb-0">Hi {{ user.username }}!</h3>
 
     <!-- Checks if user has profile pic -->
     {% if hasProfileImage == "1" %}
+    {% set profileImage = user.profileImageName %}
     <!-- Profile image -->
     <div class="profile-pic">
         <img class="img-fluid profile-image" src="{{ url_for('file', filename=profileImage) }}" alt="Profile Image">
@@ -33,6 +35,10 @@
     <div class="text-center">
         <!-- Placeholder profile pic -->
         <i class="fas fa-user-circle fa-10x"></i>
+    </div>
+    <div class="text-center mt-4">
+        <a id="show-edit-pic-form" class="btn btn-outline-white mb-4" onclick="showEditPicForm()">Upload profile
+            pic</a>
     </div>
     {% endif %}
 
@@ -77,25 +83,25 @@
 
                         <br>
 
-                        {{ user['username'] }}
+                        {{ user.username }}
 
                         <br>
 
                         <b>First Name:</b>
 
                         <br>
-                        {{ user['fname'] }}
+                        {{ user.fname }}
                     </p>
                 </div>
                 <div class="col personal-details">
                     <p class="text-center">
                         <b>Email Address:</b>
                         <br>
-                        {{ user['email'] }}
+                        {{ user.email }}
                         <br>
                         <b>Surname:</b>
                         <br>
-                        {{ user['lname'] }}
+                        {{ user.lname }}
                     </p>
                 </div>
             </div>
@@ -106,36 +112,36 @@
                 </div>
             </div>
 
+            <div class="hide" id="edit-personal-details-form">
+                <form action="{{ url_for('editPersonalDetails', username=username) }}" method="POST">
+                    <div class="row">
+                        <div class="col-2 offset-4">
+                            <label for="username">Username: </label>
+                            <input type="text" name="username" value="{{ user['username'] }}">
+                            <br>
+                            <label for="fname">First Name: </label>
+                            <input type="text" name="fname" value="{{ user['fname'] }}">
+                        </div>
+                        <div class="col-2 margin-left-1">
+                            <label for="email">Email Address: </label>
+                            <input type="email" name="email" value="{{ user['email'] }}">
+                            <br>
+                            <label for="lname">Surname: </label>
+                            <input type="text" name="lname" value="{{ user['lname'] }}">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col text-center">
+                            <br>
+                            <button class="btn btn-primary" type="submit">Save Changes</button>
+                            <br>
+                            <a class="btn btn-outline-primary" onclick="hideEditPersonalDetailsForm()">Cancel
+                                Changes</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
         </div>
-    </div>
-
-    <div class="hide" id="edit-personal-details-form">
-        <form action="{{ url_for('editPersonalDetails', username=username) }}" method="POST">
-            <div class="row">
-                <div class="col-2 offset-4">
-                    <label for="username">Username: </label>
-                    <input type="text" name="username" value="{{ user['username'] }}">
-                    <br>
-                    <label for="fname">First Name: </label>
-                    <input type="text" name="fname" value="{{ user['fname'] }}">
-                </div>
-                <div class="col-2 margin-left-1">
-                    <label for="email">Email Address: </label>
-                    <input type="email" name="email" value="{{ user['email'] }}">
-                    <br>
-                    <label for="lname">Surname: </label>
-                    <input type="text" name="lname" value="{{ user['lname'] }}">
-                </div>
-            </div>
-            <div class="row">
-                <div class="col text-center">
-                    <br>
-                    <button class="btn btn-primary" type="submit">Save Changes</button>
-                    <br>
-                    <a class="btn btn-outline-primary" onclick="hideEditPersonalDetailsForm()">Cancel Changes</a>
-                </div>
-            </div>
-        </form>
     </div>
 </div>
 
@@ -143,6 +149,7 @@
 <div id="my-recipes" class="my-recipes text-primary">
     <h2 class="text-center mb-4">My Recipes</h2>
 
+    {% set hasUploadedRecipe = user.hasUploadedRecipe %}
     <!-- Checks if user has uploaded recipe -->
     {% if hasUploadedRecipe == "1" %}
     <div class="container-fluid">
@@ -215,8 +222,12 @@
         <p>You have not made any posts yet. You can create a new post <a href="#">here</a></p>
     </div>
     {% else %}
-        hello
+    hello
     {% endif %}
+</div>
+
+<div class="col text-center">
+    <a class="btn btn-danger" href="{{ url_for('deleteProfile', username=user.username)}}">Delete Profile</a>
 </div>
 
 {% endblock %}

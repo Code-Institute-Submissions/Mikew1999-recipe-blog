@@ -1,5 +1,4 @@
 import os
-import time
 from flask import (
     Flask, render_template, flash,
     request, redirect, session, url_for)
@@ -70,82 +69,44 @@ def recipe():
         recipes=recipes)
 
 
+# shows full recipe
 @app.route("/recipes/<recipeName>")
 def fullrecipe(recipeName):
     recipe = mongo.db.recipes.find_one({"recipeName": recipeName})
 
     return render_template(
-                        "fullrecipe.html",
-                        recipeName=recipeName,
-                        recipe=recipe
-                        )
+        "fullrecipe.html",
+        recipeName=recipeName,
+        recipe=recipe
+    )
 
 
 # logs user out
 @app.route("/logout")
 def logout():
     session.pop("user")
-    return render_template("index.html")
+    return render_template("login.html")
 
 
 # profile page
 @app.route("/profile/<username>", methods=["GET"])
 def profile(username):
     # grab the session users username from db
-    username = mongo.db.users.find_one(
-        {"username": session["user"]})["username"]
     user = mongo.db.users.find_one({"username": username})
-    hasProfileImage = user['hasProfileImage']
-    hasUploadedRecipe = user['hasUploadedRecipe']
     allRecipes = mongo.db.recipes.find()
     userRecipes = mongo.db.recipes.find({"author": username})
-    hasPosted = user['hasPosted']
 
     if session["user"]:
-        if hasProfileImage == "1":
-            profileImage = user['profileImageName']
-            if hasUploadedRecipe == "1":
-                return render_template(
-                    "profile.html",
-                    username=username,
-                    hasProfileImage=hasProfileImage,
-                    profileImage=profileImage,
-                    allRecipes=allRecipes,
-                    userRecipes=userRecipes,
-                    hasPosted=hasPosted,
-                    hasUploadedRecipe=hasUploadedRecipe,
-                    user=user)
-            if hasUploadedRecipe == "0":
-                return render_template(
-                    "profile.html",
-                    username=username,
-                    hasProfileImage=hasProfileImage,
-                    hasUploadedRecipe=hasUploadedRecipe,
-                    hasPosted=hasPosted,
-                    profileImage=profileImage,
-                    user=user)
-        else:
-            if hasUploadedRecipe == "1":
-                return render_template(
-                    "profile.html",
-                    username=username,
-                    hasProfileImage=hasProfileImage,
-                    allRecipes=allRecipes,
-                    userRecipes=userRecipes,
-                    hasPosted=hasPosted,
-                    hasUploadedRecipe=hasUploadedRecipe,
-                    user=user)
-            if hasUploadedRecipe == "0":
-                return render_template(
-                    "profile.html",
-                    username=username,
-                    hasProfileImage=hasProfileImage,
-                    hasPosted=hasPosted,
-                    hasUploadedRecipe=hasUploadedRecipe,
-                    user=user)
+        return render_template(
+            "profile.html",
+            username=username,
+            allRecipes=allRecipes,
+            userRecipes=userRecipes,
+            user=user)
 
-    flash("Please login to view your profile")
-    return render_template("login.html", username=username, user=user)
+    else:
+        flash("Please login to view your profile")
+        return render_template("login.html")
 
 
 # sign up function
@@ -263,7 +224,6 @@ def login():
 @app.route("/profile/<username>/edit_profile_picture", methods=["GET", "POST"])
 def edit_profile_picture(username):
     user = mongo.db.users.find_one({"username": username})
-    hasUploadedRecipe = user['hasUploadedRecipe']
     if request.method == "POST":
         if 'newProfilePic' not in request.files:
             flash("No file selected! Please select a file to upload.")
@@ -300,13 +260,7 @@ def edit_profile_picture(username):
                 mongo.db.users.update_one(old, update)
                 # flashes message to user
                 flash("Profile image successfully changed!")
-                return render_template(
-                    "profile.html",
-                    profileImage=image,
-                    user=user,
-                    recipes=recipes,
-                    hasProfileImage=hasProfileImage,
-                    hasUploadedRecipe=hasUploadedRecipe)
+                return redirect(url_for('profile', username=username))
 
             # if user doesn't have a profile pic
             if hasProfileImage == "0":
@@ -321,17 +275,10 @@ def edit_profile_picture(username):
                     "hasProfileImage": value}}
                 # updates profile image name to new profile image name
                 mongo.db.users.update_one(user, update)
-                profileImage = securedImage
                 # flashes message to user
                 flash("Profile image successfully uploaded!")
 
-                return render_template(
-                    "profile.html",
-                    profileImage=profileImage,
-                    recipes=recipes,
-                    hasProfileImage="1",
-                    hasUploadedRecipe=hasUploadedRecipe,
-                    user=user)
+                return redirect(url_for('profile', username=username))
     return render_template("profile.html")
 
 
@@ -340,7 +287,6 @@ def edit_profile_picture(username):
 def deleteProfileImage(username):
     # grabs users account
     user = mongo.db.users.find_one({"username": username})
-    hasUploadedRecipe = user['hasUploadedRecipe']
     # finds profile image name
     profileImage = user['profileImageName']
     # finds profile image record
@@ -358,59 +304,40 @@ def deleteProfileImage(username):
 
     # updates hasProfileImage in users collection
     mongo.db.users.update_one(user, update)
-    return render_template(
-        "profile.html",
-        hasProfileImage="0",
-        hasUploadedRecipe=hasUploadedRecipe,
-        recipes=recipes,
-        profileImage=profileImage,
-        user=user)
+    return redirect(url_for('profile', username=username))
 
 
 # edits personal details
 @app.route("/profile/<username>/edit_personal_details",
            methods=["GET", "POST"])
 def editPersonalDetails(username):
-    allRecipes = mongo.db.recipes.find()
     user = mongo.db.users.find_one({"username": username})
-    hasProfileImage = user['hasProfileImage']
-    hasUploadedRecipe = user['hasUploadedRecipe']
+    newUsername = request.form.get("username").lower()
+    newEmail = request.form.get("email").lower()
+    newFirstName = request.form.get("fname").lower()
+    newLastName = request.form.get("lname").lower()
 
-    changes = {"$set": {
-        "username": request.form.get("username"),
-        "email": request.form.get("email"),
-        "fname": request.form.get("fname"),
-        "lname": request.form.get("lname")}}
+    update = {"$set": {
+        "username": newUsername,
+        "email": newEmail,
+        "fname": newFirstName,
+        "lname": newLastName}}
 
-    mongo.db.users.update_one(user, changes)
+    mongo.db.users.update_one(user, update)
 
-    time.sleep(7)
-    if hasProfileImage == "1":
-        profileImage = user['profileImageName']
-        return render_template(
-            "profile.html",
-            profileImage=profileImage,
-            hasUploadedRecipe=hasUploadedRecipe,
-            hasProfileImage=hasProfileImage,
-            allRecipes=allRecipes,
-            user=user)
-    else:
-        return render_template(
-            "profile.html",
-            hasUploadedRecipe=hasUploadedRecipe,
-            hasProfileImage=hasProfileImage,
-            allRecipes=allRecipes,
-            user=user)
+    session.pop("user")
+    session['user'] = request.form.get("username").lower()
 
-    return render_template(url_for('profile', username=username))
+    return redirect(url_for(
+                        'profile',
+                        username=request.form.
+                                    get("username").lower()))
 
 
 # create recipe form handling
 @app.route("/addrecipe", methods=["GET", "POST"])
 def add_recipe():
     if request.method == "POST":
-        # finds recipes from db
-        recipeList = mongo.db.recipes.find()
         # finds username
         user = session['user']
         # finds users record
@@ -419,9 +346,26 @@ def add_recipe():
         setHasUploadedRecipe = {"$set": {"hasUploadedRecipe": "1"}}
 
         if 'recipeImage' in request.files:
+            mongo.db.users.update_one(userRecord, setHasUploadedRecipe)
+
             recipeImage = request.files['recipeImage']
             securedImage = secure_filename(recipeImage.filename)
             mongo.save_file(securedImage, recipeImage)
+
+            ingredientValues = []
+            # finds keys in form items dictionary
+
+            formDict = request.form.get.values()
+
+            x = 0
+            # loops over keys in form items dictionary
+            # where ingredient is in the key name
+            for key, value in formDict:
+                if "recipe" in key:
+                    x += 1
+                    ingredientValues.append(value)
+
+            print(ingredientValues)
 
             recipeDetails = {
                 "recipeImageName": securedImage,
@@ -431,51 +375,56 @@ def add_recipe():
                 "cookingTime": request.form.get("cookingTime"),
                 "recipeDescription": request.form.get("recipeDescription"),
                 "likes": 1,
-                "author": user
+                "author": user,
+                "ingredients": ingredientValues,
+                "steps": {
+                    "step1": request.form.get("step1"),
+                    "step2": request.form.get("step2"),
+                    "step3": request.form.get("step3"),
+                    "step4": request.form.get("step4"),
+                    "step5": request.form.get("step5"),
+                    "step6": request.form.get("step6"),
+                    "step7": request.form.get("step7"),
+                    "step8": request.form.get("step8"),
+                    "step9": request.form.get("step9"),
+                    "step10": request.form.get("step10")
+                }
             }
 
-            mongo.db.users.update_one(userRecord, setHasUploadedRecipe)
+            mongo.db.recipes.insert_one(recipeDetails)
 
-            _id = mongo.db.recipes.insert_one(recipeDetails).inserted_id
+    return redirect(url_for('recipe'))
 
-            ingredients = {
-                "recipeName": request.form.get("recipeName"),
-                "recipeID": _id,
-                "ingredient1": request.form.get("ingredient1"),
-                "ingredient2": request.form.get("ingredient2"),
-                "ingredient3": request.form.get("ingredient3"),
-                "ingredient4": request.form.get("ingredient4"),
-                "ingredient5": request.form.get("ingredient5"),
-                "ingredient6": request.form.get("ingredient6"),
-                "ingredient7": request.form.get("ingredient7"),
-                "ingredient8": request.form.get("ingredient8"),
-                "ingredient9": request.form.get("ingredient9"),
-                "ingredient10": request.form.get("ingredient10")
-            }
 
-            mongo.db.ingredients.insert_one(ingredients)
+# deletes profile pic
+@app.route("/profile/<username>/delete_profile", methods=["GET", "POST"])
+def deleteProfile(username):
+    userRecord = mongo.db.users.find_one({"username": username})
+    # if user has profile picture
+    if userRecord['hasProfileImage'] == "1":
+        # deletes profile image data from fs.files in db
+        profileImage = userRecord['profileImageName']
+        securedImage = secure_filename(profileImage)
+        file = mongo.db.fs.files.find_one({"filename": securedImage})
+        mongo.db.fs.files.delete_one(file)
 
-            steps = {
-                "recipeName": request.form.get("recipeName"),
-                "recipeID": _id,
-                "step1": request.form.get("step1"),
-                "step2": request.form.get("step2"),
-                "step3": request.form.get("step3"),
-                "step4": request.form.get("step4"),
-                "step5": request.form.get("step5"),
-                "step6": request.form.get("step6"),
-                "step7": request.form.get("step7"),
-                "step8": request.form.get("step8"),
-                "step9": request.form.get("step9"),
-                "step10": request.form.get("step10")
-            }
+    userRecipes = []
+    # checks if user has uploaded recipes
+    if userRecord['hasUploadedRecipe'] == "1":
+        # finds list of user recipes
+        for recipe in mongo.db.recipes.find():
+            author = recipe['author']
+            if author == username:
+                userRecipes.append(recipe)
 
-            mongo.db.steps.insert_one(steps)
+        update = {"$set": {"author": " "}}
 
-    return render_template(
-        "recipes.html",
-        recipeList=recipeList,
-        recipes=recipes)
+        mongo.db.recipes.update_many({"author": username}, update)
+
+    session.pop("user")
+    mongo.db.users.delete_one(userRecord)
+    flash("Profile Successfully Deleted.")
+    return redirect(url_for('index'))
 
 
 @app.route("/search", methods=["GET", "POST"])

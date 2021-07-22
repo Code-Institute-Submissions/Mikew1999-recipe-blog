@@ -57,11 +57,9 @@
                         <a class="btn btn-outline-primary btn-lg" href="{{ url_for('fullrecipe', recipeName=recipeName)}}">Go to Recipe</a>
                     </div>
                     {% set recipeName = recipe.recipeName %}
-                    <form class="mt-4 text-center" action="#" method="POST">
-                        <p>
-                            <a class="likes" onclick="like(recipeName)">&#x1F44D;</a> <span>Likes: {{recipe.likes }} </span>
-                        </p>
-                    </form>
+                    <p class="mt-4 text-center">
+                        <a class="likes" href="" onclick="like(recipeName)" value='1'><i class="far fa-heart"></i></a> <span>Likes: {{recipe.likes }} </span>
+                    </p>
                 </div>
                 
             </div>

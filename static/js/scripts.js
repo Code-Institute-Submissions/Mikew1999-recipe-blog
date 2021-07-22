@@ -32,7 +32,7 @@ function showEditPicForm() {
     $('#edit-pic-form').css("display", "block");
 }
 
-// shows edit profile form to edit personal details
+// shows edit personal form to edit personal details
 function showEditPersonalDetailsForm() {
     // shows edit personal details form
     $('#edit-personal-details-form').css("display", "block");
@@ -42,8 +42,12 @@ function showEditPersonalDetailsForm() {
     $('.personal-details').css("display", "none");
 }
 
+// hides edit personal details form 
 function hideEditPersonalDetailsForm() {
+    // shows edit personal details button
     $('.edit-personal-details-button').css("display", "block");
+    // shows personal details
     $('.personal-details').css("display", "block");
+    // hides edit personal details form 
     $('#edit-personal-details-form').css("display", "none");
 }
