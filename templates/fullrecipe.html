@@ -32,7 +32,7 @@
 </div>
 
 <main>
-    <div class="container height-auto">
+    <div class="container-fluid">
         <div class="row">
             <div class="col">
                 <div class="card mb-2">
@@ -41,28 +41,39 @@
                         <img class="card-img-top" src="{{ url_for('file', filename=imageName) }}" alt="recipe Image">
                     </div>
                     <div class="card-body height-auto">
-                        <div class="width-50">
+                        <div class="width-80">
                             <!-- Recipe Details -->
-                            <div class="col">
-                                <p class="card-text">
-                                    <i class="fas fa-utensils"></i> Serves {{ recipe.serves }}
-                                    <br>
-                                    <i class="far fa-clock"></i> Preparation time: {{ recipe.prepTime }}
-                                    <br>
-                                    <i class="far fa-clock"></i> Cooking time: {{ recipe.cookingTime }}
-                                </p>
+                            <div class="row">
+                                <div class="col-4 offset-2">
+                                    <p class="card-text">
+                                        <i class="fas fa-utensils"></i> Serves {{ recipe.serves }}
+                                        <br>
+                                        <i class="far fa-clock"></i> Preparation time: {{ recipe.prepTime }}
+                                        <br>
+                                        <i class="far fa-clock"></i> Cooking time: {{ recipe.cookingTime }}
+                                    </p>
+                                </div>
+
+                                <div class="col-6">
+                                    <p class="card-text recipe-description">
+                                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Minima, laborum!
+                                        Repellat reiciendis ipsum, omnis, doloribus nobis numquam mollitia similique
+                                        magnam odio fugit impedit ut possimus eos, sunt minima eveniet ratione!
+                                    </p>
+                                </div>
                             </div>
 
-                            <p class="card-text recipe-description">
-                                {{ recipe.recipeDescription }}
-                            </p>
+                            <div class="row">
+                                <div class="col">
+                                    <form class="mt-4 text-center" action="#" method="POST">
+                                        <p>
+                                            <a class="likes" onclick="like(recipeName)">&#x1F44D;</a> <span>Likes:
+                                                {{recipe.likes }} </span>
+                                        </p>
+                                    </form>
+                                </div>
+                            </div>
 
-                            <form class="mt-4 text-center" action="#" method="POST">
-                                <p>
-                                    <a class="likes" onclick="like(recipeName)">&#x1F44D;</a> <span>Likes:
-                                        {{recipe.likes }} </span>
-                                </p>
-                            </form>
                         </div>
                     </div>
                 </div>
