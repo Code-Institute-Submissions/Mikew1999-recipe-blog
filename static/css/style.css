@@ -24,6 +24,11 @@
     color: #f1f1f1!important;
 }
 
+.nav-fill .nav-item a {
+    margin-right: 10px;
+    margin-left: 10px;
+}
+
 .btn-outline-white:hover {
     color: black;
     background-color: #fff;

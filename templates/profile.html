@@ -12,7 +12,7 @@
 
 <div class="container-fluid text-center text-white profile-background">
     <!-- Flashed messages -->
-    <h3 class="masthead-heading mb-0">Hi {{ username }}</h3>
+    <h3 class="masthead-heading mb-0">Hi {{ username }}!</h3>
 
     <!-- Checks if user has profile pic -->
     {% if hasProfileImage == "1" %}
@@ -47,8 +47,21 @@
     </form>
 </div>
 
+<!-- Secondary Navbar -->
+<ul class="nav nav-fill navbar-light grey-bg mt-2">
+    <li class="nav-item">
+        <a class="nav-link btn btn-outline-primary" href="#personal-details">Personal Details</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link btn btn-outline-primary" href="#my-recipes">My recipes</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link btn btn-outline-primary" href="#my-posts">My Posts</a>
+    </li>
+</ul>
+
 <!-- Personal Details -->
-<div class="mt-4 mb-4 container text-primary">
+<div id="personal-details" class="mt-4 mb-4 container text-primary">
 
     <div class="card">
         <div class="card-body">
@@ -67,7 +80,7 @@
                         {{ user['username'] }}
 
                         <br>
-                        
+
                         <b>First Name:</b>
 
                         <br>
@@ -89,7 +102,7 @@
             <div class="row">
                 <div class="col text-center edit-personal-details-button">
                     <!-- Edit profile button -->
-                    <a class="btn btn-outline-primary" onclick="showEditPersonalDetailsForm()">Edit Profile</a>
+                    <a class="btn btn-outline-primary" onclick="showEditPersonalDetailsForm()">Edit Personal Details</a>
                 </div>
             </div>
 
@@ -125,25 +138,10 @@
         </form>
     </div>
 </div>
-</div>
-</div>
-
-<!-- Secondary Navbar -->
-<ul class="nav nav-fill navbar-light grey-bg">
-    <li class="nav-item">
-        <a class="nav-link btn btn-outline-primary" href="#my-recipes" onclick="showMyRecipes()">My recipes</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link btn btn-outline-primary" href="#my-recipes" onclick="showMyRecipes()">My recipes</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link btn btn-outline-primary" href="#my-posts" onclick="showMyPosts()">My Posts</a>
-    </li>
-</ul>
 
 <!-- My recipes -->
 <div id="my-recipes" class="my-recipes text-primary">
-    <h2 class="text-center">My Recipes</h2>
+    <h2 class="text-center mb-4">My Recipes</h2>
 
     <!-- Checks if user has uploaded recipe -->
     {% if hasUploadedRecipe == "1" %}
@@ -154,11 +152,11 @@
 
             <!-- Check if number of recipes is divisible by 3 -->
             {% if numberOfRecipes %3 == 0 %}
-                {% set column = "col-md-12 col-lg-4" %}
+            {% set column = "col-md-12 col-lg-4" %}
             {% elif numberOfRecipes %2 == 0 %}
-                {% set column = "col-md-12 col-lg-6" %}
+            {% set column = "col-md-12 col-lg-6" %}
             {% else %}
-                {% set column = "col-6 offset-3" %}
+            {% set column = "col-6 offset-3" %}
             {% endif %}
 
             {% for recipe in userRecipes %}
@@ -193,7 +191,8 @@
                         </p>
 
                         <div class="text-center">
-                            <a class="btn btn-outline-primary btn-lg" href="{{ url_for('fullrecipe', recipeName=recipeName)}}">Go to Recipe</a>
+                            <a class="btn btn-outline-primary btn-lg"
+                                href="{{ url_for('fullrecipe', recipeName=recipeName)}}">Go to / edit Recipe</a>
                         </div>
                     </div>
                 </div>
@@ -209,12 +208,15 @@
     {% endif %}
 </div>
 
-<div class="my-posts hide" id="my-posts">
-    <h2 class="text-center">My Posts</h2>
+<div class="my-posts" id="my-posts">
+    <h2 class="text-center text-primary mt-4 mb-4">My Posts</h2>
     {% if hasPosted == "0" %}
     <div class="text-center">
         <p>You have not made any posts yet. You can create a new post <a href="#">here</a></p>
     </div>
+    {% else %}
+        hello
     {% endif %}
 </div>
+
 {% endblock %}

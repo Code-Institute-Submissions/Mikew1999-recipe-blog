@@ -47,22 +47,3 @@ function hideEditPersonalDetailsForm() {
     $('.personal-details').css("display", "block");
     $('#edit-personal-details-form').css("display", "none");
 }
-
-/* Shows My recipes section on profile page and hides
-    My Posts section */
-function showMyRecipes() {
-    if ($('#my-posts').css("display") == "block") {
-        $('#my-posts').css("display", "none");
-        $('#my-recipes').css("display", "block");
-    }
-}
-
-/* Shows My Posts section on profile page and hides 
-    My recipes section */
-function showMyPosts() {
-    // checks if my recipes section is showing
-    if ($('#my-recipes').css("display") == "block") {
-        $('#my-recipes').css("display", "none");
-        $('#my-posts').css("display", "block");
-    }
-}
