@@ -70,6 +70,17 @@ def recipe():
         recipes=recipes)
 
 
+@app.route("/recipes/<recipeName>")
+def fullrecipe(recipeName):
+    recipe = mongo.db.recipes.find_one({"recipeName": recipeName})
+
+    return render_template(
+                        "fullrecipe.html",
+                        recipeName=recipeName,
+                        recipe=recipe
+                        )
+
+
 # logs user out
 @app.route("/logout")
 def logout():
@@ -467,6 +478,48 @@ def add_recipe():
         recipes=recipes)
 
 
+@app.route("/search", methods=["GET", "POST"])
+def search():
+    option = request.form.get("select")
+    if option == "recipes":
+        # creates search index
+        mongo.db.recipes.create_index(
+            [
+                ("recipeName", "text"),
+                ("recipeDescription", "text"),
+                ("author", "text")])
+
+        # gets text input from search form
+        query = request.form.get("search")
+
+        # performs search
+        search = ({"$text": {"$search": query}})
+        # finds results
+        results = mongo.db.recipes.find(search)
+
+        return render_template(
+            "searchedrecipes.html",
+            results=results)
+
+    else:
+        mongo.db.users.create_index(
+            [
+                ("username", "text"),
+                ("fname", "text"),
+                ("lname", "text")])
+
+        query = request.form.get("search")
+        searchUser = ({"$text": {"$search": query}})
+
+        results = mongo.db.users.find(searchUser)
+
+        return render_template(
+            "searcheduser.html",
+            results=results)
+
+    return url_for('index')
+
+
 # Searches recipes
 @app.route("/recipes/search_recipes", methods=["GET", "POST"])
 def searchRecipes():
@@ -478,7 +531,7 @@ def searchRecipes():
             ("author", "text")])
 
     # gets text input from search form
-    query = request.form.get("searchRecipes")
+    query = request.form.get("search")
     # performs search
     search = ({"$text": {"$search": query}})
     # finds results
@@ -487,11 +540,6 @@ def searchRecipes():
     return render_template(
         "searchedrecipes.html",
         results=results)
-
-
-@app.route("/recipes/<recipeName>/like_recipe")
-def likeRecipe(recipeName):
-    print(recipeName)
 
 
 if __name__ == "__main__":

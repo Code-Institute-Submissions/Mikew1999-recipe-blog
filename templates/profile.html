@@ -10,126 +10,148 @@
 {% endif %}
 {% endwith %}
 
-        <div class="container text-center">
-            <!-- Flashed messages -->
-            <h3 class="masthead-heading mb-0">Hi {{ username }}</h3>
+<div class="container-fluid text-center text-white profile-background">
+    <!-- Flashed messages -->
+    <h3 class="masthead-heading mb-0">Hi {{ username }}</h3>
 
-            <!-- Checks if user has profile pic -->
-            {% if hasProfileImage == "1" %}
-            <!-- Profile image -->
-            <div class="profile-pic">
-                <img class="img-fluid profile-image" src="{{ url_for('file', filename=profileImage) }}"
-                    alt="Profile Image">
-            </div>
+    <!-- Checks if user has profile pic -->
+    {% if hasProfileImage == "1" %}
+    <!-- Profile image -->
+    <div class="profile-pic">
+        <img class="img-fluid profile-image" src="{{ url_for('file', filename=profileImage) }}" alt="Profile Image">
+    </div>
 
-            <!-- Deletes profile pic -->
-            <form class="mb-4" action="{{ url_for('deleteProfileImage', username=username) }}" method="POST">
-                <button class="btn btn-outline-primary" type="submit">Delete profile picture</button>
-            </form>
+    <!-- Deletes profile pic -->
+    <form class="mt-4" action="{{ url_for('deleteProfileImage', username=username) }}" method="POST">
+        <button class="btn btn-outline-white mb-4" type="submit">Delete profile picture</button>
+        <a id="show-edit-pic-form" class="btn btn-outline-white mb-4" onclick="showEditPicForm()">Edit / Upload profile
+            pic</a>
+    </form>
 
-            <!-- if user doesn't have profile pic -->
-            {% else %}
-            <div class="text-center">
-                <!-- Placeholder profile pic -->
-                <i class="fas fa-user-circle fa-10x"></i>
-            </div>
-            {% endif %}
+    <!-- if user doesn't have profile pic -->
+    {% else %}
+    <div class="text-center">
+        <!-- Placeholder profile pic -->
+        <i class="fas fa-user-circle fa-10x"></i>
+    </div>
+    {% endif %}
 
-            <!-- Edit profile image form -->
-            <a id="show-edit-pic-form" class="btn btn-outline-primary" onclick="showEditPicForm()">Edit / Upload profile
-                pic</a>
-            <form style="display: none;" id="edit-pic-form"
-                action="{{ url_for('edit_profile_picture', username=username) }}" method="POST"
-                enctype="multipart/form-data">
-                <!-- file input -->
-                <br>
-                <input name="newProfilePic" accept="image/jpg" type="file" required>
-                <br>
-                <button type="submit" class="btn btn-outline-primary uppercase mt-1">Upload New Profile Picture</button>
-            </form>
-        </div>
+    <!-- Edit profile image form -->
+    <form style="display: none;" id="edit-pic-form" action="{{ url_for('edit_profile_picture', username=username) }}"
+        method="POST" enctype="multipart/form-data">
+        <!-- file input -->
+        <br>
+        <input name="newProfilePic" accept="image/jpg" type="file" required>
+        <br>
+        <button type="submit" class="btn btn-outline-white uppercase mt-1 mb-4">Upload New Profile Picture</button>
+    </form>
+</div>
 
 <!-- Personal Details -->
-<div class="mt-2">
+<div class="mt-4 mb-4 container text-primary">
 
-    <h2 class="masthead-heading text-center">Personal Details</h2>
+    <div class="card">
+        <div class="card-body">
 
-    <div class="container">
-        <div class="row">
-            <div class="col-2 offset-4 personal-details">
-                <p>
-                    <b>Username:</b> {{ user['username'] }}
-                    <br>
-                    <b>First Name:</b> {{ user['fname'] }}
-                </p>
-            </div>
-            <div class="col-2 personal-details">
-                <p>
-                    <b>Email Address:</b> {{ user['email'] }}
-                    <br>
-                    <b>Surname:</b> {{ user['lname'] }}
-                </p>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col text-center edit-personal-details-button">
-                <!-- Edit profile button -->
-                <a class="btn btn-outline-primary" onclick="showEditPersonalDetailsForm()">Edit Profile</a>
-            </div>
-        </div>
-        <div class="hide" id="edit-personal-details-form">
-            <form action="{{ url_for('editPersonalDetails', username=username) }}" method="POST">
-                <div class="row">
-                    <div class="col-2 offset-4">
-                        <label for="username">Username: </label>
-                        <input type="text" name="username" value="{{ user['username'] }}">
+            <h2 class="masthead-heading text-center text-primary mb-4">Personal Details</h2>
+
+            <div class="row">
+
+                <div class="col personal-details">
+
+                    <p class="text-center">
+                        <b>Username:</b>
+
                         <br>
-                        <label for="fname">First Name: </label>
-                        <input type="text" name="fname" value="{{ user['fname'] }}">
-                    </div>
-                    <div class="col-2 margin-left-1">
-                        <label for="email">Email Address: </label>
-                        <input type="email" name="email" value="{{ user['email'] }}">
+
+                        {{ user['username'] }}
+
                         <br>
-                        <label for="lname">Surname: </label>
-                        <input type="text" name="lname" value="{{ user['lname'] }}">
-                    </div>
+                        
+                        <b>First Name:</b>
+
+                        <br>
+                        {{ user['fname'] }}
+                    </p>
                 </div>
-                <div class="row">
-                    <div class="col text-center">
+                <div class="col personal-details">
+                    <p class="text-center">
+                        <b>Email Address:</b>
                         <br>
-                        <button class="btn btn-primary" type="submit">Save Changes</button>
+                        {{ user['email'] }}
                         <br>
-                        <a class="btn btn-outline-primary" onclick="hideEditPersonalDetailsForm()">Cancel Changes</a>
-                    </div>
+                        <b>Surname:</b>
+                        <br>
+                        {{ user['lname'] }}
+                    </p>
                 </div>
-            </form>
+            </div>
+            <div class="row">
+                <div class="col text-center edit-personal-details-button">
+                    <!-- Edit profile button -->
+                    <a class="btn btn-outline-primary" onclick="showEditPersonalDetailsForm()">Edit Profile</a>
+                </div>
+            </div>
+
         </div>
     </div>
+
+    <div class="hide" id="edit-personal-details-form">
+        <form action="{{ url_for('editPersonalDetails', username=username) }}" method="POST">
+            <div class="row">
+                <div class="col-2 offset-4">
+                    <label for="username">Username: </label>
+                    <input type="text" name="username" value="{{ user['username'] }}">
+                    <br>
+                    <label for="fname">First Name: </label>
+                    <input type="text" name="fname" value="{{ user['fname'] }}">
+                </div>
+                <div class="col-2 margin-left-1">
+                    <label for="email">Email Address: </label>
+                    <input type="email" name="email" value="{{ user['email'] }}">
+                    <br>
+                    <label for="lname">Surname: </label>
+                    <input type="text" name="lname" value="{{ user['lname'] }}">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col text-center">
+                    <br>
+                    <button class="btn btn-primary" type="submit">Save Changes</button>
+                    <br>
+                    <a class="btn btn-outline-primary" onclick="hideEditPersonalDetailsForm()">Cancel Changes</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
 </div>
 </div>
 
 <!-- Secondary Navbar -->
 <ul class="nav nav-fill navbar-light grey-bg">
     <li class="nav-item">
-        <a class="nav-link" href="#my-recipes" onclick="showMyRecipes()">My recipes</a>
+        <a class="nav-link btn btn-outline-primary" href="#my-recipes" onclick="showMyRecipes()">My recipes</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link" href="#my-posts" onclick="showMyPosts()">My Posts</a>
+        <a class="nav-link btn btn-outline-primary" href="#my-recipes" onclick="showMyRecipes()">My recipes</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link btn btn-outline-primary" href="#my-posts" onclick="showMyPosts()">My Posts</a>
     </li>
 </ul>
 
 <!-- My recipes -->
-<div id="my-recipes" class="my-recipes">
+<div id="my-recipes" class="my-recipes text-primary">
     <h2 class="text-center">My Recipes</h2>
 
     <!-- Checks if user has uploaded recipe -->
     {% if hasUploadedRecipe == "1" %}
-        <div class="container-fluid">
-            <div class="row">
+    <div class="container-fluid">
+        <div class="row">
             <!-- Counts number of recipes uploaded by this user -->
             {% set numberOfRecipes = userRecipes.count() %}
-            
+
             <!-- Check if number of recipes is divisible by 3 -->
             {% if numberOfRecipes %3 == 0 %}
                 {% set column = "col-md-12 col-lg-4" %}
@@ -140,58 +162,59 @@
             {% endif %}
 
             {% for recipe in userRecipes %}
-                <div class="{{ column }}">
-                    <div class="card mb-2">
-                        {% set imageName = recipe.recipeImageName %}
-                        <img class="img-fluid" src="{{ url_for('file', filename=imageName) }}" alt="recipe Image">
+            <div class="{{ column }}">
+                <div class="card mb-2">
+                    {% set imageName = recipe.recipeImageName %}
+                    {% set recipeName = recipe.recipeName %}
+                    <img class="img-fluid" src="{{ url_for('file', filename=imageName) }}" alt="recipe Image">
 
-                        <div class="card-body">
-                            <!-- Recipe Name -->
-                            <h4 class="card-title  text-center">{{ recipe.recipeName }}</h4>
+                    <div class="card-body">
+                        <!-- Recipe Name -->
+                        <h4 class="card-title  text-center">{{ recipeName }}</h4>
 
-                            <!-- Recipe Details -->
+                        <!-- Recipe Details -->
 
-                            <p class="card-text">
-                                <i class="fas fa-utensils"></i> Serves {{ recipe.serves }}
-                                <br>
-                                <i class="far fa-clock"></i> Preparation time: {{ recipe.prepTime }}
-                                <br>
-                                <i class="far fa-clock"></i> Cooking time: {{ recipe.cookingTime }}
-                            </p>
+                        <p class="card-text">
+                            <i class="fas fa-utensils"></i> Serves {{ recipe.serves }}
+                            <br>
+                            <i class="far fa-clock"></i> Preparation time: {{ recipe.prepTime }}
+                            <br>
+                            <i class="far fa-clock"></i> Cooking time: {{ recipe.cookingTime }}
+                        </p>
 
-                            <h5 class="text-center">Recipe Description</h5>
+                        <h5 class="text-center">Recipe Description</h5>
 
-                            <p class="card-text recipe-description">
-                                {{ recipe.recipeDescription }}
-                            </p>
+                        <p class="card-text recipe-description">
+                            {{ recipe.recipeDescription }}
+                        </p>
 
-                            <p>
-                                {{ recipe.author }}
-                            </p>
+                        <p>
+                            <span style="color: black;">Author:</span> {{ recipe.author }}
+                        </p>
 
-                            <div class="text-center">
-                                <a class="btn btn-outline-primary btn-lg">Go to Recipe</a>
-                            </div>
+                        <div class="text-center">
+                            <a class="btn btn-outline-primary btn-lg" href="{{ url_for('fullrecipe', recipeName=recipeName)}}">Go to Recipe</a>
                         </div>
                     </div>
                 </div>
-            {% endfor %}
             </div>
+            {% endfor %}
         </div>
+    </div>
     {% else %}
-        <div class="text-center">
-            <p>You have not uploaded any recipes yet. You can upload a new recipe <a
-                    href="{{ url_for('create_recipe') }}">here</a></p>
-        </div>
+    <div class="text-center">
+        <p>You have not uploaded any recipes yet. You can upload a new recipe <a
+                href="{{ url_for('create_recipe') }}">here</a></p>
+    </div>
     {% endif %}
 </div>
 
 <div class="my-posts hide" id="my-posts">
     <h2 class="text-center">My Posts</h2>
     {% if hasPosted == "0" %}
-        <div class="text-center">
-            <p>You have not made any posts yet. You can create a new post <a href="#">here</a></p>
-        </div>
+    <div class="text-center">
+        <p>You have not made any posts yet. You can create a new post <a href="#">here</a></p>
+    </div>
     {% endif %}
 </div>
 {% endblock %}

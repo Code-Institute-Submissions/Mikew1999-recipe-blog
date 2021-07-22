@@ -17,11 +17,11 @@
             <p class="lead display-6 mt-4 fst-italic">
                 <b>
                     {% if session.user %}
-                        Welcome back {{ username }}
+                    Welcome back {{ username }}
                     {% else %}
-                        Find, create and share recipes!
-                        <br>
-                        Join our growing list of users to make friends and find great food!
+                    Find, create and share recipes!
+                    <br>
+                    Join our growing list of users to make friends and find great food!
                     {% endif %}
                 </b>
             </p>
@@ -40,5 +40,27 @@
         </div>
     </div>
 </div>
+
+<!-- Recipes / users search form -->
+<div class="text-center mt-2 mb-2">
+    <form action="{{ url_for('search') }}" method="POST" style="line-height: 1.5;">
+
+        <h4>Find new friends or recipes</h4>
+
+        <label class="mb-2" for="search">Search for:</label>
+
+        <select name="select">
+            <option value="recipes">Recipes</option>
+            <option value="users">Users</option>
+        </select>
+
+        <input type="text" name="search" required>
+
+        <button type="submit" class="btn search-button"><i class="fas fa-search text-primary"></i></button>
+
+    </form>
+</div>
+
+
 
 {% endblock %}

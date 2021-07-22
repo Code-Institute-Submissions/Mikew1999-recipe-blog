@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block content %}
+    {% if results.count() > 1 %}
+        More than 1
+    {% else %}
+        1
+    {% endif %}
+{% endblock %}

@@ -2,17 +2,19 @@
 {% block content %}
 
 {% with messages = get_flashed_messages() %}
-    {% if messages %}
-        {% for message in messages %}
-            <p class="text-center"><strong>{{ message }}</strong></p>
-        {% endfor %}
-    {% endif %}
+{% if messages %}
+{% for message in messages %}
+<p class="text-center"><strong>{{ message }}</strong></p>
+{% endfor %}
+{% endif %}
 {% endwith %}
 
 {% set numberOfRecipes = results.count() %}
 
+<!-- Main heading -->
 <h3 class="text-center uppercase text-primary recipe-title"><strong>Recipes</strong></h3>
 
+<!-- Search recipes form -->
 <div class="text-center mb-2">
     <form action="{{ url_for('searchRecipes') }}" method="POST">
         <label for="searchRecipes">Search recipes:</label>
@@ -21,60 +23,88 @@
     </form>
 </div>
 
-<span></span>
+<!-- Number of results found -->
+<div class="text-center mb-2"> {{ numberOfRecipes }} results found </div>
 
+<!-- links back to various pages -->
+<div class="text-center mb-4">
+    <a class="btn btn-outline-primary" href="{{ url_for('recipe') }} ">
+        Back to recipes</a>
+    <a class="btn btn-outline-primary" href="{{ url_for('index') }}">Back Home</a>
+    <a class="btn btn-outline-primary" href="{{ url_for('profile', username=session.user) }}">Back to Profile</a>
+</div>
+
+<!-- If results found -->
 {% if results %}
-    <div class="container">
-        <div class="row">
-            {% for recipe in results %}
-                <div class="col-sm-12 col-lg-6 col-xl-4">
-                
-                    <div class="card mb-2">
-                        {% set imageName = recipe.recipeImageName %}
-                        <img class="card-img-top" src="{{ url_for('file', filename=imageName) }}" alt="recipe Image">
-                        <div class="card-body">
-                            <!-- Recipe Name -->
-                            <h4 class="card-title">{{ recipe.recipeName }}</h4>
-        
-                            <!-- Recipe Details -->
-        
-                            <p class="card-text">
-                                <i class="fas fa-utensils"></i> Serves {{ recipe.serves }}
-                                <br>
-                                <i class="far fa-clock"></i> Preparation time: {{ recipe.prepTime }}
-                                <br>
-                                <i class="far fa-clock"></i> Cooking time: {{ recipe.cookingTime }}
-                            </p>
-        
-                            <h5 class="">Recipe Description</h5>
-        
-                            <p class="card-text recipe-description">
-                                {{ recipe.recipeDescription }}
-                            </p>
-        
-                            <div class="text-center">
-                                <a class="btn btn-outline-primary btn-lg">Go to Recipe</a>
-                            </div>
-                            {% set recipeName = recipe.recipeName %}
-                            <form action="{{ url_for('likeRecipe', recipeName=recipeName) }}" method="POST">
-                                <p>
-                                    <a href="#"><i class="far fa-heart"></i></a> <input type="checkbox"><span>Likes: {{recipe.likes }} </span>
-                                </p>
-                            </form>
-                        </div>
+<!-- Container showing cards for each recipe found -->
+<div class="container">
+    <div class="row">
+        {% for recipe in results %}
+        <div class="col-sm-12 col-lg-6 col-xl-4">
+
+            <div class="card mb-2">
+                {% set imageName = recipe.recipeImageName %}
+
+                <!-- Recipe image -->
+                <img class="card-img-top" src="{{ url_for('file', filename=imageName) }}" alt="recipe Image">
+                <div class="card-body">
+
+                    <!-- Recipe Name -->
+                    <h4 class="card-title">{{ recipe.recipeName }}</h4>
+
+                    <!-- Recipe Details -->
+                    <p class="card-text">
+                        <i class="fas fa-utensils"></i> Serves {{ recipe.serves }}
+                        <br>
+                        <i class="far fa-clock"></i> Preparation time: {{ recipe.prepTime }}
+                        <br>
+                        <i class="far fa-clock"></i> Cooking time: {{ recipe.cookingTime }}
+                    </p>
+
+                    <!-- Recipe Description -->
+                    <h5 class="">Recipe Description</h5>
+
+                    <p class="card-text recipe-description">
+                        {{ recipe.recipeDescription }}
+                    </p>
+
+                    <!-- Button linking to full recipe -->
+                    <div class="text-center">
+                        <a class="btn btn-outline-primary btn-lg">Go to Recipe</a>
                     </div>
+
+                    <!-- Like button -->
+                    {% set recipeName = recipe.recipeName %}
+                    <form action="#" method="POST">
+                        <p>
+                            <a href="#"><i class="far fa-heart"></i></a> <input type="checkbox"><span>Likes:
+                                {{recipe.likes }} </span>
+                        </p>
+                    </form>
                 </div>
-            {% endfor %}
-        </div>
-    </div>
-{% else %}
-    <div class="container">
-        <div class="row">
-            <div class="col">
-                <h4 class="text-center text-primary">No Results Found</h4>
             </div>
         </div>
+        {% endfor %}
     </div>
+</div>
+{% else %}
+<!-- If no results found -->
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <h4 class="text-center text-primary">No Results Found</h4>
+        </div>
+
+        <!-- links back to various pages -->
+        <div class="text-center mb-4">
+            <a class="btn btn-outline-primary" href="{{ url_for('recipe') }} ">
+                Back to recipes</a>
+            <a class="btn btn-outline-primary" href="{{ url_for('index') }}">Back Home</a>
+            <a class="btn btn-outline-primary" href="{{ url_for('profile', username=session.user) }}">Back to
+                Profile</a>
+        </div>
+    </div>
+</div>
 {% endif %}
 
 {% endblock %}
