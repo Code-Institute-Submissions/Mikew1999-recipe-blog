@@ -81,6 +81,21 @@ def fullrecipe(recipeName):
     )
 
 
+@app.route("/recipes/<recipeName>/delete_recipe", methods=["GET", "POST"])
+def deleteRecipe(recipeName, username):
+    if session.user:
+        recipe = mongo.db.recipes.find({"recipeName": recipeName})
+        if len(recipe) > 1:
+            for x in recipe:
+                if x['author'] == session.user:
+                    usersRecipe = x
+                    profileImage = x['profileImageName']
+                    mongo.db.fs.files.delete_one({"filename": profileImage})
+                    mongo.db.recipes.delete_one(usersRecipe)
+                    return redirect(url_for('recipes'))
+
+
+
 # logs user out
 @app.route("/logout")
 def logout():

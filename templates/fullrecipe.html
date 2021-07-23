@@ -20,7 +20,9 @@
     <a class="btn btn-outline-primary" href="{{ url_for('recipe') }} ">
         Back to recipes</a>
     <a class="btn btn-outline-primary" href="{{ url_for('index') }}">Back Home</a>
-    <a class="btn btn-outline-primary" href="{{ url_for('profile', username=session.user) }}">Back to Profile</a>
+    {% if session.user %}
+        <a class="btn btn-outline-primary" href="{{ url_for('profile', username=session.user) }}">Back to Profile</a>
+    {% endif %}
 </div>
 
 <main>
@@ -90,6 +92,14 @@
                                                 {{recipe.likes }} </span>
                                         </p>
                                     </form>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col text-center">
+                                    {% if session.user %}
+                                        <a class="btn btn-danger" href="{{ url_for('deleteRecipe', recipeName=recipeName, username=username) }}">Delete Recipe</a>
+                                    {% endif %}
                                 </div>
                             </div>
 
