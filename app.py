@@ -352,20 +352,34 @@ def add_recipe():
             securedImage = secure_filename(recipeImage.filename)
             mongo.save_file(securedImage, recipeImage)
 
-            ingredientValues = []
             # finds keys in form items dictionary
+            formKeys = request.form.keys()
 
-            formDict = request.form.get.values()
+            # containers for keys and values
 
-            x = 0
+            ingredientKeys = []
+            # contains ingredients inputted by user
+            ingredientValues = []
+
+            stepKeys = []
+            # contains steps inputted by user
+            stepValues = []
+
             # loops over keys in form items dictionary
             # where ingredient is in the key name
-            for key, value in formDict:
-                if "recipe" in key:
-                    x += 1
-                    ingredientValues.append(value)
+            for key in formKeys:
+                if "ingredient" in key:
+                    ingredientKeys.append(key)
+                if "step" in key:
+                    stepKeys.append(key)
 
-            print(ingredientValues)
+            for ingredient in ingredientKeys:
+                a = request.form.get(f'{ingredient}')
+                ingredientValues.append(str(a))
+
+            for step in stepKeys:
+                a = request.form.get(f'{step}')
+                stepValues.append(str(a))
 
             recipeDetails = {
                 "recipeImageName": securedImage,
@@ -377,18 +391,7 @@ def add_recipe():
                 "likes": 1,
                 "author": user,
                 "ingredients": ingredientValues,
-                "steps": {
-                    "step1": request.form.get("step1"),
-                    "step2": request.form.get("step2"),
-                    "step3": request.form.get("step3"),
-                    "step4": request.form.get("step4"),
-                    "step5": request.form.get("step5"),
-                    "step6": request.form.get("step6"),
-                    "step7": request.form.get("step7"),
-                    "step8": request.form.get("step8"),
-                    "step9": request.form.get("step9"),
-                    "step10": request.form.get("step10")
-                }
+                "steps": stepValues
             }
 
             mongo.db.recipes.insert_one(recipeDetails)
@@ -448,7 +451,8 @@ def search():
 
         return render_template(
             "searchedrecipes.html",
-            results=results)
+            results=results,
+            query=query)
 
     else:
         mongo.db.users.create_index(
@@ -464,7 +468,8 @@ def search():
 
         return render_template(
             "searcheduser.html",
-            results=results)
+            results=results,
+            query=query)
 
     return url_for('index')
 

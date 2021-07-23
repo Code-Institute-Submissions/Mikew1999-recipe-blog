@@ -1,14 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
 
-{% with messages = get_flashed_messages() %}
-{% if messages %}
-{% for message in messages %}
-<p class="text-center"><strong>{{ message }}</strong></p>
-{% endfor %}
-{% endif %}
-{% endwith %}
-
 <div style="background-image: url('static/images/platter.jpg'); height: 60vh;">
     <div class="mb-4">
         <div class="col text-center text-white">

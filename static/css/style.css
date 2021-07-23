@@ -142,6 +142,10 @@ label {
     color: #007bff;
 }
 
+.ingredient-list {
+    list-style-type: circle;
+}
+
 .card-img-top {
     width: 100%!important;
 }

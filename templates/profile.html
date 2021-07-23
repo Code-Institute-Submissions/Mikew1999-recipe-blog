@@ -2,14 +2,6 @@
 
 {% block content %}
 
-{% with messages = get_flashed_messages() %}
-{% if messages %}
-{% for message in messages %}
-<p class="text-center"><strong>{{ message }}</strong></p>
-{% endfor %}
-{% endif %}
-{% endwith %}
-
 <div class="container-fluid text-center text-white profile-background">
     <!-- Flashed messages -->
     {% set hasProfileImage = user.hasProfileImage %}

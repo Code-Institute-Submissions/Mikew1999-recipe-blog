@@ -3,13 +3,6 @@
 
 <!--Sign up form with background image-->
 <main class="form-background">
-    {% with messages = get_flashed_messages() %}  
-         {% if messages %}  
-            {% for message in messages %}  
-                <p class="text-center"><strong>{{ message.upper() }}</strong></p>
-            {% endfor %}  
-        {% endif %}  
-    {% endwith %}
 
     <h3 class="text-center uppercase text-primary login-title">Login</h3>
 

@@ -1,14 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
 
-{% with messages = get_flashed_messages() %}
-{% if messages %}
-{% for message in messages %}
-<p class="text-center"><strong>{{ message }}</strong></p>
-{% endfor %}
-{% endif %}
-{% endwith %}
-
 {% set recipeName = recipe.recipeName %}
 
 <!-- Recipe Name -->
@@ -45,6 +37,7 @@
                             <!-- Recipe Details -->
                             <div class="row">
                                 <div class="col-4 offset-2">
+                                    <h4 class="text-center text-primary">Recipe Details</h4>
                                     <p class="card-text">
                                         <i class="fas fa-utensils"></i> Serves {{ recipe.serves }}
                                         <br>
@@ -55,11 +48,37 @@
                                 </div>
 
                                 <div class="col-6">
+                                    <h4 class="text-center text-primary">Recipe Description</h4>
                                     <p class="card-text recipe-description">
                                         Lorem ipsum dolor sit amet consectetur adipisicing elit. Minima, laborum!
                                         Repellat reiciendis ipsum, omnis, doloribus nobis numquam mollitia similique
                                         magnam odio fugit impedit ut possimus eos, sunt minima eveniet ratione!
                                     </p>
+                                </div>
+                            </div>
+
+                            <div class="row mt-4">
+                                <div class="col-sm-12 col-md-6 col-lg-4 text-center">
+                                    <h4 class="text-center text-primary mb-4">Ingredients</h4>
+                                    {% set ingredients = recipe.ingredients %}
+                                    <ul class="ingredient-list">
+                                    {% for ingredient in ingredients %}
+                                        <li>
+                                            <p>{{ ingredient }}</p>
+                                        </li>        
+                                    {% endfor %}
+                                    </ul>
+                                </div>
+                                <div class="col-sm-12 col-md-6 col-lg-8 text-center">
+                                    <h4 class="text-primary mb-4">Method</h4>
+                                    {% set method = recipe.steps %}
+                                    <ol>
+                                        {% for step in method %}
+                                            <li>
+                                                <p>{{ step }}</p>
+                                            </li>
+                                        {% endfor %}
+                                    </ol>
                                 </div>
                             </div>
 

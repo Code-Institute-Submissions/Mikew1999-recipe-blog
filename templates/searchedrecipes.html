@@ -1,14 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
 
-{% with messages = get_flashed_messages() %}
-{% if messages %}
-{% for message in messages %}
-<p class="text-center"><strong>{{ message }}</strong></p>
-{% endfor %}
-{% endif %}
-{% endwith %}
-
 {% set numberOfRecipes = results.count() %}
 
 <!-- Main heading -->
@@ -17,8 +9,8 @@
 <!-- Search recipes form -->
 <div class="text-center mb-2">
     <form action="{{ url_for('searchRecipes') }}" method="POST">
-        <label for="searchRecipes">Search recipes:</label>
-        <input type="text" name="searchRecipes" placeholder="Spaghetti Bolognaise" required>
+        <label for="search">Search recipes:</label>
+        <input type="text" name="search" placeholder="Spaghetti Bolognaise" required>
         <button type="submit" class="btn btn-sm btn-primary">Search</button>
     </form>
 </div>
@@ -70,7 +62,7 @@
 
                     <!-- Button linking to full recipe -->
                     <div class="text-center">
-                        <a class="btn btn-outline-primary btn-lg">Go to Recipe</a>
+                        <a href="{{ url_for('fullrecipe', recipeName=recipe.recipeName) }}" class="btn btn-outline-primary btn-lg">Go to Recipe</a>
                     </div>
 
                     <!-- Like button -->
