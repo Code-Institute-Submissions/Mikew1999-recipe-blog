@@ -82,7 +82,7 @@ def fullrecipe(recipeName):
 
 
 @app.route("/recipes/<recipeName>/delete_recipe", methods=["GET", "POST"])
-def deleteRecipe(recipeName, username):
+def deleteRecipe(recipeName):
     if session.user:
         recipe = mongo.db.recipes.find({"recipeName": recipeName})
         if len(recipe) > 1:
@@ -93,7 +93,6 @@ def deleteRecipe(recipeName, username):
                     mongo.db.fs.files.delete_one({"filename": profileImage})
                     mongo.db.recipes.delete_one(usersRecipe)
                     return redirect(url_for('recipes'))
-
 
 
 # logs user out
@@ -344,9 +343,9 @@ def editPersonalDetails(username):
     session['user'] = request.form.get("username").lower()
 
     return redirect(url_for(
-                        'profile',
-                        username=request.form.
-                                    get("username").lower()))
+                    'profile',
+                    username=request.form.
+                    get("username").lower()))
 
 
 # create recipe form handling

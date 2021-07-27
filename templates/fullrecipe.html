@@ -2,6 +2,7 @@
 {% block content %}
 
 {% set recipeName = recipe.recipeName %}
+{% set username = session.user %}
 
 <!-- Recipe Name -->
 <h4 class="card-title  text-center text-primary capitalize">{{ recipeName }}</h4>
@@ -98,7 +99,10 @@
                             <div class="row">
                                 <div class="col text-center">
                                     {% if session.user %}
-                                        <a class="btn btn-danger" href="{{ url_for('deleteRecipe', recipeName=recipeName, username=username) }}">Delete Recipe</a>
+                                        {% if username == recipe.author %}
+                                            <a class="btn btn-primary" href="">Edit Recipe</a>
+                                            <a class="btn btn-danger" href="{{ url_for('deleteRecipe', recipeName=recipeName) }}">Delete Recipe</a>
+                                        {% endif %}
                                     {% endif %}
                                 </div>
                             </div>
