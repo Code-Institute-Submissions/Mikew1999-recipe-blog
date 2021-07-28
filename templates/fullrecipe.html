@@ -4,6 +4,8 @@
 {% set recipeName = recipe.recipeName %}
 {% set username = session.user %}
 
+{{ username }}
+
 <!-- Recipe Name -->
 <h4 class="card-title  text-center text-primary capitalize">{{ recipeName }}</h4>
 
@@ -96,17 +98,22 @@
                                 </div>
                             </div>
 
-                            <div class="row">
-                                <div class="col text-center">
-                                    {% if session.user %}
-                                        {% if username == recipe.author %}
+                            {% if session.user %}
+                                {% if username == recipe.author %}
+                                    <div class="row">
+                                        <div class="col text-center">
                                             <a class="btn btn-primary" href="">Edit Recipe</a>
-                                            <a class="btn btn-danger" href="{{ url_for('deleteRecipe', recipeName=recipeName) }}">Delete Recipe</a>
-                                        {% endif %}
-                                    {% endif %}
-                                </div>
-                            </div>
-
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <form action="{{ url_for('deleteRecipe', recipeName=recipeName, username=username) }}" method="POST">
+                                                <button tyle="submit" class="btn btn-danger">Delete Recipe</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% endif %}
+                        </div>
                         </div>
                     </div>
                 </div>

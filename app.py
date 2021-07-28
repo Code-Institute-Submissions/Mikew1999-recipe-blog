@@ -81,18 +81,25 @@ def fullrecipe(recipeName):
     )
 
 
-@app.route("/recipes/<recipeName>/delete_recipe", methods=["GET", "POST"])
-def deleteRecipe(recipeName):
-    if session.user:
-        recipe = mongo.db.recipes.find({"recipeName": recipeName})
-        if len(recipe) > 1:
-            for x in recipe:
-                if x['author'] == session.user:
-                    usersRecipe = x
-                    profileImage = x['profileImageName']
-                    mongo.db.fs.files.delete_one({"filename": profileImage})
-                    mongo.db.recipes.delete_one(usersRecipe)
-                    return redirect(url_for('recipes'))
+@app.route("/recipes/<recipeName>/<username>//delete_recipe",
+           methods=["GET", "POST"])
+def deleteRecipe(recipeName, username):
+    recipes = mongo.db.recipes.find()
+    user = mongo.db.users.find_one({"username": username})
+
+    items = mongo.db.recipes.find_one_and_delete(
+        {"$and": [{"author": username}, {"recipeName": recipeName}]})
+
+    imageName = items['recipeImageName']
+
+    mongo.db.fs.files.delete_one({"filename": imageName})
+
+    if not mongo.db.recipes.find({"author": username}):
+        update = {"$set": {"hasUploadedRecipe": "0"}}
+
+        mongo.db.users.update_one(user, update)
+
+    return redirect(url_for('recipe', recipes=recipes))
 
 
 # logs user out
