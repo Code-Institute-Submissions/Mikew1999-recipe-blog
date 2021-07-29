@@ -2,7 +2,10 @@
 {% block content %}
 
 {% set recipeName = recipe.recipeName %}
-{% set username = session.user %}
+
+{% if session.user %}
+    {% set username = session.user %}
+{% endif %}
 
 {{ username }}
 

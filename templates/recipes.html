@@ -29,7 +29,7 @@
 
         <div class="col-sm-12 col-lg-6 col-xl-4">
             
-            <div class="card mb-2">
+            <div class="card mb-4 mt-4">
                 {% set imageName = recipe.recipeImageName %}
                 {% set recipeName = recipe.recipeName %}
                 <img class="card-img-top" src="{{ url_for('file', filename=imageName) }}" alt="recipe Image">
@@ -58,7 +58,36 @@
                     </div>
                     {% set recipeName = recipe.recipeName %}
                     <p class="mt-4 text-center">
-                        <a class="likes" href="" onclick="like(recipeName)" value='1'><i class="far fa-heart"></i></a> <span>Likes: {{recipe.likes }} </span>
+                        {% if session.user %}
+                            {% set username = session.user %}
+                            
+                            {% if x({"username": username}) %}
+                                
+                                {% set user = x({"username": username}) %}
+                                
+                                {% if user.likedRecipes %}
+                                    {% for a in user.likedRecipes %}
+                                        {% if a['recipeName'] == recipeName %}
+                                                <a class="likes" href="{{ url_for('unlike', recipeName=recipeName, username=username) }}">
+                                                    <i class="fas fa-heart"></i>
+                                                </a>
+                                                
+                                                <span>Likes: {{recipe.likes }} </span>
+                                        {% endif %}
+                                    {% endfor %}
+
+                                    
+                                {% else %}
+                                    <a class="likes" href="{{ url_for('like', recipeName=recipeName, username=username) }}">
+                                        <i class="far fa-heart"></i>
+                                    </a> 
+                                    
+                                    <span>Likes: {{recipe.likes }} </span>
+                                {% endif %}
+                            
+                            {% endif %}
+
+                        {% endif %}
                     </p>
 
                     <p>

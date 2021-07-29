@@ -63,10 +63,12 @@ def create_recipe():
 @app.route("/recipes")
 def recipe():
     recipes = mongo.db.recipes.find()
+    x = mongo.db.users.find_one
 
     return render_template(
         "recipes.html",
-        recipes=recipes)
+        recipes=recipes,
+        x=x)
 
 
 # shows full recipe
@@ -81,7 +83,7 @@ def fullrecipe(recipeName):
     )
 
 
-@app.route("/recipes/<recipeName>/<username>//delete_recipe",
+@app.route("/recipes/<recipeName>/<username>/delete_recipe",
            methods=["GET", "POST"])
 def deleteRecipe(recipeName, username):
     recipes = mongo.db.recipes.find()
@@ -355,6 +357,37 @@ def editPersonalDetails(username):
                     get("username").lower()))
 
 
+@app.route("/recipes/<recipeName>/<username>/like_recipe", methods=["GET", "POST"])
+def like(recipeName, username):
+    user = mongo.db.users.find_one({"username": username})
+    query = mongo.db.users.find_one({"likedRecipes": {"$exists": False}})
+
+    usersWithLikedRecipes = mongo.db.users.find(query)
+    for x in usersWithLikedRecipes:
+        print(x)
+
+    if usersWithLikedRecipes == True:
+        for users in usersWithLikedRecipes:
+            if recipeName in users['likedRecipes']:
+                recipe = recipeName
+                user['likedRecipes'].append(recipe)
+            else:
+                update = {"$set": {"likedRecipes": recipeName}}
+                mongo.db.users.update_one(user, update)
+    else:
+        update = {"$set": {"likedRecipes": recipeName}}
+        mongo.db.users.update_one(user, update)
+    
+    return redirect(url_for('recipe'))
+
+
+@app.route("/recipes/<recipeName>/<username>/unlike_recipe", methods=["GET", "POST"])
+def unlike(recipeName, username):
+    print(recipeName)
+    print(username)
+    return redirect(url_for('recipe'))
+
+
 # create recipe form handling
 @app.route("/addrecipe", methods=["GET", "POST"])
 def add_recipe():
@@ -409,7 +442,7 @@ def add_recipe():
                 "prepTime": request.form.get("prepTime"),
                 "cookingTime": request.form.get("cookingTime"),
                 "recipeDescription": request.form.get("recipeDescription"),
-                "likes": 1,
+                "likes": 0,
                 "author": user,
                 "ingredients": ingredientValues,
                 "steps": stepValues

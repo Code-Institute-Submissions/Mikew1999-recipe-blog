@@ -34,7 +34,7 @@
         {% for recipe in results %}
         <div class="col-sm-12 col-lg-6 col-xl-4">
 
-            <div class="card mb-2">
+            <div class="card mb-4 mt-4">
                 {% set imageName = recipe.recipeImageName %}
 
                 <!-- Recipe image -->
@@ -68,11 +68,10 @@
                     <!-- Like button -->
                     {% set recipeName = recipe.recipeName %}
                     <form action="#" method="POST">
-                        <p>
-                            <a href="#"><i class="far fa-heart"></i></a> <input type="checkbox"><span>Likes:
-                                {{recipe.likes }} </span>
-                        </p>
+                        <a href="#"><i class="far fa-heart"></i></a> <input type="checkbox">
                     </form>
+                    <span>Likes:
+                        {{recipe.likes }} </span>
                 </div>
             </div>
         </div>
