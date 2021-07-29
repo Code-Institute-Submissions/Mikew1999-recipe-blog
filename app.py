@@ -361,23 +361,26 @@ def editPersonalDetails(username):
 def like(recipeName, username):
     user = mongo.db.users.find_one({"username": username})
     query = mongo.db.users.find_one({"likedRecipes": {"$exists": False}})
+    recipe = mongo.db.recipes.find_one({"recipeName": recipeName})
+    likes = recipe['likes']
+    likes += 1
 
     usersWithLikedRecipes = mongo.db.users.find(query)
     for x in usersWithLikedRecipes:
         print(x)
 
-    if usersWithLikedRecipes == True:
+    if usersWithLikedRecipes is True:
         for users in usersWithLikedRecipes:
-            if recipeName in users['likedRecipes']:
-                recipe = recipeName
-                user['likedRecipes'].append(recipe)
-            else:
-                update = {"$set": {"likedRecipes": recipeName}}
+            if recipeName not in users['likedRecipes']:
+                update = {"$set": {"likedRecipes": [recipeName]}}
                 mongo.db.users.update_one(user, update)
+
+                updateLikes = {"$set": {"likes": likes}}
+                mongo.db.recipes.update_one(recipe, updateLikes)
     else:
-        update = {"$set": {"likedRecipes": recipeName}}
+        update = {"$set": {"likedRecipes": [recipeName]}}
         mongo.db.users.update_one(user, update)
-    
+
     return redirect(url_for('recipe'))
 
 
