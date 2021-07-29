@@ -60,21 +60,15 @@
                     <p class="mt-4 text-center">
                         {% if session.user %}
                             {% set username = session.user %}
-                            
                             {% if x({"username": username}) %}
-                                
                                 {% set user = x({"username": username}) %}
-                                
                                 {% if user.likedRecipes %}
                                     {% set listOfLikedRecipes = user.likedRecipes %}
-                                    
-                                    {% if listOfLikedRecipes|length == 1  %}
+                                    {% if listOfLikedRecipes|length >= 1  %}
                                         {% if recipeName in listOfLikedRecipes %}
-                                        
                                             <a class="likes" href="{{ url_for('unlike', recipeName=recipeName, username=username) }}">
-                                                    <i class="fas fa-heart"></i>
-                                                </a>
-                                                
+                                                <i class="fas fa-heart"></i>
+                                            </a>
                                             <span>Likes: {{recipe.likes }} </span>
                                         {% else %}
                                             <a class="likes" href="{{ url_for('like', recipeName=recipeName, username=username) }}">
@@ -83,12 +77,6 @@
                                             <span>Likes: {{recipe.likes }} </span>
                                         {% endif %}
                                     {% endif %}
-                                    
-                                    {% for a in user.likedRecipes %}
-                                            {% if a['recipeName'] == recipeName %}
-                                            {% endif %}
-                                    {% endfor %}
-                                    
                                 {% else %}
                                     <a class="likes" href="{{ url_for('like', recipeName=recipeName, username=username) }}">
                                         <i class="far fa-heart"></i>
@@ -96,9 +84,13 @@
                                     
                                     <span>Likes: {{recipe.likes }} </span>
                                 {% endif %}
-                            
                             {% endif %}
-
+                        {% else %}
+                        <a class="likes" href="{{ url_for('signInToLikeRecipe') }}">
+                            <i class="far fa-heart"></i>
+                        </a>
+                        
+                        <span>Likes: {{recipe.likes }} </span>
                         {% endif %}
                     </p>
 

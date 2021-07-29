@@ -71,6 +71,12 @@ def recipe():
         x=x)
 
 
+@app.route("/recipes/signIn")
+def signInToLikeRecipe():
+    flash("Please Sign in To Like recipe")
+    return redirect(url_for('signup'))
+
+
 # shows full recipe
 @app.route("/recipes/<recipeName>")
 def fullrecipe(recipeName):
@@ -100,6 +106,17 @@ def deleteRecipe(recipeName, username):
         update = {"$set": {"hasUploadedRecipe": "0"}}
 
         mongo.db.users.update_one(user, update)
+
+    query = mongo.db.users.find_one({"likedRecipes": {"$exists": True}})
+    usersWithLikedRecipes = mongo.db.users.find(query)
+
+    if usersWithLikedRecipes:
+        for x in usersWithLikedRecipes:
+            usernames = x['username']
+            mongo.db.users.update({"username": usernames}, {"$pull": {"likedRecipes": recipeName}})
+
+            print(f'Username: {usernames}')
+            print(f'Recipe Name: {recipeName}')
 
     return redirect(url_for('recipe', recipes=recipes))
 
@@ -165,7 +182,8 @@ def register():
                         request.form.get("password")),
                     "hasProfileImage": "1",
                     "hasUploadedRecipe": "0",
-                    "hasPosted": "0"
+                    "hasPosted": "0",
+                    "likedRecipes": []
                 }
 
                 # inserts new user info into users collection
@@ -199,7 +217,8 @@ def register():
                         request.form.get("password")),
                     "hasProfileImage": "0",
                     "hasUploadedRecipe": "0",
-                    "hasPosted": "0"}
+                    "hasPosted": "0",
+                    "likedRecipes": []}
 
                 # inserts new user info into users collection
                 mongo.db.users.insert_one(create_account)
@@ -357,34 +376,34 @@ def editPersonalDetails(username):
                     get("username").lower()))
 
 
-@app.route("/recipes/<recipeName>/<username>/like_recipe", methods=["GET", "POST"])
+@app.route("/recipes/<recipeName>/<username>/like_recipe",
+           methods=["GET", "POST"])
 def like(recipeName, username):
     user = mongo.db.users.find_one({"username": username})
-    query = mongo.db.users.find_one({"likedRecipes": {"$exists": False}})
+    query = mongo.db.users.find_one({"likedRecipes": {"$exists": True}})
     recipe = mongo.db.recipes.find_one({"recipeName": recipeName})
     likes = recipe['likes']
-    likes += 1
+    newLikes = likes + 1
 
     usersWithLikedRecipes = mongo.db.users.find(query)
-    for x in usersWithLikedRecipes:
-        print(x)
 
-    if usersWithLikedRecipes is True:
-        for users in usersWithLikedRecipes:
-            if recipeName not in users['likedRecipes']:
-                update = {"$set": {"likedRecipes": [recipeName]}}
-                mongo.db.users.update_one(user, update)
-
-                updateLikes = {"$set": {"likes": likes}}
-                mongo.db.recipes.update_one(recipe, updateLikes)
-    else:
-        update = {"$set": {"likedRecipes": [recipeName]}}
-        mongo.db.users.update_one(user, update)
+    if usersWithLikedRecipes:
+        print("usersWithLikedRecipes is true")
+        usersLikedRecipes = user['likedRecipes']
+        if recipeName not in usersLikedRecipes:
+            print("user not yet liked this recipe")
+            mongo.db.users.update_one({"username": username}, {
+                                      "$push": {"likedRecipes": recipeName}})
+            print("Updated liked recipes")
+            updateLikes = {"$set": {"likes": newLikes}}
+            mongo.db.recipes.update_one(recipe, updateLikes)
+            print("updated recipes to add 1 like")
 
     return redirect(url_for('recipe'))
 
 
-@app.route("/recipes/<recipeName>/<username>/unlike_recipe", methods=["GET", "POST"])
+@app.route("/recipes/<recipeName>/<username>/unlike_recipe",
+           methods=["GET", "POST"])
 def unlike(recipeName, username):
     print(recipeName)
     print(username)
@@ -468,18 +487,14 @@ def deleteProfile(username):
         file = mongo.db.fs.files.find_one({"filename": securedImage})
         mongo.db.fs.files.delete_one(file)
 
-    userRecipes = []
     # checks if user has uploaded recipes
     if userRecord['hasUploadedRecipe'] == "1":
         # finds list of user recipes
         for recipe in mongo.db.recipes.find():
             author = recipe['author']
             if author == username:
-                userRecipes.append(recipe)
-
-        update = {"$set": {"author": " "}}
-
-        mongo.db.recipes.update_many({"author": username}, update)
+                update = {"$set": {"author": "User Deleted"}}
+                mongo.db.recipes.update_many({"author": username}, update)
 
     session.pop("user")
     mongo.db.users.delete_one(userRecord)
@@ -490,6 +505,7 @@ def deleteProfile(username):
 @app.route("/search", methods=["GET", "POST"])
 def search():
     option = request.form.get("select")
+    x = mongo.db.users.find_one
     if option == "recipes":
         # creates search index
         mongo.db.recipes.create_index(
@@ -509,7 +525,8 @@ def search():
         return render_template(
             "searchedrecipes.html",
             results=results,
-            query=query)
+            query=query,
+            x=x)
 
     else:
         mongo.db.users.create_index(
@@ -534,6 +551,7 @@ def search():
 # Searches recipes
 @app.route("/recipes/search_recipes", methods=["GET", "POST"])
 def searchRecipes():
+    x = mongo.db.users.find_one
     # creates search index
     mongo.db.recipes.create_index(
         [
@@ -550,6 +568,7 @@ def searchRecipes():
 
     return render_template(
         "searchedrecipes.html",
+        x=x,
         results=results)
 
 
