@@ -1,33 +1,29 @@
 {% extends "base.html" %}
 {% block content %}
 
-{% with messages = get_flashed_messages() %}
-    {% if messages %}
-        {% for message in messages %}
-            <p class="text-center"><strong>{{ message }}</strong></p>
-        {% endfor %}
-    {% endif %}
-{% endwith %}
-
-<h3 class="text-center uppercase text-primary recipe-title"><strong>Recipes</strong></h3>
-
 <div class="text-center mt-4 mb-2">
     <form action="{{ url_for('searchRecipes') }}" method="POST" style="line-height: 1.5;">
         <label for="search">Search recipes:</label>
-        <input type="text" name="search" placeholder="Spaghetti Bolognaise" required>
+        <input type="text" name="search" class="rounded search-form" autocomplete="off" placeholder="Spaghetti Bolognaise" required>
         <button type="submit" class="btn search-button"><i class="fas fa-search text-primary"></i></button>
     </form>
 </div>
 
 <div class="text-center mb-2">
-    <button type="button" class="btn btn-primary">Filter</button>
+    <button type="button" onclick="showCategories()" class="btn btn-primary">Categories</button>
 </div>
 
-<div class="container">
+<div class="hide text-center" id="categories">
+    {% for x in categoryList %}
+    <a href="" class="btn btn-outline-primary">{{ x }}</a>
+    {% endfor %}
+</div>
+
+<div class="container text-primary">
     <div class="row">
         {% for recipe in recipes %}
 
-        <div class="col-sm-12 col-lg-6 col-xl-4">
+        <div class="col-sm-12 col-lg-6">
             
             <div class="card mb-4 mt-4">
                 {% set imageName = recipe.recipeImageName %}
@@ -47,7 +43,34 @@
                         <i class="far fa-clock"></i> Cooking time: {{ recipe.cookingTime }}
                     </p>
 
-                    <h5 class="text-center">Recipe Description</h5>
+                    <!-- Categories -->
+                    {% if recipe.categories %}
+                        <div class="mb-4">
+                            <h6>Categories</h6>
+                        {% set categories = recipe.categories %}
+                        {% if categories|length > 1 %}
+                            <ul class="list-inline">
+                            {% for category in categories %}
+                                {% if category == "vegetarian" %}
+                                    <li class="list-inline-item">
+                                        {{ category }} <i class="fas fa-carrot"></i>
+                                    </li>
+                                {% elif category == "vegan" %}
+                                    <li class="list-inline-item">
+                                        {{ category }} <i class="fas fa-leaf"></i>
+                                    </li>
+                                {% else %}
+                                    <li class="list-inline-item">
+                                        {{ category }}
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+                            </ul>
+                        {% endif %}
+                        </div>
+                    {% endif %}
+
+                    <h5 class="mt-4">Recipe Description</h5>
 
                     <p class="card-text recipe-description">
                         {{ recipe.recipeDescription }}
@@ -58,8 +81,11 @@
                     </div>
                     {% set recipeName = recipe.recipeName %}
                     <p class="mt-4 text-center">
+                        <!-- Checks if user is logged in -->
                         {% if session.user %}
+                            <!-- Sets username variable-->
                             {% set username = session.user %}
+
                             {% if x({"username": username}) %}
                                 {% set user = x({"username": username}) %}
                                 {% if user.likedRecipes %}

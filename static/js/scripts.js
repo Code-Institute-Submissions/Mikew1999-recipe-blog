@@ -19,7 +19,7 @@ function moresteps() {
     stepnumber += 1;
     // creates step item
     let step = `<div class="mb-2"></div><label class="step" for="step${stepnumber}">Step ${stepnumber}:</label>
-    <input class="form-control" type="text" name="step${stepnumber}"></input></div>`
+    <input class="form-control" type="text" name="step${stepnumber}"></input></div>`;
     // adds new step item before more ingredient button
     $(step).insertBefore('#morestepsbutton');
 }
@@ -50,4 +50,10 @@ function hideEditPersonalDetailsForm() {
     $('.personal-details').css("display", "block");
     // hides edit personal details form 
     $('#edit-personal-details-form').css("display", "none");
+}
+
+// shows / hides categories
+function showCategories() {
+    // toggles visibility of category buttons
+    $('#categories').toggle();
 }

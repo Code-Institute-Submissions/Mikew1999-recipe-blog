@@ -31,7 +31,10 @@ def file(filename):
 # home page
 @app.route("/")
 def index():
-    return render_template("index.html")
+    topRecipes = mongo.db.recipes.find().sort("likes", -1)
+    return render_template(
+                        "index.html",
+                        topRecipes=topRecipes)
 
 
 # sign up page
@@ -64,10 +67,14 @@ def create_recipe():
 def recipe():
     recipes = mongo.db.recipes.find()
     x = mongo.db.users.find_one
+    categories = mongo.db.categories.find_one()
+    categoryList = categories['categories']
 
     return render_template(
         "recipes.html",
         recipes=recipes,
+        categories=categories,
+        categoryList=categoryList,
         x=x)
 
 
@@ -136,13 +143,17 @@ def profile(username):
     user = mongo.db.users.find_one({"username": username})
     allRecipes = mongo.db.recipes.find()
     userRecipes = mongo.db.recipes.find({"author": username})
+    likedRecipes = user['likedRecipes']
+    x = mongo.db.recipes.find_one
 
     if session["user"]:
         return render_template(
             "profile.html",
+            likedRecipes=likedRecipes,
             username=username,
             allRecipes=allRecipes,
             userRecipes=userRecipes,
+            x=x,
             user=user)
 
     else:
@@ -377,6 +388,7 @@ def editPersonalDetails(username):
                     get("username").lower()))
 
 
+# like recipe
 @app.route("/recipes/<recipeName>/<username>/like_recipe",
            methods=["GET", "POST"])
 def like(recipeName, username):
@@ -403,6 +415,7 @@ def like(recipeName, username):
     return redirect(url_for('recipe'))
 
 
+# unlike recipe
 @app.route("/recipes/<recipeName>/<username>/unlike_recipe",
            methods=["GET", "POST"])
 def unlike(recipeName, username):
@@ -486,7 +499,8 @@ def add_recipe():
                 "likes": 0,
                 "author": user,
                 "ingredients": ingredientValues,
-                "steps": stepValues
+                "steps": stepValues,
+                "categories": request.form.getlist('category')
             }
 
             mongo.db.recipes.insert_one(recipeDetails)
@@ -519,52 +533,6 @@ def deleteProfile(username):
     mongo.db.users.delete_one(userRecord)
     flash("Profile Successfully Deleted.")
     return redirect(url_for('index'))
-
-
-@app.route("/search", methods=["GET", "POST"])
-def search():
-    option = request.form.get("select")
-    x = mongo.db.users.find_one
-    if option == "recipes":
-        # creates search index
-        mongo.db.recipes.create_index(
-            [
-                ("recipeName", "text"),
-                ("recipeDescription", "text"),
-                ("author", "text")])
-
-        # gets text input from search form
-        query = request.form.get("search")
-
-        # performs search
-        search = ({"$text": {"$search": query}})
-        # finds results
-        results = mongo.db.recipes.find(search)
-
-        return render_template(
-            "searchedrecipes.html",
-            results=results,
-            query=query,
-            x=x)
-
-    else:
-        mongo.db.users.create_index(
-            [
-                ("username", "text"),
-                ("fname", "text"),
-                ("lname", "text")])
-
-        query = request.form.get("search")
-        searchUser = ({"$text": {"$search": query}})
-
-        results = mongo.db.users.find(searchUser)
-
-        return render_template(
-            "searcheduser.html",
-            results=results,
-            query=query)
-
-    return url_for('index')
 
 
 # Searches recipes

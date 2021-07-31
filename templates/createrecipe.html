@@ -10,18 +10,15 @@
 
                 <hr>
 
-                <form class="col position-relative" method="POST" action="{{ url_for('add_recipe') }}"
+                <form class="col position-relative text-primary" method="POST" action="{{ url_for('add_recipe') }}"
                     enctype="multipart/form-data">
                     <div id="recipe-details">
-                        <div class="position-absolute close">
-                            <a>&#10005;</a>
-                        </div>
                         <!-- Recipe Name -->
                         <label for="recipeName">Recipe Name:</label>
                         <input class="form-control" type="text" name="recipeName" required>
 
                         <br>
-                        
+
                         <!-- Recipe Image-->
                         <label for="recipeImage">Recipe Image:</label>
                         <br>
@@ -31,7 +28,7 @@
 
                         <hr class="w-100">
 
-
+                        <!-- Recipe Details -->
                         <h4 class="text-center text-primary uppercase">Recipe Details</h4>
 
                         <label for="serves">Serves:</label>
@@ -46,10 +43,37 @@
                         <label for="recipeDescription">Recipe Description:</label>
                         <textarea class="form-control" type="text" name="recipeDescription" required></textarea>
 
-                        <hr class="w-100">
+                        <hr class="w-100">  
 
-                        <label for="category">Categories:</label>
+                        <!-- Categories / Dietary Requirements -->
+                        <h4 class="text-center text-primary">Categories / dietary requirements</h4>
 
+                        <p class="text-center">Please select any that apply</p>
+
+                        <div class="text-center">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="vegetarian" name="category">
+                                <label class="form-check-label" for="category">vegetarian</label>
+                            </div>
+                            
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="vegan" name="category">
+                                <label class="form-check-label" for="category">Vegan</label>
+                            </div>
+
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="gluten free" name="category">
+                                <label class="form-check-label" for="category">Gluten Free</label>
+                            </div>
+
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" value="low calorie" name="category">
+                                <label class="form-check-label" for="category">Low Calorie</label>
+                            </div>
+
+                            <hr>
+
+                        </div>
                     </div>
 
                     <!-- Ingredients -->
@@ -63,6 +87,9 @@
 
                             <label class="ingredient" for="ingredient2">Ingredient 2:</label>
                             <input class="form-control" type="text" name="ingredient2" required>
+
+                            <label class="ingredient" for="ingredient3">Ingredient 3:</label>
+                            <input class="form-control" type="text" name="ingredient3" required>
                         </div>
                         <!-- Adds another ingredient item -->
                         <button class="btn btn-primary w-100" onclick="moreIngredients()" id="moreingredientsbutton"
@@ -83,6 +110,9 @@
 
                             <label class="step" for="step2">Step 2:</label>
                             <input class="form-control" type="text" name="step2" required>
+
+                            <label class="step" for="step3">Step 3:</label>
+                            <input class="form-control" type="text" name="step3" required>
                         </div>
                         <!-- Adds another step item -->
                         <button class="btn btn-primary w-100" onclick="moresteps()" id="morestepsbutton"

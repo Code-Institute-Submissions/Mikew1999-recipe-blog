@@ -1,19 +1,20 @@
 {% extends "base.html" %}
 {% block content %}
 
-<div style="background-image: url('static/images/platter.jpg'); height: 60vh;">
+<!-- Background image -->
+<div class="text-white" style="background-image: url('static/images/platter.jpg'); height: 60vh;">
     <div class="mb-4">
-        <div class="col text-center text-white">
-            <h2 class="text-white p-4">Food Space</h2>
+        <div class="col text-center">
+            <h2 class="p-4">Food Space</h2>
 
             <p class="lead display-6 mt-4 fst-italic">
                 <b>
                     {% if session.user %}
-                    Welcome back {{ username }}
+                        Welcome back {{ username }}
                     {% else %}
-                    Find, create and share recipes!
-                    <br>
-                    Join our growing list of users to make friends and find great food!
+                        Find, create and share recipes!
+                        <br>
+                        Join our growing list of users to make friends and find great food!
                     {% endif %}
                 </b>
             </p>
@@ -22,37 +23,26 @@
 
             <div class="col">
                 {% if not session.user %}
-                <a class="btn btn-outline-white btn-xl rounded-pill mb-4" href="{{ url_for('signup')}}">Sign up</a>
+                    <a class="btn btn-outline-white uppercase btn-xl rounded-pill mb-4" href="{{ url_for('signup')}}">Sign up</a>
                 {% endif %}
                 {% if session.user %}
-                <a class="btn btn-outline-white btn-xl rounded-pill mb-4"
-                    href="{{ url_for('profile', username=session.user)}}">Go to my profile</a>
+                    <a class="btn btn-white btn-xl uppercase rounded-pill mb-4"
+                        href="{{ url_for('profile', username=session.user)}}">Go to my profile</a>
                 {% endif %}
             </div>
         </div>
     </div>
 </div>
 
-<!-- Recipes / users search form -->
-<div class="text-center mt-2 mb-2">
-    <form action="{{ url_for('search') }}" method="POST" style="line-height: 1.5;">
-
-        <h4>Find new friends or recipes</h4>
-
-        <label class="mb-2" for="search">Search for:</label>
-
-        <select name="select">
-            <option value="recipes">Recipes</option>
-            <option value="users">Users</option>
-        </select>
-
-        <input type="text" name="search" required>
-
-        <button type="submit" class="btn search-button"><i class="fas fa-search text-primary"></i></button>
-
+<!-- Search form -->
+<div class="text-center mt-4 mb-2">
+    <form action="{{ url_for('searchRecipes') }}" method="POST" style="line-height: 1.5;">
+        <label for="search">Search recipes:</label>
+        <input type="text" class="rounded search-form" autocomplete="off" name="search" placeholder="Spaghetti Bolognaise" required>
+        <span>
+            <button type="submit" class="btn search-button"><i class="fas fa-search text-primary"></i></button>
+        </span>
     </form>
 </div>
-
-
 
 {% endblock %}
