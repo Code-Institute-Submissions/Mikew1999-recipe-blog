@@ -113,7 +113,8 @@ def deleteRecipe(recipeName, username):
     if usersWithLikedRecipes:
         for x in usersWithLikedRecipes:
             usernames = x['username']
-            mongo.db.users.update({"username": usernames}, {"$pull": {"likedRecipes": recipeName}})
+            mongo.db.users.update({"username": usernames}, {
+                                  "$pull": {"likedRecipes": recipeName}})
 
             print(f'Username: {usernames}')
             print(f'Recipe Name: {recipeName}')
@@ -405,8 +406,26 @@ def like(recipeName, username):
 @app.route("/recipes/<recipeName>/<username>/unlike_recipe",
            methods=["GET", "POST"])
 def unlike(recipeName, username):
-    print(recipeName)
-    print(username)
+    user = mongo.db.users.find_one({"username": username})
+    query = mongo.db.users.find_one({"likedRecipes": {"$exists": True}})
+    recipe = mongo.db.recipes.find_one({"recipeName": recipeName})
+    likes = recipe['likes']
+    newLikes = likes - 1
+
+    usersWithLikedRecipes = mongo.db.users.find(query)
+
+    if usersWithLikedRecipes:
+        print("usersWithLikedRecipes is true")
+        usersLikedRecipes = user['likedRecipes']
+        if recipeName in usersLikedRecipes:
+            print("user has liked this recipe")
+            mongo.db.users.update_one({"username": username}, {
+                                      "$pull": {"likedRecipes": recipeName}})
+            print("Updated liked recipes")
+            updateLikes = {"$set": {"likes": newLikes}}
+            mongo.db.recipes.update_one(recipe, updateLikes)
+            print("updated recipes to deduct 1 like")
+
     return redirect(url_for('recipe'))
 
 
