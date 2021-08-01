@@ -23,7 +23,7 @@
 
             <div class="col">
                 {% if not session.user %}
-                <a class="btn btn-outline-white uppercase btn-xl rounded-pill mb-4" href="{{ url_for('signup')}}">Sign
+                <a class="btn btn-white uppercase btn-xl rounded-pill mb-4" href="{{ url_for('signup')}}">Sign
                     up</a>
                 {% endif %}
                 {% if session.user %}
@@ -41,51 +41,72 @@
         <a class="nav-link" href="#top-recipes">Top Recipes</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link" href="#search-recipes">Search Recipes</a>
+        <a class="nav-link" href="#search">Search Recipes</a>
     </li>
+    {% if session.user %}
     <li class="nav-item">
         <a class="nav-link" href="#liked-recipes">Liked Recipes</a>
     </li>
     <li class="nav-item">
         <a class="nav-link" href="{{ url_for('create_recipe') }}">Create recipe</a>
     </li>
+    {% else %}
+    <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('signup') }}">Sign Up</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('log_in') }}">Sign in</a>
+    </li>
+    {% endif %}
 </ul>
 
 <!-- Website description -->
 <div class="container mt-4">
     <div class="row">
-        <div class="col">
-            <h4 class="text-center">Website Description</h4>
+        <div class="col text-center text-primary">
+            <h4>Food Space</h4>
             <p class="lead">
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aspernatur excepturi suscipit temporibus dolor
-                nam
-                deserunt ullam. Adipisci unde quibusdam ut, quaerat, magnam iure atque sunt commodi beatae dolore,
-                reiciendis hic.
+                Food Space is a the perfect place for finding tasty new food and sharing your own recipes with others.
+                <br>
+                Make friends and find new great food every day for free!
             </p>
         </div>
     </div>
 </div>
 
-<!-- Search form -->
-<div id="search-recipes" class="text-center mt-2 mb-2">
-    <form action="{{ url_for('searchRecipes') }}" method="POST" style="line-height: 1.5;">
-        <label for="search"><strong>Search recipes:</strong></label>
-        <input type="text" class="rounded search-form" autocomplete="off" name="search"
-            placeholder="Spaghetti Bolognaise" required>
+<hr class="width-80">
+
+<!-- Recipes / users search form -->
+<div class="text-center mt-2 mb-2" id="search">
+    <form action="{{ url_for('search') }}" method="POST" style="line-height: 1.5;">
+
+        <h4 class="text-center text-primary">Find new friends or recipes</h4>
+
+        <label class="mb-2" for="search"><strong>Search for:</strong></label>
+
+        <select name="select">
+            <option value="recipes">Recipes</option>
+            <option value="users">Users</option>
+        </select>
+
+        <input type="text" class="rounded search-form" autocomplete="off" name="search" required>
         <span>
             <button type="submit" class="btn search-button"><i class="fas fa-search text-primary"></i></button>
         </span>
+
     </form>
 </div>
 
-<!-- Top Recipes -->
-<div id="top-recipes">
-    <h4 class="text-center text-primary">Top Recipes</h4>
+<hr class="width-80">
 
-    <div class="container">
+<!-- Top Recipes -->
+<div id="top-recipes" class="text-primary">
+    <h4 class="text-center">Top Recipes</h4>
+
+    <div class="container-fluid">
         <div class="row">
             {% for recipe in topRecipes %}
-            <div class="col-sm-12 col-lg-6 col-xl-4">
+            <div class="col-sm-12 col-xl-4">
 
                 <div class="card mb-4 mt-4">
                     {% set imageName = recipe.recipeImageName %}
@@ -164,19 +185,22 @@
                             {% set listOfLikedRecipes = user.likedRecipes %}
                             {% if listOfLikedRecipes|length >= 1  %}
                             {% if recipeName in listOfLikedRecipes %}
-                            <a class="likes" href="{{ url_for('unlike', recipeName=recipeName, username=username, prevPage=request.referrer) }}">
+                            <a class="likes"
+                                href="{{ url_for('unlike', recipeName=recipeName, username=username, prevPage=request.referrer) }}">
                                 <i class="fas fa-heart"></i>
                             </a>
                             <span>Likes: {{recipe.likes }} </span>
                             {% else %}
-                            <a class="likes" href="{{ url_for('like', recipeName=recipeName, username=username, prevPage=request.referrer) }}">
+                            <a class="likes"
+                                href="{{ url_for('like', recipeName=recipeName, username=username, prevPage=request.referrer) }}">
                                 <i class="far fa-heart"></i>
                             </a>
                             <span>Likes: {{recipe.likes }} </span>
                             {% endif %}
                             {% endif %}
                             {% else %}
-                            <a class="likes" href="{{ url_for('like', recipeName=recipeName, username=username, prevPage=request.referrer) }}">
+                            <a class="likes"
+                                href="{{ url_for('like', recipeName=recipeName, username=username, prevPage=request.referrer) }}">
                                 <i class="far fa-heart"></i>
                             </a>
 
@@ -200,6 +224,14 @@
                 </div>
             </div>
             {% endfor %}
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <h4>Top Posts</h4>
         </div>
     </div>
 </div>

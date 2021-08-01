@@ -7,7 +7,8 @@
         <h2 class="text-center uppercase text-primary signup-title"><strong>Sign Up</strong></h2>
 
         <!--Sign Up Form-->
-        <form method="POST" action="{{ url_for('register') }}" enctype="multipart/form-data">
+        <form method="POST" action="{{ url_for('register') }}" autocomplete="off" aria-autocomplete="none"
+            enctype="multipart/form-data">
             <!--Username-->
             <div class="mb-2">
                 <label for="username">Username</label><br>

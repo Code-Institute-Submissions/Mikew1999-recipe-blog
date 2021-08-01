@@ -40,6 +40,52 @@ def index():
         topRecipes=topRecipes)
 
 
+@app.route("/search", methods=["GET", "POST"])
+def search():
+    option = request.form.get("select")
+    x = mongo.db.users.find_one
+    if option == "recipes":
+        # creates search index
+        mongo.db.recipes.create_index(
+            [
+                ("recipeName", "text"),
+                ("recipeDescription", "text"),
+                ("author", "text")])
+
+        # gets text input from search form
+        query = request.form.get("search")
+
+        # performs search
+        search = ({"$text": {"$search": query}})
+        # finds results
+        results = mongo.db.recipes.find(search)
+
+        return render_template(
+            "searchedrecipes.html",
+            results=results,
+            query=query,
+            x=x)
+
+    else:
+        mongo.db.users.create_index(
+            [
+                ("username", "text"),
+                ("fname", "text"),
+                ("lname", "text")])
+
+        query = request.form.get("search")
+        searchUser = ({"$text": {"$search": query}})
+
+        results = mongo.db.users.find(searchUser)
+
+        return render_template(
+            "searcheduser.html",
+            results=results,
+            query=query)
+
+    return url_for('index')
+
+
 # sign up page
 @app.route("/signup")
 def signup():
@@ -52,11 +98,13 @@ def log_in():
     return render_template("login.html")
 
 
+# reset password page
 @app.route("/resetpassword")
 def resetPassword():
     return render_template("resetpassword.html")
 
 
+# changes users password
 @app.route("/changepassword", methods=["GET", "POST"])
 def changePassword():
     if request.method == "POST":
@@ -92,7 +140,9 @@ def changePassword():
                     # has been updated
                     flash("Password updated!")
                     # sends the user to their profile page
-                    return redirect(url_for('profile', username=session['user']))
+                    return redirect(url_for(
+                                    'profile',
+                                    username=session['user']))
                     # if email address doesn't match
 
                 else:
@@ -354,9 +404,12 @@ def login():
 
             else:
                 flash("Incorrect username / password")
-                return render_template("login")
+                return redirect(url_for("log_in"))
+        else:
+            flash("Incorrect username / password")
+            return redirect(url_for("log_in"))
 
-    return render_template("login.html")
+    return redirect(url_for('log_in'))
 
 
 # edit profile picture
