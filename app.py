@@ -52,17 +52,14 @@ def log_in():
     return render_template("login.html")
 
 
-# blog page
-@app.route("/blog")
-def blog():
-    return render_template('blog.html')
-
-
 # create recipe page
 @app.route("/createrecipe")
 def create_recipe():
+    categories = mongo.db.categories.find_one()
+    categoryList = categories['categories']
     return render_template(
-        "createrecipe.html")
+        "createrecipe.html",
+        categoryList=categoryList)
 
 
 # recipes page
@@ -414,7 +411,7 @@ def editPersonalDetails(username):
 
 
 # like recipe
-@app.route("/recipes/<recipeName>/<username>/like_recipe",
+@app.route("/recipes/<recipeName>/<username>/like_recipe/",
            methods=["GET", "POST"])
 def like(recipeName, username):
     user = mongo.db.users.find_one({"username": username})
@@ -437,7 +434,7 @@ def like(recipeName, username):
             mongo.db.recipes.update_one(recipe, updateLikes)
             print("updated recipes to add 1 like")
 
-    return redirect(url_for('recipe'))
+    return redirect(url_for('fullrecipe', recipeName=recipeName))
 
 
 # unlike recipe
@@ -464,7 +461,7 @@ def unlike(recipeName, username):
             mongo.db.recipes.update_one(recipe, updateLikes)
             print("updated recipes to deduct 1 like")
 
-    return redirect(url_for('recipe'))
+    return redirect(url_for('fullrecipe', recipeName=recipeName))
 
 
 # create recipe form handling

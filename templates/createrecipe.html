@@ -49,25 +49,12 @@
                 <p class="text-center">Please select any that apply</p>
 
                 <div class="text-center">
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="checkbox" value="vegetarian" name="category">
-                        <label class="form-check-label" for="category">vegetarian</label>
-                    </div>
-
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="checkbox" value="vegan" name="category">
-                        <label class="form-check-label" for="category">Vegan</label>
-                    </div>
-
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="checkbox" value="gluten free" name="category">
-                        <label class="form-check-label" for="category">Gluten Free</label>
-                    </div>
-
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="checkbox" value="low calorie" name="category">
-                        <label class="form-check-label" for="category">Low Calorie</label>
-                    </div>
+                    {% for category in categoryList %}
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" value="{{category}}" name="category">
+                            <label class="form-check-label" for="{{category}}">{{category}}</label>
+                        </div>
+                    {% endfor %}
 
                     <hr>
 
