@@ -173,6 +173,10 @@
     height: 75vh;
 }
 
+.post-card-body {
+    background: #f1f1f1;
+}
+
 .search-profile-card {
     height: auto!important;
 }
@@ -224,6 +228,11 @@ label {
 
 .text-white {
     color: white!important;
+}
+
+.post-image {
+    width: 60vw;
+    height: 60vh;
 }
 
 .footer {

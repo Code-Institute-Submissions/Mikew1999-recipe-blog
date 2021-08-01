@@ -1,4 +1,27 @@
 {% extends "base.html" %}
 {% block content %}
-    <h4>News Feed</h4>
+<main class="text-primary">
+    <h4 class="text-center">News Feed</h4>
+
+    <div class="container">
+        {% for post in posts %}
+            <div class="row mb-4">
+
+                <div class="col-12 card">
+                    <div class="post-card-body">
+                        {% if post.postimage %}
+                            <div class="text-center">
+                                <img class="post-image" src="{{ url_for('file', filename=post.postimage) }}" alt="Post Image">
+                            </div>
+                        {% endif %}
+                        <p>Author: {{ post.author }}</p>
+                        <p class="lead mb-4">{{ post.posttext }}</p>
+                    </div>
+                </div>
+                
+            </div>
+        {% endfor %}
+    </div>
+</main>
+    
 {% endblock %}

@@ -177,7 +177,10 @@ def create_recipe():
 
 @app.route("/newsfeed")
 def newsFeed():
-    return render_template("newsfeed.html")
+    posts = mongo.db.posts.find().sort("_id", -1)
+    return render_template(
+                    "newsfeed.html",
+                    posts=posts)
 
 
 @app.route("/<username>/create_post", methods=["GET", "POST"])
@@ -334,6 +337,7 @@ def profile(username):
     allRecipes = mongo.db.recipes.find()
     userRecipes = mongo.db.recipes.find({"author": username})
     likedRecipes = user['likedRecipes']
+    posts = mongo.db.posts.find()
     x = mongo.db.recipes.find_one
 
     if session["user"]:
@@ -343,6 +347,7 @@ def profile(username):
             username=username,
             allRecipes=allRecipes,
             userRecipes=userRecipes,
+            posts=posts,
             x=x,
             user=user)
 
@@ -357,10 +362,12 @@ def userProfile(username):
     userRecipes = mongo.db.recipes.find({"author": username})
     likedRecipes = user['likedRecipes']
     x = mongo.db.recipes.find_one
+    posts = mongo.db.posts.find()
 
     return render_template(
         "viewusersprofile.html",
         user=user,
+        posts=posts,
         x=x,
         likedRecipes=likedRecipes,
         userRecipes=userRecipes)

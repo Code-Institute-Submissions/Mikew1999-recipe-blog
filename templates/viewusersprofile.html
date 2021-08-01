@@ -212,7 +212,36 @@
         <p>{{ user.fname }} {{ user.lname }} has not made any posts yet.</p>
     </div>
     {% else %}
-
+    <div class="my-posts" id="users-posts">
+        <h2 class="text-center text-primary mt-4 mb-4">Users Posts</h2>
+        {% if user.hasPosted == "0" %}
+        <div class="text-center">
+            <p>You have not made any posts yet. You can create a new post <a href="#">here</a></p>
+        </div>
+        {% else %}
+        <div class="container">
+            {% for post in posts %}
+                {% if post.author == session.user %}
+                    <div class="row mb-4">
+    
+                        <div class="col-12 card">
+                            <div class="post-card-body">
+                                {% if post.postimage %}
+                                    <div class="text-center">
+                                        <img class="post-image" src="{{ url_for('file', filename=post.postimage) }}" alt="Post Image">
+                                    </div>
+                                {% endif %}
+                                <p>Author: {{ post.author }}</p>
+                                <p class="lead mb-4">{{ post.posttext }}</p>
+                            </div>
+                        </div>
+                        
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
     {% endif %}
 </div>
 
