@@ -30,9 +30,95 @@
 </div>
 
 {% if results %}
-    {% for result in results %}
-        
-    {% endfor %}
+    <!-- Container showing cards for each recipe found -->
+    <div class="container">
+        <div class="row">
+        {% for result in results %}
+        <div class="col-sm-12 col-lg-6 col-xl-4">
+
+            <div class="card mb-4 mt-4">
+                {% set imageName = result.recipeImageName %}
+
+                <!-- Recipe image -->
+                <img class="card-img-top" src="{{ url_for('file', filename=imageName) }}" alt="recipe Image">
+                <div class="card-body">
+                    <!-- Recipe Name -->
+                    <h4 class="card-title">{{ result.recipeName }}</h4>
+
+                    <!-- Recipe Details -->
+                    <p class="card-text">
+                        <i class="fas fa-utensils"></i> Serves {{ result.serves }}
+                        <br>
+                        <i class="far fa-clock"></i> Preparation time: {{ result.prepTime }}
+                        <br>
+                        <i class="far fa-clock"></i> Cooking time: {{ result.cookingTime }}
+                    </p>
+
+                    <!-- Recipe Description -->
+                    <h5 class="">result Description</h5>
+
+                    <p class="card-text recipe-description">
+                        {{ result.recipeDescription }}
+                    </p>
+
+                    <!-- Button linking to full recipe -->
+                    <div class="text-center">
+                        <a href="{{ url_for('fullrecipe', recipeName=result.recipeName) }}" class="btn btn-outline-primary btn-lg">Go to Recipe</a>
+                    </div>
+
+                    {% set recipeName = result.recipeName %}
+                    <p class="mt-4 text-center">
+                        {% if session.user %}
+                            {% set username = session.user %}
+                            
+                            {% if x({"username": username}) %}
+                                
+                                {% set user = x({"username": username}) %}
+                                
+                                {% if user.likedRecipes %}
+                                    {% set listOfLikedRecipes = user.likedRecipes %}
+                                    
+                                    {% if listOfLikedRecipes|length >= 1  %}
+                                        {% if recipeName in listOfLikedRecipes %}
+                                        
+                                            <a class="likes" href="{{ url_for('unlike', recipeName=recipeName, username=username) }}">
+                                                    <i class="fas fa-heart"></i>
+                                                </a>
+                                                
+                                            <span>Likes: {{result.likes }} </span>
+                                        {% else %}
+                                            <a class="likes" href="{{ url_for('like', recipeName=recipeName, username=username) }}">
+                                                <i class="far fa-heart"></i>
+                                            </a> 
+                                            <span>Likes: {{result.likes }} </span>
+                                        {% endif %}
+                                    
+                                    {% endif %}
+                                    
+                                {% else %}
+                                    <a class="likes" href="{{ url_for('like', recipeName=recipeName, username=username) }}">
+                                        <i class="far fa-heart"></i>
+                                    </a> 
+                                    
+                                    <span>Likes: {{result.likes }} </span>
+                                {% endif %}
+                            
+                            {% endif %}
+                        {% else %}
+                            <a class="likes" href="{{ url_for('signInToLikeRecipe') }}">
+                                <i class="far fa-heart"></i>
+                            </a>
+                            
+                            <span>Likes: {{result.likes }} </span>
+                        {% endif %}
+                    </p>
+                </div>
+
+            </div>
+        </div>
+        {% endfor %}
+        </div>
+    </div>
 {% endif %}
 
 {% endblock %}
