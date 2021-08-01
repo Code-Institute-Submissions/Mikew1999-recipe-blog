@@ -180,8 +180,53 @@ def newsFeed():
     return render_template("newsfeed.html")
 
 
-@app.route("/<username>/create_post")
-def create_post(username):
+@app.route("/<username>/create_post", methods=["GET", "POST"])
+def createPost(username):
+    if request.method == "POST":
+        posts = mongo.db.posts.find().limit(1).sort("postID", -1)
+
+        for post in posts:
+            postID = post['_id']
+            newPostID = postID + 1
+
+        user = mongo.db.users.find_one({"username": username})
+
+        if 'postimage' in request.files:
+            image = request.files['postimage']
+            securedImage = secure_filename(image.filename)
+            # saves file to mongodb
+            mongo.save_file(securedImage, image)
+            post = {
+                    "_id": newPostID,
+                    "postimage": securedImage,
+                    "posttext": request.form.get("posttext"),
+                    "author": username
+                }
+
+            mongo.db.posts.insert_one(post)
+
+            if user['hasPosted'] == "0":
+                setHasPosted = {"$set": {"hasPosted": "1"}}
+                mongo.db.users.update_one(user, setHasPosted)
+
+            flash("Post Uploaded!")
+            return redirect(url_for('index'))
+        else:
+            post = {
+                "_id": newPostID,
+                "posttext": request.form.get("posttext"),
+                "author": username
+            }
+
+            mongo.db.posts.insert_one(post)
+
+            if user['hasPosted'] == "0":
+                setHasPosted = {"$set": {"hasPosted": "1"}}
+                mongo.db.users.update_one(user, setHasPosted)
+
+            flash("Post Uploaded!")
+            return redirect(url_for('index'))
+
     return render_template("createpost.html")
 
 
@@ -314,11 +359,11 @@ def userProfile(username):
     x = mongo.db.recipes.find_one
 
     return render_template(
-                    "viewusersprofile.html",
-                    user=user,
-                    x=x,
-                    likedRecipes=likedRecipes,
-                    userRecipes=userRecipes)
+        "viewusersprofile.html",
+        user=user,
+        x=x,
+        likedRecipes=likedRecipes,
+        userRecipes=userRecipes)
 
 
 # sign up function
