@@ -16,7 +16,7 @@
 
 <body>
     <header>
-        <nav id="nav" class="navbar navbar-light grey-bg navbar-expand-lg">
+        <nav id="nav" class="navbar navbar-light bg-light navbar-expand-lg">
             <a class="navbar-brand" href="{{ url_for('index') }}"><i class="fas fa-hamburger"></i> Food Space</a>
     
             <!--Navbar collapse button-->
@@ -66,7 +66,9 @@
     {% with messages = get_flashed_messages() %}
         {% if messages %}
             {% for message in messages %}
-            <p class="text-center"><strong>{{ message }}</strong></p>
+            <div class="text-primary mt-4">
+                <p class="text-center"><strong>{{ message }}</strong></p>
+            </div>
             {% endfor %}
         {% endif %}
     {% endwith %}

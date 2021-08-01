@@ -3,11 +3,8 @@
 
 {% set numberOfRecipes = results.count() %}
 
-<!-- Main heading -->
-<h3 class="text-center uppercase text-primary recipe-title"><strong>Recipes</strong></h3>
-
 <!-- Search recipes form -->
-<div class="text-center mb-2">
+<div class="text-center mb-2 mt-4">
     <form action="{{ url_for('searchRecipes') }}" method="POST">
         <label for="search">Search recipes:</label>
         <input type="text" name="search" placeholder="Spaghetti Bolognaise" required>

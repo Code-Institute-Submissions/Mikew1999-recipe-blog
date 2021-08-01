@@ -31,10 +31,13 @@ def file(filename):
 # home page
 @app.route("/")
 def index():
-    topRecipes = mongo.db.recipes.find().sort("likes", -1)
+    topRecipes = mongo.db.recipes.find().limit(3).sort("likes", -1)
+    x = mongo.db.users.find_one
+
     return render_template(
-                        "index.html",
-                        topRecipes=topRecipes)
+        "index.html",
+        x=x,
+        topRecipes=topRecipes)
 
 
 # sign up page
@@ -76,6 +79,28 @@ def recipe():
         categories=categories,
         categoryList=categoryList,
         x=x)
+
+
+@app.route("/recipes/categories/<categoryName>")
+def category(categoryName):
+    x = mongo.db.recipes.find_one
+    recipes = mongo.db.recipes.find()
+    categories = mongo.db.categories.find_one()
+    categoryList = categories['categories']
+
+    results = mongo.db.recipes.find({"categories": categoryName.lower()})
+    numberOfResults = results.count()
+
+    return render_template(
+        'searchedcategory.html',
+        x=x,
+        recipes=recipes,
+        categories=categories,
+        categoryList=categoryList,
+        categoryName=categoryName,
+        numberOfResults=numberOfResults,
+        results=results
+    )
 
 
 @app.route("/recipes/signIn")

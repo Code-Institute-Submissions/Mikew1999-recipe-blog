@@ -10,6 +10,18 @@
     margin: 0 auto;
 }
 
+.margin-top-4 {
+    margin-top: 4rem!important;
+}
+
+.mt-5 {
+    margin-top: 5rem!important;
+}
+
+.mt-6 {
+    margin-top: 6rem;
+}
+
 .bg-grey {
     background-color: #e9ecef;
 }
@@ -57,7 +69,16 @@
 .nav .nav-item .btn-primary {
     border-radius: 0!important;
     border-right: 1px solid #fff;
+}
 
+.nav-pills .nav-item .nav-link {
+    border: 1px solid #007bff;
+}
+
+.nav-pills .nav-item .nav-link:hover {
+    border: 1px solid #fff;
+    background-color: #007bff;
+    color: #fff!important;
 }
 
 .align-middle {
@@ -105,10 +126,6 @@
     margin: 0 auto;
 }
 
-.form-background {
-    background-color: rgb(0, 204, 255);
-}
-
 .ingredients-header {
     margin-top: 10px;
     margin-bottom: 10px;
@@ -132,6 +149,7 @@
 
 .card-body {
     background: #f1f1f1;
+    height: 75vh;
 }
 
 label {
@@ -144,6 +162,20 @@ label {
 
 .card-img-top {
     width: 100%!important;
+    height: 50vh;
+}
+
+.full-recipe-image {
+    width: 100%!important;
+}
+
+.recipe-description {
+    height: 6rem;
+    overflow-y: scroll;
+}
+
+.margin-top-5 {
+    padding-top: 10rem;
 }
 
 .search-button {

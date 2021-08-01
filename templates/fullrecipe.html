@@ -7,8 +7,6 @@
     {% set username = session.user %}
 {% endif %}
 
-{{ username }}
-
 <!-- Recipe Name -->
 <h4 class="card-title  text-center text-primary capitalize">{{ recipeName }}</h4>
 
@@ -38,7 +36,7 @@
                 <div class="card mb-2">
                     {% set imageName = recipe.recipeImageName %}
                     <div style="height: 65vh; overflow: hidden;">
-                        <img class="card-img-top" src="{{ url_for('file', filename=imageName) }}" alt="recipe Image">
+                        <img class="full-recipe-image" src="{{ url_for('file', filename=imageName) }}" alt="recipe Image">
                     </div>
                     <div class="card-body height-auto">
                         <div class="width-80">
@@ -66,7 +64,7 @@
                             </div>
 
                             <div class="row mt-4">
-                                <div class="col-sm-12 col-md-6 col-lg-4 text-center">
+                                <div class="col-4 offset-1">
                                     <h4 class="text-center text-primary mb-4">Ingredients</h4>
                                     {% set ingredients = recipe.ingredients %}
                                     <ul class="ingredient-list">
@@ -77,8 +75,8 @@
                                     {% endfor %}
                                     </ul>
                                 </div>
-                                <div class="col-sm-12 col-md-6 col-lg-8 text-center">
-                                    <h4 class="text-primary mb-4">Method</h4>
+                                <div class="col-7">
+                                    <h4 class="text-primary text-center mb-4">Method</h4>
                                     {% set method = recipe.steps %}
                                     <ol>
                                         {% for step in method %}
