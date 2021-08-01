@@ -222,10 +222,11 @@
             <div class="row">
                 {% if likedRecipes|length > 1 %}
                     {% for likedRecipe in likedRecipes %}
+                    {% set recipe = x({"recipeName": likedRecipe}) %}
                     <div class="col">
                         <div class="card mb-2">
-                            {% set imageName = likedRecipe.recipeImageName %}
-                            {% set recipeName = likedRecipe.recipeName %}
+                            {% set imageName = recipe.recipeImageName %}
+                            {% set recipeName = recipe.recipeName %}
                             <img class="img-fluid" src="{{ url_for('file', filename=imageName) }}" alt="recipe Image">
         
                             <div class="card-body">
@@ -235,21 +236,21 @@
                                 <!-- Recipe Details -->
         
                                 <p class="card-text">
-                                    <i class="fas fa-utensils"></i> Serves {{ likedRecipe.serves }}
+                                    <i class="fas fa-utensils"></i> Serves {{ recipe.serves }}
                                     <br>
-                                    <i class="far fa-clock"></i> Preparation time: {{ likedRecipe.prepTime }}
+                                    <i class="far fa-clock"></i> Preparation time: {{ recipe.prepTime }}
                                     <br>
-                                    <i class="far fa-clock"></i> Cooking time: {{ likedRecipe.cookingTime }}
+                                    <i class="far fa-clock"></i> Cooking time: {{ recipe.cookingTime }}
                                 </p>
         
                                 <h5 class="text-center">Recipe Description</h5>
         
                                 <p class="card-text recipe-description">
-                                    {{ likedRecipe.recipeDescription }}
+                                    {{ recipe.recipeDescription }}
                                 </p>
         
                                 <p>
-                                    <span style="color: black;">Author:</span> {{ likedRecipe.author }}
+                                    <span style="color: black;">Author:</span> {{ recipe.author }}
                                 </p>
         
                                 <div class="text-center">

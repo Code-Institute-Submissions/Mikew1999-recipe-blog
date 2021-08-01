@@ -45,7 +45,7 @@
 
                     <!-- Categories -->
                     {% if recipe.categories %}
-                        <div class="mb-4">
+                        <div class="mb-4 recipe-categories">
                             <h6>Categories</h6>
                         {% set categories = recipe.categories %}
                         {% if categories|length > 1 %}
@@ -66,18 +66,31 @@
                                 {% endif %}
                             {% endfor %}
                             </ul>
+                        {% else %}
+                        <ul class="list-inline">
+                                {% set category = categories[0] %}
+                                {% if category == "vegetarian" %}
+                                    <li class="list-inline-item">
+                                        {{ category }} <i class="fas fa-carrot"></i>
+                                    </li>
+                                {% elif category == "vegan" %}
+                                    <li class="list-inline-item">
+                                        {{ category }} <i class="fas fa-leaf"></i>
+                                    </li>
+                                {% else %}
+                                    <li class="list-inline-item">
+                                        {{ category }}
+                                    </li>
+                                {% endif %}
+                            </ul>
                         {% endif %}
                         </div>
                     {% else %}
-                        <div class="mb-4">
+                        <div class="mb-4 recipe-categories">
                             <h6>Categories</h6>
                             <ul class="list-inline pb-4">
-                                <li class="list-inline-item"></li>
-                                <li class="list-inline-item"></li>
-                                <li class="list-inline-item"></li>
-                                <li class="list-inline-item"></li>
+                                <li class="list-inline-item"><p class="text-muted">No categories selected</p></li>    
                             </ul>
-
                         </div>
                     {% endif %}
 

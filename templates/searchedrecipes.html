@@ -29,7 +29,7 @@
 <div class="container">
     <div class="row">
         {% for recipe in results %}
-        <div class="col-sm-12 col-lg-6 col-xl-4">
+        <div class="col-sm-12 col-lg-6">
 
             <div class="card mb-4 mt-4">
                 {% set imageName = recipe.recipeImageName %}
@@ -49,6 +49,44 @@
                         <br>
                         <i class="far fa-clock"></i> Cooking time: {{ recipe.cookingTime }}
                     </p>
+
+                    <!-- Categories -->
+                    {% if recipe.categories %}
+                        <div class="mb-4 recipe-categories">
+                            <h6>Categories</h6>
+                        {% set categories = recipe.categories %}
+                        {% if categories|length > 1 %}
+                            <ul class="list-inline">
+                            {% for category in categories %}
+                                {% if category == "vegetarian" %}
+                                    <li class="list-inline-item">
+                                        {{ category }} <i class="fas fa-carrot"></i>
+                                    </li>
+                                {% elif category == "vegan" %}
+                                    <li class="list-inline-item">
+                                        {{ category }} <i class="fas fa-leaf"></i>
+                                    </li>
+                                {% else %}
+                                    <li class="list-inline-item">
+                                        {{ category }}
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+                            </ul>
+                        {% endif %}
+                        </div>
+                    {% else %}
+                        <div class="mb-4 recipe-categories">
+                            <h6>Categories</h6>
+                            <ul class="list-inline pb-4">
+                                <li class="list-inline-item"></li>
+                                <li class="list-inline-item"></li>
+                                <li class="list-inline-item"></li>
+                                <li class="list-inline-item"></li>
+                            </ul>
+                            <p class="text-muted">No categories selected</p>
+                        </div>
+                    {% endif %}
 
                     <!-- Recipe Description -->
                     <h5 class="">Recipe Description</h5>

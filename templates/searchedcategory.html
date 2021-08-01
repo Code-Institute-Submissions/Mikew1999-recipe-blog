@@ -34,7 +34,7 @@
     <div class="container">
         <div class="row">
         {% for result in results %}
-        <div class="col-sm-12 col-lg-6 col-xl-4">
+        <div class="col-sm-12 col-lg-6">
 
             <div class="card mb-4 mt-4">
                 {% set imageName = result.recipeImageName %}
@@ -54,8 +54,46 @@
                         <i class="far fa-clock"></i> Cooking time: {{ result.cookingTime }}
                     </p>
 
+                    <!-- Categories -->
+                    {% if result.categories %}
+                        <div class="mb-4">
+                            <h6>Categories</h6>
+                        {% set categories = result.categories %}
+                        {% if categories|length > 1 %}
+                            <ul class="list-inline">
+                            {% for category in categories %}
+                                {% if category == "vegetarian" %}
+                                    <li class="list-inline-item">
+                                        {{ category }} <i class="fas fa-carrot"></i>
+                                    </li>
+                                {% elif category == "vegan" %}
+                                    <li class="list-inline-item">
+                                        {{ category }} <i class="fas fa-leaf"></i>
+                                    </li>
+                                {% else %}
+                                    <li class="list-inline-item">
+                                        {{ category }}
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+                            </ul>
+                        {% endif %}
+                        </div>
+                    {% else %}
+                        <div class="mb-4">
+                            <h6>Categories</h6>
+                            <ul class="list-inline pb-4">
+                                <li class="list-inline-item"></li>
+                                <li class="list-inline-item"></li>
+                                <li class="list-inline-item"></li>
+                                <li class="list-inline-item"></li>
+                            </ul>
+
+                        </div>
+                    {% endif %}
+
                     <!-- Recipe Description -->
-                    <h5 class="">result Description</h5>
+                    <h5 class="">Recipe Description</h5>
 
                     <p class="card-text recipe-description">
                         {{ result.recipeDescription }}
