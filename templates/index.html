@@ -41,36 +41,41 @@
         <a class="nav-link" href="#top-recipes">Top Recipes</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link" href="#my-recipes">My recipes</a>
+        <a class="nav-link" href="#search-recipes">Search Recipes</a>
     </li>
     <li class="nav-item">
         <a class="nav-link" href="#liked-recipes">Liked Recipes</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link" href="#my-posts">My Posts</a>
+        <a class="nav-link" href="{{ url_for('create_recipe') }}">Create recipe</a>
     </li>
 </ul>
 
+<!-- Website description -->
+<div class="container mt-4">
+    <div class="row">
+        <div class="col">
+            <h4 class="text-center">Website Description</h4>
+            <p class="lead">
+                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aspernatur excepturi suscipit temporibus dolor
+                nam
+                deserunt ullam. Adipisci unde quibusdam ut, quaerat, magnam iure atque sunt commodi beatae dolore,
+                reiciendis hic.
+            </p>
+        </div>
+    </div>
+</div>
 
 <!-- Search form -->
-<div class="text-center mt-4 mb-2">
+<div id="search-recipes" class="text-center mt-2 mb-2">
     <form action="{{ url_for('searchRecipes') }}" method="POST" style="line-height: 1.5;">
-        <label for="search">Search recipes:</label>
+        <label for="search"><strong>Search recipes:</strong></label>
         <input type="text" class="rounded search-form" autocomplete="off" name="search"
             placeholder="Spaghetti Bolognaise" required>
         <span>
             <button type="submit" class="btn search-button"><i class="fas fa-search text-primary"></i></button>
         </span>
     </form>
-</div>
-
-<!-- Website description -->
-<div class="container">
-    <div class="row">
-        <div class="col">
-            This is a cool website
-        </div>
-    </div>
 </div>
 
 <!-- Top Recipes -->

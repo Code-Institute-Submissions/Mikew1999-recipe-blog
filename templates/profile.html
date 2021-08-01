@@ -179,8 +179,8 @@
             {% if likedRecipes|length > 1 %}
             {% for likedRecipe in likedRecipes %}
             {% set recipe = x({"recipeName": likedRecipe}) %}
-            <div class="col">
-                <div class="card mb-2">
+            <div class="col-sm-12 col-lg-6">
+                <div class="card mb-4 mt-4">
                     {% set imageName = recipe.recipeImageName %}
                     {% set recipeName = recipe.recipeName %}
                     <img class="img-fluid" src="{{ url_for('file', filename=imageName) }}" alt="recipe Image">

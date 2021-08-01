@@ -6,7 +6,7 @@
 <!-- Search recipes form -->
 <div class="text-center mb-2 mt-4">
     <form action="{{ url_for('searchRecipes') }}" method="POST">
-        <label for="search">Search recipes:</label>
+        <label for="search"><strong>Search recipes:</strong></label>
         <input type="text" name="search" placeholder="Spaghetti Bolognaise" required>
         <button type="submit" class="btn btn-sm btn-primary">Search</button>
     </form>
