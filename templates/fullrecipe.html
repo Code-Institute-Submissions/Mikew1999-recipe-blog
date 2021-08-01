@@ -4,7 +4,7 @@
 {% set recipeName = recipe.recipeName %}
 
 {% if session.user %}
-    {% set username = session.user %}
+{% set username = session.user %}
 {% endif %}
 
 <!-- Recipe Name -->
@@ -25,7 +25,7 @@
         Back to recipes</a>
     <a class="btn btn-outline-primary" href="{{ url_for('index') }}">Back Home</a>
     {% if session.user %}
-        <a class="btn btn-outline-primary" href="{{ url_for('profile', username=session.user) }}">Back to Profile</a>
+    <a class="btn btn-outline-primary" href="{{ url_for('profile', username=session.user) }}">Back to Profile</a>
     {% endif %}
 </div>
 
@@ -33,93 +33,144 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col">
-                <div class="card mb-2">
-                    {% set imageName = recipe.recipeImageName %}
-                    <div style="height: 65vh; overflow: hidden;">
-                        <img class="full-recipe-image" src="{{ url_for('file', filename=imageName) }}" alt="recipe Image">
-                    </div>
-                    <div class="card-body height-auto">
-                        <div class="width-80">
-                            <!-- Recipe Details -->
-                            <div class="row">
-                                <div class="col-4 offset-2">
-                                    <h4 class="text-center text-primary">Recipe Details</h4>
-                                    <p class="card-text">
-                                        <i class="fas fa-utensils"></i> Serves {{ recipe.serves }}
-                                        <br>
-                                        <i class="far fa-clock"></i> Preparation time: {{ recipe.prepTime }}
-                                        <br>
-                                        <i class="far fa-clock"></i> Cooking time: {{ recipe.cookingTime }}
-                                    </p>
-                                </div>
-
-                                <div class="col-6">
-                                    <h4 class="text-center text-primary">Recipe Description</h4>
-                                    <p class="card-text recipe-description">
-                                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Minima, laborum!
-                                        Repellat reiciendis ipsum, omnis, doloribus nobis numquam mollitia similique
-                                        magnam odio fugit impedit ut possimus eos, sunt minima eveniet ratione!
-                                    </p>
-                                </div>
-                            </div>
-
-                            <div class="row mt-4">
-                                <div class="col-4 offset-1">
-                                    <h4 class="text-center text-primary mb-4">Ingredients</h4>
-                                    {% set ingredients = recipe.ingredients %}
-                                    <ul class="ingredient-list">
-                                    {% for ingredient in ingredients %}
-                                        <li>
-                                            <p>{{ ingredient }}</p>
-                                        </li>        
-                                    {% endfor %}
-                                    </ul>
-                                </div>
-                                <div class="col-7">
-                                    <h4 class="text-primary text-center mb-4">Method</h4>
-                                    {% set method = recipe.steps %}
-                                    <ol>
-                                        {% for step in method %}
-                                            <li>
-                                                <p>{{ step }}</p>
-                                            </li>
-                                        {% endfor %}
-                                    </ol>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col">
-                                    <form class="mt-4 text-center" action="#" method="POST">
-                                        <p>
-                                            <a class="likes" onclick="like(recipeName)">&#x1F44D;</a> <span>Likes:
-                                                {{recipe.likes }} </span>
-                                        </p>
-                                    </form>
-                                </div>
-                            </div>
-
-                            {% if session.user %}
-                                {% if username == recipe.author %}
-                                    <div class="row">
-                                        <div class="col text-center">
-                                            <a class="btn btn-primary" href="">Edit Recipe</a>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col">
-                                            <form action="{{ url_for('deleteRecipe', recipeName=recipeName, username=username) }}" method="POST">
-                                                <button tyle="submit" class="btn btn-danger">Delete Recipe</button>
-                                            </form>
-                                        </div>
-                                    </div>
-                                {% endif %}
-                            {% endif %}
-                        </div>
-                        </div>
-                    </div>
+                {% set imageName = recipe.recipeImageName %}
+                <div class="recipe-image">
+                    <img class="full-recipe-image" src="{{ url_for('file', filename=imageName) }}" alt="recipe Image">
                 </div>
             </div>
         </div>
+        <div class="row">
+            <div class="col-xs-12 col-lg-4 offset-lg-2">
+                <!-- Recipe Details -->
+                <h4 class="text-center text-primary">Recipe Details</h4>
+                <p class="card-text">
+                    <i class="fas fa-utensils"></i> Serves {{ recipe.serves }}
+                    <br>
+                    <i class="far fa-clock"></i> Preparation time: {{ recipe.prepTime }}
+                    <br>
+                    <i class="far fa-clock"></i> Cooking time: {{ recipe.cookingTime }}
+                </p>
+            </div>
+
+            <div class="col-xs-12 col-lg-4">
+                <h4 class="text-center text-primary">Recipe Description</h4>
+                <p class="card-text full-recipe-description">
+                    {{ recipe.recipeDescription }}
+                </p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col text-center text-primary">
+                <!-- Categories -->
+                {% if recipe.categories %}
+                <div class="mb-4 recipe-categories">
+                    <h6>Categories</h6>
+                    {% set categories = recipe.categories %}
+                    {% if categories|length > 1 %}
+                    <ul class="list-inline">
+                        {% for category in categories %}
+                            {% if category == "vegetarian" %}
+                                <li class="list-inline-item">
+                                    {{ category }} <i class="fas fa-carrot"></i>
+                                </li>
+                                {% elif category == "vegan" %}
+                                <li class="list-inline-item">
+                                    {{ category }} <i class="fas fa-leaf"></i>
+                                </li>
+                                {% else %}
+                                <li class="list-inline-item">
+                                    {{ category }}
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                    {% else %}
+                        <ul class="list-inline">
+                            {% if categories[0] == "vegetarian" %}
+                                <li class="list-inline-item">
+                                    {{ categories[0] }} <i class="fas fa-carrot"></i>
+                                </li>
+                                {% elif categories[0] == "vegan" %}
+                                <li class="list-inline-item">
+                                    {{ categories[0] }} <i class="fas fa-leaf"></i>
+                                </li>
+                                {% else %}
+                                <li class="list-inline-item">
+                                    {{ categories[0] }}
+                                </li>
+                            {% endif %}
+                        </ul>
+                    {% endif %}
+                </div>
+                {% else %}
+                <div class="mb-4 recipe-categories">
+                    <h6>Categories</h6>
+                    <ul class="list-inline">
+                        <li class="list-inline-item">
+                            <p class="text-muted">No categories selected</p>
+                        </li>
+                    </ul>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-xs-12 col-lg-4 offset-lg-2">
+                <h4 class="text-center text-primary mb-4">Ingredients</h4>
+                {% set ingredients = recipe.ingredients %}
+                <ul class="ingredient-list">
+                    {% for ingredient in ingredients %}
+                    <li>
+                        <p>{{ ingredient }}</p>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="col-xs-12 col-lg-4">
+                <h4 class="text-primary text-center mb-4">Method</h4>
+                {% set method = recipe.steps %}
+                <ol>
+                    {% for step in method %}
+                    <li>
+                        <p>{{ step }}</p>
+                    </li>
+                    {% endfor %}
+                </ol>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                <form class="mt-4 text-center" action="#" method="POST">
+                    <p>
+                        <a class="likes" onclick="like(recipeName)">&#x1F44D;</a>
+                        <span>Likes:
+                            {{recipe.likes }} </span>
+                    </p>
+                </form>
+            </div>
+        </div>
+
+        {% if session.user %}
+        {% if username == recipe.author %}
+        <div class="row">
+            <div class="col text-center">
+                <a class="btn btn-primary" href="">Edit Recipe</a>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <form action="{{ url_for('deleteRecipe', recipeName=recipeName, username=username) }}"
+                        method="POST">
+                        <button tyle="submit" class="btn btn-danger">Delete Recipe</button>
+                    </form>
+                </div>
+            </div>
+            {% endif %}
+            {% endif %}
+        </div>
+
     </div>
 </main>
 

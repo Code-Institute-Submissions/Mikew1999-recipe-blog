@@ -126,15 +126,14 @@
                             <i class="far fa-clock"></i> Cooking time: {{ recipe.cookingTime }}
                         </p>
 
-                        <!-- Categories -->
                         {% if recipe.categories %}
-                        <div class="mb-4 recipe-categories">
-                            <h6>Categories</h6>
-                            {% set categories = recipe.categories %}
-                            {% if categories|length > 1 %}
-                            <ul class="list-inline">
-                                {% for category in categories %}
-                                {% if category == "vegetarian" %}
+                <div class="mb-4 recipe-categories">
+                    <h6>Categories</h6>
+                    {% set categories = recipe.categories %}
+                    {% if categories|length > 1 %}
+                    <ul class="list-inline">
+                        {% for category in categories %}
+                            {% if category == "vegetarian" %}
                                 <li class="list-inline-item">
                                     {{ category }} <i class="fas fa-carrot"></i>
                                 </li>
@@ -146,21 +145,37 @@
                                 <li class="list-inline-item">
                                     {{ category }}
                                 </li>
-                                {% endif %}
-                                {% endfor %}
-                            </ul>
                             {% endif %}
-                        </div>
-                        {% else %}
-                        <div class="mb-4 recipe-categories">
-                            <h6>Categories</h6>
-                            <ul class="list-inline">
+                        {% endfor %}
+                    </ul>
+                    {% else %}
+                        <ul class="list-inline">
+                            {% if categories[0] == "vegetarian" %}
                                 <li class="list-inline-item">
-                                    <p class="text-muted">No categories selected</p>
+                                    {{ categories[0] }} <i class="fas fa-carrot"></i>
                                 </li>
-                            </ul>
-                        </div>
-                        {% endif %}
+                                {% elif categories[0] == "vegan" %}
+                                <li class="list-inline-item">
+                                    {{ categories[0] }} <i class="fas fa-leaf"></i>
+                                </li>
+                                {% else %}
+                                <li class="list-inline-item">
+                                    {{ categories[0] }}
+                                </li>
+                            {% endif %}
+                        </ul>
+                    {% endif %}
+                </div>
+                {% else %}
+                <div class="mb-4 recipe-categories">
+                    <h6>Categories</h6>
+                    <ul class="list-inline">
+                        <li class="list-inline-item">
+                            <p class="text-muted">No categories selected</p>
+                        </li>
+                    </ul>
+                </div>
+                {% endif %}
 
                         <h5 class="margin-top-1">Recipe Description</h5>
 

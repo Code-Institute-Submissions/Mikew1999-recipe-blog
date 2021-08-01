@@ -337,6 +337,7 @@ def profile(username):
     allRecipes = mongo.db.recipes.find()
     userRecipes = mongo.db.recipes.find({"author": username})
     likedRecipes = user['likedRecipes']
+    likes = user['likedRecipes']
     posts = mongo.db.posts.find()
     x = mongo.db.recipes.find_one
 
@@ -345,6 +346,7 @@ def profile(username):
             "profile.html",
             likedRecipes=likedRecipes,
             username=username,
+            likes=likes,
             allRecipes=allRecipes,
             userRecipes=userRecipes,
             posts=posts,

@@ -196,10 +196,16 @@ label {
 
 .full-recipe-image {
     width: 100%!important;
+    height: 75vh;
 }
 
 .recipe-description {
     height: 3.5rem;
+    overflow-y: scroll;
+}
+
+.recipe-description {
+    height: 5rem;
     overflow-y: scroll;
 }
 

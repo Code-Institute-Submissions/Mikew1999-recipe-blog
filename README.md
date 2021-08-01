@@ -1,13 +1,10 @@
 # Food Space
 
-<!-- Website summary -->
-<p>
-    Food Space is a website for people who love food!
-    <br>
-    The main goals of the site are to allow users to view and share great recipes with others around the world. 
-    <br>
-    The site enables the user to create a profile, recipes, make social media style blog posts and view other users posts and recipes.
-</p>
+[Food Space](https://mike-recipe-blog.herokuapp.com/) is a website for people who love food!
+
+The main goals of the site are to allow users to view and share great recipes with others around the world. 
+
+The site enables the user to create a profile, recipes, make social media style blog posts and view other users posts and recipes.
 
 <!-- User Experience (UX) -->
 # User Experience (UX)
