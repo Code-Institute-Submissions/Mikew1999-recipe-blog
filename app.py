@@ -175,6 +175,16 @@ def create_recipe():
         categoryList=categoryList)
 
 
+@app.route("/newsfeed")
+def newsFeed():
+    return render_template("newsfeed.html")
+
+
+@app.route("/<username>/create_post")
+def create_post(username):
+    return render_template("createpost.html")
+
+
 # recipes page
 @app.route("/recipes")
 def recipe():
@@ -294,6 +304,21 @@ def profile(username):
     else:
         flash("Please login to view your profile")
         return render_template("login.html")
+
+
+@app.route("/view/<username>/profile")
+def userProfile(username):
+    user = mongo.db.users.find_one({"username": username})
+    userRecipes = mongo.db.recipes.find({"author": username})
+    likedRecipes = user['likedRecipes']
+    x = mongo.db.recipes.find_one
+
+    return render_template(
+                    "viewusersprofile.html",
+                    user=user,
+                    x=x,
+                    likedRecipes=likedRecipes,
+                    userRecipes=userRecipes)
 
 
 # sign up function

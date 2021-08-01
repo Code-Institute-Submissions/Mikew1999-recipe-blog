@@ -20,7 +20,9 @@
     <a class="btn btn-outline-primary" href="{{ url_for('recipe') }} ">
         Back to recipes</a>
     <a class="btn btn-outline-primary" href="{{ url_for('index') }}">Back Home</a>
-    <a class="btn btn-outline-primary" href="{{ url_for('profile', username=session.user) }}">Back to Profile</a>
+    {% if session.user %}
+        <a class="btn btn-outline-primary" href="{{ url_for('profile', username=session.user) }}">Back to Profile</a>
+    {% endif %}
 </div>
 
 <!-- If results found -->

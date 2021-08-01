@@ -1,0 +1,227 @@
+{% extends "base.html" %}
+{% block content %}
+
+<!-- Profile image and background image -->
+<div class="container-fluid text-center text-white profile-background">
+    {% set hasProfileImage = user.hasProfileImage %}
+    <h3 class="masthead-heading mb-0">{{ user.fname }} {{ user.lname }}'s profile</h3>
+
+    <!-- Checks if user has profile pic -->
+    {% if hasProfileImage == "1" %}
+    {% set profileImage = user.profileImageName %}
+    <!-- Profile image -->
+    <div class="profile-pic">
+        <img class="img-fluid profile-image mb-4" src="{{ url_for('file', filename=profileImage) }}" alt="Profile Image">
+    </div>
+
+    <!-- if user doesn't have profile pic -->
+    {% else %}
+    <div class="text-center mb-4">
+        <!-- Placeholder profile pic -->
+        <i class="fas fa-user-circle fa-10x"></i>
+    </div>
+    {% endif %}
+
+</div>
+
+<!-- Secondary Navbar -->
+<ul class="nav nav-pills nav-fill">
+    <li class="nav-item">
+        <a class="nav-link" href="#users-recipes">Users recipes</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="#users-liked-recipes">Users Liked Recipes</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="#users-posts">Users Posts</a>
+    </li>
+</ul>
+
+<hr class="width-80">
+
+<!-- Users recipes -->
+<div id="users-recipes" class="users-recipes text-primary">
+    <h2 class="text-center mb-4">{{ user.fname }} {{ user.lname }}'s Recipes</h2>
+
+    {% set hasUploadedRecipe = user.hasUploadedRecipe %}
+    <!-- Checks if user has uploaded recipe -->
+    {% if hasUploadedRecipe == "1" %}
+    <div class="container">
+        <div class="row">
+            <!-- Counts number of recipes uploaded by this user -->
+            {% set numberOfRecipes = userRecipes.count() %}
+
+            <!-- Check if number of recipes is divisible by 3 -->
+            {% if numberOfRecipes %3 == 0 %}
+            {% set column = "col-md-12 col-lg-4" %}
+            {% elif numberOfRecipes %2 == 0 %}
+            {% set column = "col-md-12 col-lg-6" %}
+            {% else %}
+            {% set column = "col-6 offset-3" %}
+            {% endif %}
+
+            {% for recipe in userRecipes %}
+            <div class="{{ column }}">
+                <div class="card mb-4 mt-2">
+                    {% set imageName = recipe.recipeImageName %}
+                    {% set recipeName = recipe.recipeName %}
+                    <img class="card-img-top" src="{{ url_for('file', filename=imageName) }}" alt="recipe Image">
+
+                    <div class="card-body">
+                        <!-- Recipe Name -->
+                        <h4 class="card-title  text-center">{{ recipeName }}</h4>
+
+                        <!-- Recipe Details -->
+
+                        <p class="card-text">
+                            <i class="fas fa-utensils"></i> Serves {{ recipe.serves }}
+                            <br>
+                            <i class="far fa-clock"></i> Preparation time: {{ recipe.prepTime }}
+                            <br>
+                            <i class="far fa-clock"></i> Cooking time: {{ recipe.cookingTime }}
+                        </p>
+
+                        <h5 class="text-center">Recipe Description</h5>
+
+                        <p class="card-text recipe-description">
+                            {{ recipe.recipeDescription }}
+                        </p>
+
+                        <p>
+                            <span style="color: black;">Author:</span> {{ recipe.author }}
+                        </p>
+
+                        <div class="text-center">
+                            <a class="btn btn-outline-primary btn-lg"
+                                href="{{ url_for('fullrecipe', recipeName=recipeName)}}">Go to / edit Recipe</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<hr class="width-80">
+
+<!-- Users Liked Recipes -->
+<div id="users-liked-recipes" class="text-primary">
+    <h2 class="text-center">{{ user.fname }} {{ user.lname }}'s Liked Recipes</h2>
+
+    {% if likedRecipes %}
+    <div class="container">
+        <div class="row">
+            {% if likedRecipes|length > 1 %}
+            {% for likedRecipe in likedRecipes %}
+            {% set recipe = x({"recipeName": likedRecipe}) %}
+            <div class="col-sm-12 col-lg-6">
+                <div class="card mb-4 mt-4">
+                    {% set imageName = recipe.recipeImageName %}
+                    {% set recipeName = recipe.recipeName %}
+                    <img class="img-fluid" src="{{ url_for('file', filename=imageName) }}" alt="recipe Image">
+
+                    <div class="card-body">
+                        <!-- Recipe Name -->
+                        <h4 class="card-title  text-center">{{ recipeName }}</h4>
+
+                        <!-- Recipe Details -->
+
+                        <p class="card-text">
+                            <i class="fas fa-utensils"></i> Serves {{ recipe.serves }}
+                            <br>
+                            <i class="far fa-clock"></i> Preparation time: {{ recipe.prepTime }}
+                            <br>
+                            <i class="far fa-clock"></i> Cooking time: {{ recipe.cookingTime }}
+                        </p>
+
+                        <h5 class="text-center">Recipe Description</h5>
+
+                        <p class="card-text recipe-description">
+                            {{ recipe.recipeDescription }}
+                        </p>
+
+                        <p>
+                            <span style="color: black;">Author:</span> {{ recipe.author }}
+                        </p>
+
+                        <div class="text-center">
+                            <a class="btn btn-outline-primary btn-lg"
+                                href="{{ url_for('fullrecipe', recipeName=recipeName)}}">Go to Recipe</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <div class="col">
+                <div class="card mb-2">
+                    {% set a = x({"recipeName": likedRecipes[0]}) %}
+
+                    {% set imageName = a.recipeImageName %}
+                    {% set recipeName = a.recipeName %}
+                    <img class="img-fluid" src="{{ url_for('file', filename=imageName) }}" alt="recipe Image">
+
+                    <div class="card-body">
+                        <!-- Recipe Name -->
+                        <h4 class="card-title  text-center">{{ a.recipeName }}</h4>
+
+                        <!-- Recipe Details -->
+
+                        <p class="card-text">
+                            <i class="fas fa-utensils"></i> Serves {{ a.serves }}
+                            <br>
+                            <i class="far fa-clock"></i> Preparation time: {{ a.prepTime }}
+                            <br>
+                            <i class="far fa-clock"></i> Cooking time: {{ a.cookingTime }}
+                        </p>
+
+                        <h5 class="text-center">Recipe Description</h5>
+
+                        <p class="card-text recipe-description">
+                            {{ a.recipeDescription }}
+                        </p>
+
+                        <p>
+                            <span style="color: black;">Author:</span> {{ a.author }}
+                        </p>
+
+                        <div class="text-center">
+                            <a class="btn btn-outline-primary btn-lg"
+                                href="{{ url_for('fullrecipe', recipeName=recipeName)}}">Go to Recipe</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    {% else %}
+    <p>User has not liked any recipes</p>
+    {% endif %}
+</div>
+
+<hr class="width-80">
+
+<!-- Users Posts -->
+<div class="my-posts" id="users-posts">
+    <h2 class="text-center text-primary mt-4 mb-4">{{ user.fname }} {{ user.lname }}'s Posts</h2>
+    {% if user.hasPosted == "0" %}
+    <div class="text-center">
+        <p>{{ user.fname }} {{ user.lname }} has not made any posts yet.</p>
+    </div>
+    {% else %}
+
+    {% endif %}
+</div>
+
+<!-- links back to various pages -->
+<div class="text-center mb-4">
+    <a class="btn btn-outline-primary" href="{{ url_for('recipe') }} ">
+        Back to recipes</a>
+    <a class="btn btn-outline-primary" href="{{ url_for('index') }}">Back Home</a>
+    <a class="btn btn-outline-primary" href="{{ url_for('profile', username=session.user) }}">Back to Profile</a>
+</div>
+
+{% endblock %}

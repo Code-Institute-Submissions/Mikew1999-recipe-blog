@@ -9,14 +9,31 @@
     </form>
 </div>
 
-<div class="text-center mb-2">
+<div class="text-center mb-4">
     <button type="button" onclick="showCategories()" class="btn btn-primary">Categories</button>
 </div>
 
-<div class="hide text-center" id="categories">
-    {% for x in categoryList %}
-    <a href="{{ url_for('category', categoryName=x) }}" class="btn btn-outline-primary">{{ x }}</a>
-    {% endfor %}
+<div class="hide text-center mb-4" id="categories">
+    <div class="container">
+        <div class="row">
+            <div class="col-10 offset-1">
+                {% for x in categoryList %}
+                <a href="{{ url_for('category', categoryName=x) }}" class="btn btn-outline-primary m-1">{{ x }}</a>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    
+</div>
+
+<!-- links back to various pages -->
+<div class="text-center mb-4">
+    <a class="btn btn-outline-primary" href="{{ url_for('recipe') }} ">
+        Back to recipes</a>
+    <a class="btn btn-outline-primary" href="{{ url_for('index') }}">Back Home</a>
+    {% if session.user %}
+        <a class="btn btn-outline-primary" href="{{ url_for('profile', username=session.user) }}">Back to Profile</a>
+    {% endif %}
 </div>
 
 <div class="container text-primary">

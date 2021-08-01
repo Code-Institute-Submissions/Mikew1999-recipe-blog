@@ -24,6 +24,28 @@
     </form>
 </div>
 
-<p>{{ numberOfUsers}} result(s) found</p>
+<p class="text-center">{{ numberOfUsers}} result(s) found</p>
+
+<div class="container">
+    {% for result in results %}
+    {% set profileImage = result.profileImageName %}
+    <div class="row">
+        <div class="col text-center text-primary">
+            <div class="card">
+                <div class="card-body search-profile-card">
+                    <h4 class="uppercase">{{result.fname}} {{result.lname}}</h4>
+
+                    <img class="profile-image profile-pic" src="{{ url_for('file', filename=profileImage) }}"
+                        alt="Profile Image">
+
+                    <div>
+                        <a href="{{ url_for('userProfile', username=result.username) }}" class="btn btn-primary mt-4 mb-4 w-50">View {{result.fname}}'s Profile</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
 
 {% endblock %}

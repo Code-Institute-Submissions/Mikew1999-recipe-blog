@@ -6,6 +6,10 @@
     text-transform: capitalize;
 }
 
+.border-radius-60 {
+    border-radius: 60%;
+}
+
 .m-0-auto {
     margin: 0 auto;
 }
@@ -167,6 +171,10 @@
 .card-body {
     background: #f1f1f1;
     height: 75vh;
+}
+
+.search-profile-card {
+    height: auto!important;
 }
 
 label {
