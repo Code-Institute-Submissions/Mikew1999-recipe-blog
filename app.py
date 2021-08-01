@@ -52,6 +52,69 @@ def log_in():
     return render_template("login.html")
 
 
+@app.route("/resetpassword")
+def resetPassword():
+    return render_template("resetpassword.html")
+
+
+@app.route("/changepassword", methods=["GET", "POST"])
+def changePassword():
+    if request.method == "POST":
+        # finds username from change password form
+        username = request.form.get("username").lower()
+        # finds if username exists in users collection
+        isUser = mongo.db.users.find_one({"username": username})
+        # new password
+        newPassword = request.form.get("password")
+        # confirm new password input
+        confirmNewPassword = request.form.get("confirmNewPassword")
+
+        # checks if newPassword input and confirmNewPassword
+        # inputs match
+        if str(newPassword) == str(confirmNewPassword):
+            # checks if username exists
+            if isUser:
+                userRecord = isUser
+                # finds users email address in db
+                usersEmail = userRecord['email']
+                # gets email address input
+                email = request.form.get("email")
+                # checks if email address matches email in users record
+                if email == usersEmail:
+                    # changes to update
+                    changes = {"$set": {"password": generate_password_hash(
+                        request.form.get("password"))}}
+                    # updates password in users record
+                    mongo.db.users.update_one(userRecord, changes)
+                    # sets session cookie
+                    session['user'] = request.form.get("username").lower()
+                    # flashes message to user confirming their password
+                    # has been updated
+                    flash("Password updated!")
+                    # sends the user to their profile page
+                    return redirect(url_for('profile', username=session['user']))
+                    # if email address doesn't match
+
+                else:
+                    flash("Email address doesn't match our records")
+                    return redirect(url_for('resetPassword'))
+
+            # if user doesn't exist
+            else:
+                # flashes message to user
+                flash(f'Username: {username} does not exist')
+                return redirect(url_for('resetPassword'))
+
+        # if password and confirm new password inputs don't match
+        else:
+            # flashes message to user
+            flash("Password and Confirm new password boxes do not match!")
+            # returns user to reset password page
+            return redirect(url_for('resetPassword'))
+
+    return redirect(url_for('resetPassword'))
+
+
 # create recipe page
 @app.route("/createrecipe")
 def create_recipe():
@@ -100,7 +163,7 @@ def category(categoryName):
     )
 
 
-@app.route("/recipes/signIn")
+@app.route("/recipes/signin")
 def signInToLikeRecipe():
     flash("Please Sign in To Like recipe")
     return redirect(url_for('signup'))
