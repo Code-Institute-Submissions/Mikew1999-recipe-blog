@@ -34,7 +34,6 @@ The site enables the user to create a profile, recipes, make social media style 
         * As a frequent visitor, I would like to return often to check for new recipes
         * As a frequent visitor, I would like to upload recipes often
         * As a frequent visitor, I would like to be able to view how many likes my recipes and posts have
-        * As a frequent visitor, I would like to be able to be able
 
 ## Design
 
@@ -104,12 +103,53 @@ The site enables the user to create a profile, recipes, make social media style 
 
 ## Code Validity
 * HTML Markup Validation - pass
-    * All pages passed the validator when passing in full URL
+    * All pages passed the validator when passing in full URL (except jinja)
 * CSS Markup Validation - pass
-    * All pages passed the validator when passing in full URL
+    * All pages passed the validator when passing in full URL (except jinja)
+* Python Validation - pass
+    * app.py passed with no problems
+
+## Testing user stories
+
+* user stories testing 
+    * The Page shows the user what can be done when first landing on page
+                
+    * The site is easy to navigate with several nav buttons
+                
+    * The site allows the user to browse recipes
+                
+    * The site allows the user to search users
+
+    * The site allows the user to signup
+
+    * The page allows the user to find new recipes
+
+    * The site allows the user to find new posts
+        
+    * The site allows the user to delete their profile
+
+    * The site allows the user to delete their recipes
+
+    * The site allows the user to amend their personal details
+
+    * The site allows the users to see how many likes the recipes have
+
+    * The site allows the user to upload as many recipes as possible
+
+* functionality testing
+    * The navbar is responsive on all devices and compressing nav works
+    * search forms work for recipes and users - works by typing author, recipeName e.t.c
+    * login, signup forms work perfectly - with and without profile pic
+    * create recipe - works perfectly
+
+The site was delevoped defensively so the site will not advise a user if it is their username / password which is incorrect
+
+* performance testing
+    * the site was tested on multiple browser (chrome and edge) and all functionality appears to be working. (some style issues on edge)
+
 
 ## Known Bugs
-No Known bugs found upon deployment.
+Some style issues in edge
 
 # Deployment
 
@@ -117,8 +157,8 @@ No Known bugs found upon deployment.
 
 This website was deployed on Heroku App by following the below steps:
 
-1.  Hello
-1.  Hello
+1.  https://devcenter.heroku.com/articles/github-integration#enabling-github-integration
+1.  https://devcenter.heroku.com/articles/github-integration#automatic-deploys
 
 # Credits
 
