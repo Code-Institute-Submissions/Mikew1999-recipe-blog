@@ -42,7 +42,7 @@ def index():
 
 @app.route("/search", methods=["GET", "POST"])
 def search():
-    option = request.form.get("select")
+    option = request.form.get("search")
     x = mongo.db.users.find_one
     if option == "recipes":
         # creates search index
@@ -53,7 +53,7 @@ def search():
                 ("author", "text")])
 
         # gets text input from search form
-        query = request.form.get("search")
+        query = request.form.get("query")
 
         # performs search
         search = ({"$text": {"$search": query}})

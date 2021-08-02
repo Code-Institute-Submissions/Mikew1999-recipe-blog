@@ -102,7 +102,11 @@ The site enables the user to create a profile, recipes, make social media style 
 
 # Testing
 
-*   
+## Code Validity
+* HTML Markup Validation - pass
+    * All pages passed the validator when passing in full URL
+* CSS Markup Validation - pass
+    * All pages passed the validator when passing in full URL
 
 ## Known Bugs
 No Known bugs found upon deployment.
