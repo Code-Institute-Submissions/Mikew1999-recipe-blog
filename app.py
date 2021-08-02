@@ -108,6 +108,7 @@ def resetPassword():
 @app.route("/changepassword", methods=["GET", "POST"])
 def changePassword():
     if request.method == "POST":
+        print("request method is post")
         # finds username from change password form
         username = request.form.get("username").lower()
         # finds if username exists in users collection
@@ -120,8 +121,10 @@ def changePassword():
         # checks if newPassword input and confirmNewPassword
         # inputs match
         if str(newPassword) == str(confirmNewPassword):
+            print("passwords match")
             # checks if username exists
             if isUser:
+                print("user exists")
                 userRecord = isUser
                 # finds users email address in db
                 usersEmail = userRecord['email']
@@ -129,6 +132,7 @@ def changePassword():
                 email = request.form.get("email")
                 # checks if email address matches email in users record
                 if email == usersEmail:
+                    print("email matches")
                     # changes to update
                     changes = {"$set": {"password": generate_password_hash(
                         request.form.get("password"))}}
