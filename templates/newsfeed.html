@@ -4,14 +4,14 @@
     <h4 class="text-center">News Feed</h4>
 
     <!-- Recipes / users search form -->
-    <div class="text-center mt-2 mb-2" id="search">
+    <div class="text-center mt-2 mb-2" id="search-form">
         <form action="{{ url_for('search') }}" method="POST" style="line-height: 1.5;">
 
             <h4 class="text-center">Find users or recipes</h4>
 
             <label class="mb-2" for="search"><strong>Search for:</strong></label>
 
-            <select name="search">
+            <select name="search" id="search">
                 <option value="recipes">Recipes</option>
                 <option value="users">Users</option>
             </select>

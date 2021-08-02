@@ -41,7 +41,7 @@
         <a class="nav-link" href="#top-recipes">Top Recipes</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link" href="#search">Search Recipes</a>
+        <a class="nav-link" href="#search-form">Search Recipes</a>
     </li>
     {% if session.user %}
     <li class="nav-item">
@@ -77,7 +77,7 @@
 <hr class="width-80">
 
 <!-- Recipes / users search form -->
-<div class="text-center mt-2 mb-2" id="search">
+<div class="text-center mt-2 mb-2" id="search-form">
     <form action="{{ url_for('search') }}" method="POST" style="line-height: 1.5;">
 
         <h4 class="text-center text-primary">Find users or recipes</h4>
