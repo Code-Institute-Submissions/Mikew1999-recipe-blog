@@ -75,6 +75,11 @@ The site enables the user to create a profile, recipes, make social media style 
 *   Delete Recipe - Allows user to delete one of their recipes
 *   Delete Post - Allows user to delete one of their posts
 
+* Future Features
+    * Top posts section
+    * Like posts
+    * Scheduled deletion of files which don't have a fileID in fs.chunks (Didn't have time to implement)
+ 
 # Technologies Used
 
 ## Languages Used
