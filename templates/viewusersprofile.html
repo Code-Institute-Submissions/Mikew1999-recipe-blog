@@ -62,12 +62,12 @@
 
             {% for recipe in userRecipes %}
             <div class="{{ column }}">
-                <div class="card mb-4 mt-2">
+                <div class="mb-4 mt-2">
                     {% set imageName = recipe.recipeImageName %}
                     {% set recipeName = recipe.recipeName %}
                     <img class="card-img-top" src="{{ url_for('file', filename=imageName) }}" alt="recipe Image">
 
-                    <div class="card-body">
+                    <div>
                         <!-- Recipe Name -->
                         <h4 class="card-title  text-center">{{ recipeName }}</h4>
 
