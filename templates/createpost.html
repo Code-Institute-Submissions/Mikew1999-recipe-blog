@@ -1,20 +1,36 @@
 {% extends "base.html" %}
 {% block content %}
 
-<form action="{{ url_for('createPost', username=session.user) }}" method="POST" enctype="multipart/form-data">
-    <div class="float-left">
-        <h4>Select an image <small>(optional)</small></h4>
-        <label for="postimage">Image:</label>
-        <input type="file" name="postimage">
-
-        <br>
-
-        <h4>Create Post</h4>
-        <textarea name="posttext" class="form-control"></textarea>
-        <button type="submit">Submit Post</button>
-
+<div class="container">
+    <div class="row">
+        <div class="col text-center text-primary mt-4">
+            <h2>Create Post</h2>
+        </div>
     </div>
+    <hr class="width-80">
+    <div class="row">
+        <div class="col mt-4 text-primary">
+            <form action="{{ url_for('createPost', username=session.user) }}" method="POST" enctype="multipart/form-data">
+                <div>
+                    <h5>Select an image <small>(optional)</small></h5>
+                    <label for="postimage">Image:</label>
+                    <input type="file" name="postimage">
+                    
+                    <hr class="width-80">
+                    <br>
+            
+                    <h4 class="mt-4">Post Text</h4>
 
-</form>
+                    <textarea name="posttext" class="form-control" required></textarea>
+                    <div class="text-center">
+                        <button class="mt-4 btn btn-primary" type="submit">Submit Post</button>
+                    </div>
+                </div>
+            
+            </form>
+        </div>
+    </div>
+</div>
+
 
 {% endblock %}

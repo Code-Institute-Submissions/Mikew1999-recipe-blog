@@ -253,12 +253,13 @@ def recipe():
 
 @app.route("/recipes/categories/<categoryName>")
 def category(categoryName):
+    print(categoryName)
     x = mongo.db.recipes.find_one
     recipes = mongo.db.recipes.find()
     categories = mongo.db.categories.find_one()
     categoryList = categories['categories']
 
-    results = mongo.db.recipes.find({"categories": categoryName.lower()})
+    results = mongo.db.recipes.find({"categories": categoryName})
     numberOfResults = results.count()
 
     return render_template(
@@ -601,13 +602,11 @@ def deleteProfileImage(username):
            methods=["GET", "POST"])
 def editPersonalDetails(username):
     user = mongo.db.users.find_one({"username": username})
-    newUsername = request.form.get("username").lower()
     newEmail = request.form.get("email").lower()
     newFirstName = request.form.get("fname").lower()
     newLastName = request.form.get("lname").lower()
 
     update = {"$set": {
-        "username": newUsername,
         "email": newEmail,
         "fname": newFirstName,
         "lname": newLastName}}
