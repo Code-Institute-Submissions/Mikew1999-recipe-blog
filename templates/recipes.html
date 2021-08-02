@@ -40,7 +40,7 @@
 <div id="top-recipes" class="text-primary">
     <h4 class="text-center">Top Recipes</h4>
 
-    <div class="container-fluid">
+    <div class="container">
         <div class="row">
             {% for recipe in topRecipes %}
             <div class="col-sm-12 col-xl-6">
@@ -51,7 +51,7 @@
                     <img class="card-img-top" src="{{ url_for('file', filename=imageName) }}" alt="recipe Image">
                     <div class="card-body height-85">
                         <!-- Recipe Name -->
-                        <h4 class="card-title  text-center">{{ recipeName }}</h4>
+                        <h4 class="card-title text-center">{{ recipeName }}</h4>
 
                         <!-- Recipe Details -->
 
@@ -64,7 +64,7 @@
                         </p>
 
                         {% if recipe.categories %}
-                <div class="mb-4 recipe-categories">
+                <div class="recipe-categories">
                     <h6>Categories</h6>
                     {% set categories = recipe.categories %}
                     {% if categories|length > 1 %}
@@ -114,7 +114,7 @@
                 </div>
                 {% endif %}
 
-                        <h5 class="margin-top-1">Recipe Description</h5>
+                        <h5 class="mt-4">Recipe Description</h5>
 
                         <p class="card-text recipe-description">
                             {{ recipe.recipeDescription }}

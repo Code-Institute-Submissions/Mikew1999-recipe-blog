@@ -120,7 +120,7 @@
             {% elif numberOfRecipes %2 == 0 %}
             {% set column = "col-md-12 col-lg-6" %}
             {% else %}
-            {% set column = "col-6 offset-3" %}
+            {% set column = "col-12" %}
             {% endif %}
 
             {% for recipe in userRecipes %}
@@ -128,8 +128,7 @@
                 <div class="card mb-4 mt-2">
                     {% set imageName = recipe.recipeImageName %}
                     {% set recipeName = recipe.recipeName %}
-                    <img class="card-img-top" src="{{ url_for('file', filename=imageName) }}" alt="recipe Image">
-
+                    <img class="img-fluid" src="{{ url_for('file', filename=imageName) }}" alt="recipe Image">
                     <div class="card-body">
                         <!-- Recipe Name -->
                         <h4 class="card-title  text-center">{{ recipeName }}</h4>
@@ -221,7 +220,7 @@
                 <div class="card mb-4 mt-4">
                     {% set imageName = recipe.recipeImageName %}
                     {% set recipeName = recipe.recipeName %}
-                    <img class="img-fluid" src="{{ url_for('file', filename=imageName) }}" alt="recipe Image">
+                    <img class="img-fluid my-recipes-img" src="{{ url_for('file', filename=imageName) }}" alt="recipe Image">
 
                     <div class="card-body">
                         <!-- Recipe Name -->
