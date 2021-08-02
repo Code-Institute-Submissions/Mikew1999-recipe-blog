@@ -7,9 +7,6 @@
 {% set username = session.user %}
 {% endif %}
 
-<!-- Recipe Name -->
-<h4 class="card-title  text-center text-primary capitalize">{{ recipeName }}</h4>
-
 <!-- Search form -->
 <div class="text-center mt-4 mb-2">
     <form action="{{ url_for('searchRecipes') }}" method="POST" style="line-height: 1.5;">
@@ -40,6 +37,12 @@
             </div>
         </div>
         <div class="row">
+            <div class="col">
+                <!-- Recipe Name -->
+                <h4 class="card-title  text-center text-primary capitalize">Recipe Name: {{ recipeName }}</h4>
+            </div>
+        </div>
+        <div class="row">
             <div class="col-xs-12 col-lg-4 offset-lg-2">
                 <!-- Recipe Details -->
                 <h4 class="text-center text-primary">Recipe Details</h4>
@@ -64,8 +67,8 @@
             <div class="col text-center text-primary">
                 <!-- Categories -->
                 {% if recipe.categories %}
-                <div class="mb-4 recipe-categories">
-                    <h6>Categories</h6>
+                <div class="mb-4 mt-4 recipe-categories">
+                    <h4>Categories</h4>
                     {% set categories = recipe.categories %}
                     {% if categories|length > 1 %}
                     <ul class="list-inline">
@@ -143,33 +146,56 @@
 
         <div class="row">
             <div class="col">
-                <form class="mt-4 text-center" action="#" method="POST">
-                    <p>
-                        <a class="likes" onclick="like(recipeName)">&#x1F44D;</a>
-                        <span>Likes:
-                            {{recipe.likes }} </span>
-                    </p>
-                </form>
+                <p class="mt-4 text-center">
+                    <!-- Sets username variable-->
+                    {% set username = session.user %}
+                    {% set user = x({"username": username.lower() }) %}
+
+                    {% set recipeName = recipe.recipeName %}
+                    {% set likes = user.likedRecipes %}
+                    {% if likes %}
+                        {% set listOfLikedRecipes = likes %}
+                        {% if listOfLikedRecipes|length >= 1  %}
+                            {% if recipeName in listOfLikedRecipes %}
+                                    <a class="likes"
+                                        href="{{ url_for('unlike', recipeName=recipeName, username=username, prevPage=recipe) }}">
+                                        <i class="fas fa-heart"></i>
+                                    </a>
+                                    <span>Likes: {{recipe.likes }} </span>
+                            {% else %}
+                            <a class="likes"
+                                href="{{ url_for('like', recipeName=recipeName, username=username, prevPage=recipe) }}">
+                                <i class="far fa-heart"></i>
+                            </a>
+                            <span>Likes: {{recipe.likes }} </span>
+                            {% endif %}
+                        {% endif %}
+                    {% else %}
+                    <a class="likes"
+                        href="{{ url_for('like', recipeName=recipeName, username=username, prevPage=recipe) }}">
+                        <i class="far fa-heart"></i>
+                    </a>
+
+                    <span>Likes: {{recipe.likes }} </span>
+                    {% endif %}
+                </p>
             </div>
         </div>
 
-        {% if session.user %}
-        {% if username == recipe.author %}
-        <div class="row">
-            <div class="col text-center">
-                <a class="btn btn-primary" href="">Edit Recipe</a>
+        {% if session.user == author %}
+        <div class="row text-center">
+            <div class="col-6">
+                <a class="btn btn-primary" href="{{ url_for('edit_recipe', recipeName=recipeName) }}">Edit Recipe</a>
             </div>
-            <div class="row">
-                <div class="col">
-                    <form action="{{ url_for('deleteRecipe', recipeName=recipeName, username=username) }}"
-                        method="POST">
-                        <button tyle="submit" class="btn btn-danger">Delete Recipe</button>
-                    </form>
-                </div>
+            <div class="col-6">
+                <form action="{{ url_for('deleteRecipe', recipeName=recipeName, username=username) }}"
+                    method="POST">
+                    <button tyle="submit" class="btn btn-danger">Delete Recipe</button>
+                </form>
             </div>
-            {% endif %}
-            {% endif %}
         </div>
+        {% endif %}
+        
 
     </div>
 </main>

@@ -73,17 +73,21 @@
             <div class="row">
                 <div class="col-sm-12 col-md-3 offset-md-3">
                     <label for="username">Username: </label>
-                    <input type="text" name="username" class="form-control form-personal-details" value="{{ user['username'] }}">
+                    <input type="text" name="username" class="form-control form-personal-details"
+                        value="{{ user['username'] }}">
                     <br>
                     <label for="fname">First Name: </label>
-                    <input type="text" name="fname" class="form-control form-personal-details" value="{{ user['fname'] }}">
+                    <input type="text" name="fname" class="form-control form-personal-details"
+                        value="{{ user['fname'] }}">
                 </div>
                 <div class="col-sm-12 col-md-3">
                     <label for="email">Email Address: </label>
-                    <input type="email" name="email" class="form-control form-personal-details" value="{{ user['email'] }}">
+                    <input type="email" name="email" class="form-control form-personal-details"
+                        value="{{ user['email'] }}">
                     <br>
                     <label for="lname">Surname: </label>
-                    <input type="text" name="lname" class="form-control form-personal-details" value="{{ user['lname'] }}">
+                    <input type="text" name="lname" class="form-control form-personal-details"
+                        value="{{ user['lname'] }}">
                 </div>
             </div>
             <div class="row">
@@ -154,6 +158,40 @@
                             <a class="btn btn-outline-primary btn-lg"
                                 href="{{ url_for('fullrecipe', recipeName=recipeName)}}">Go to / edit Recipe</a>
                         </div>
+
+                        <p class="mt-4 text-center">
+                            <!-- Sets username variable-->
+                            {% set username = session.user %}
+
+                            {% set user = x({"username": username}) %}
+                            {% set recipeName = recipe.recipeName %}
+                            {% if likes %}
+                                {% set listOfLikedRecipes = likes %}
+                                {% if listOfLikedRecipes|length >= 1  %}
+                                    {% if recipeName in listOfLikedRecipes %}
+                                            <a class="likes"
+                                                href="{{ url_for('unlike', recipeName=recipeName, username=username, prevPage=recipe) }}">
+                                                <i class="fas fa-heart"></i>
+                                            </a>
+                                            <span>Likes: {{recipe.likes }} </span>
+                                    {% else %}
+                                    <a class="likes"
+                                        href="{{ url_for('like', recipeName=recipeName, username=username, prevPage=recipe) }}">
+                                        <i class="far fa-heart"></i>
+                                    </a>
+                                    <span>Likes: {{recipe.likes }} </span>
+                                    {% endif %}
+                                {% endif %}
+                            {% else %}
+                            <a class="likes"
+                                href="{{ url_for('like', recipeName=recipeName, username=username, prevPage=recipe) }}">
+                                <i class="far fa-heart"></i>
+                            </a>
+
+                            <span>Likes: {{recipe.likes }} </span>
+                            {% endif %}
+                        </p>
+
                     </div>
                 </div>
             </div>
@@ -207,6 +245,39 @@
 
                         <p>
                             <span style="color: black;">Author:</span> {{ recipe.author }}
+                        </p>
+
+                        <p class="mt-4 text-center">
+                            <!-- Sets username variable-->
+                            {% set username = session.user %}
+
+                            {% set user = x({"username": username}) %}
+                            {% set recipeName = recipe.recipeName %}
+                            {% if likes %}
+                                {% set listOfLikedRecipes = likes %}
+                                {% if listOfLikedRecipes|length >= 1  %}
+                                    {% if recipeName in listOfLikedRecipes %}
+                                            <a class="likes"
+                                                href="{{ url_for('unlike', recipeName=recipeName, username=username, prevPage=recipe) }}">
+                                                <i class="fas fa-heart"></i>
+                                            </a>
+                                            <span>Likes: {{recipe.likes }} </span>
+                                    {% else %}
+                                    <a class="likes"
+                                        href="{{ url_for('like', recipeName=recipeName, username=username, prevPage=recipe) }}">
+                                        <i class="far fa-heart"></i>
+                                    </a>
+                                    <span>Likes: {{recipe.likes }} </span>
+                                    {% endif %}
+                                {% endif %}
+                            {% else %}
+                            <a class="likes"
+                                href="{{ url_for('like', recipeName=recipeName, username=username, prevPage=recipe) }}">
+                                <i class="far fa-heart"></i>
+                            </a>
+
+                            <span>Likes: {{recipe.likes }} </span>
+                            {% endif %}
                         </p>
 
                         <div class="text-center">

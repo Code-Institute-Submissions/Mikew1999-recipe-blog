@@ -240,10 +240,12 @@ def recipe():
     x = mongo.db.users.find_one
     categories = mongo.db.categories.find_one()
     categoryList = categories['categories']
+    topRecipes = mongo.db.recipes.find().limit(2).sort("likes", -1)
 
     return render_template(
         "recipes.html",
         recipes=recipes,
+        topRecipes=topRecipes,
         categories=categories,
         categoryList=categoryList,
         x=x)
@@ -281,12 +283,28 @@ def signInToLikeRecipe():
 @app.route("/recipes/<recipeName>")
 def fullrecipe(recipeName):
     recipe = mongo.db.recipes.find_one({"recipeName": recipeName})
-
+    author = recipe['author']
+    x = mongo.db.users.find_one
     return render_template(
         "fullrecipe.html",
+        x=x,
+        author=author,
         recipeName=recipeName,
         recipe=recipe
     )
+
+
+@app.route("/recipes/<recipeName>/edit_recipe")
+def edit_recipe(recipeName):
+    recipe = mongo.db.recipes.find_one({"recipeName": recipeName})
+    x = mongo.db.users.find_one
+    categories = mongo.db.categories.find_one()
+    categoryList = categories['categories']
+    return render_template(
+                "editrecipe.html",
+                x=x,
+                categoryList=categoryList,
+                recipe=recipe)
 
 
 @app.route("/recipes/<recipeName>/<username>/delete_recipe",
