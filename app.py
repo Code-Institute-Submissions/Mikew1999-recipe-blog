@@ -179,8 +179,8 @@ def create_recipe():
 def newsFeed():
     posts = mongo.db.posts.find().sort("_id", -1)
     return render_template(
-                    "newsfeed.html",
-                    posts=posts)
+        "newsfeed.html",
+        posts=posts)
 
 
 @app.route("/<username>/create_post", methods=["GET", "POST"])
@@ -200,11 +200,11 @@ def createPost(username):
             # saves file to mongodb
             mongo.save_file(securedImage, image)
             post = {
-                    "_id": newPostID,
-                    "postimage": securedImage,
-                    "posttext": request.form.get("posttext"),
-                    "author": username
-                }
+                "_id": newPostID,
+                "postimage": securedImage,
+                "posttext": request.form.get("posttext"),
+                "author": username
+            }
 
             mongo.db.posts.insert_one(post)
 
@@ -301,10 +301,10 @@ def edit_recipe(recipeName):
     categories = mongo.db.categories.find_one()
     categoryList = categories['categories']
     return render_template(
-                "editrecipe.html",
-                x=x,
-                categoryList=categoryList,
-                recipe=recipe)
+        "editrecipe.html",
+        x=x,
+        categoryList=categoryList,
+        recipe=recipe)
 
 
 @app.route("/recipes/<recipeName>/<username>/delete_recipe",

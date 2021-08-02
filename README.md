@@ -9,7 +9,6 @@ The site enables the user to create a profile, recipes, make social media style 
 <!-- User Experience (UX) -->
 # User Experience (UX)
 
-
 * User Stories
     * First Time Visitor
         * As a First Time Visitor, I want to easily understand what this website is used for and why it should appeal to me.
@@ -26,7 +25,9 @@ The site enables the user to create a profile, recipes, make social media style 
 
 
         * Returning Visitor Goals
-            * Hello
+            * As a returning visitor, I would like to view recipes I may have missed since last time I browsed the page
+            * As a returning visitor, I would like to view new posts I may have missed since last time I browsed the page
+            * As a returning visitor, I would like to 
 
         * Frequent Users Goals
             * Hello
@@ -37,14 +38,15 @@ The site enables the user to create a profile, recipes, make social media style 
     * The site is comprised of 2 colours: white and blue.
     The 2 colours provide good contrast for text and provides the white backgrounds provide a nice backdrop for images uploaded by the user. 
     
-    * Typography
-        * Hello
-    
-    * Imagery
-        * Hello
-    
-    * Wireframes
-        * Hello
+* Typography
+    * 
+
+* Imagery
+    * I have chosen to use bright and eye-catching images to tempt the users tasebuds.
+        This draws the user in and hopefully will attract them to keep coming back for more recipes
+
+* Wireframes
+    * Please see my [wireframes](foodspacewireframes.pdf)
 
 # Features
 
@@ -97,8 +99,6 @@ The site enables the user to create a profile, recipes, make social media style 
 
 # Testing
 
-## Further Testing
-
 ## Known Bugs
 No Known bugs found upon deployment.
 
@@ -114,6 +114,7 @@ This website was deployed on Heroku App by following the below steps:
 # Credits
 
 ## code
+I would like to thank [Pretty Printed](https://www.youtube.com/channel/UC-QDfvrRIDB6F0bIO4I4HkQ) for my understanding of saving and retrieving files from mongodb
 
 ## Content
 
@@ -125,6 +126,3 @@ All media was sourced from [pixabay](https://pixabay.com/)
     * carbonara.jpg - Image by [Wow Phochiangrak](https://pixabay.com/users/wow_pho-916237/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=712664)
     * chicken-319233_640.jpg - Image by [koisra](https://pixabay.com/users/koisra-137852/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=319233)
     * 
-
-## Acknowledgments
-

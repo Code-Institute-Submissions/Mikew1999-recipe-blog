@@ -48,7 +48,7 @@
         <a class="nav-link" href="#liked-recipes">Liked Recipes</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link" href="{{ url_for('create_recipe') }}">Create recipe</a>
+        <a class="nav-link" href="{{ url_for('createPost', username=session.user) }}">Make New Post</a>
     </li>
     {% else %}
     <li class="nav-item">
@@ -68,7 +68,7 @@
             <p class="lead">
                 Food Space is a the perfect place for finding tasty new food and sharing your own recipes with others.
                 <br>
-                Make friends and find new great food every day for free!
+                Find other users and new great food every day for free!
             </p>
         </div>
     </div>
@@ -80,7 +80,7 @@
 <div class="text-center mt-2 mb-2" id="search">
     <form action="{{ url_for('search') }}" method="POST" style="line-height: 1.5;">
 
-        <h4 class="text-center text-primary">Find new friends or recipes</h4>
+        <h4 class="text-center text-primary">Find users or recipes</h4>
 
         <label class="mb-2" for="search"><strong>Search for:</strong></label>
 
