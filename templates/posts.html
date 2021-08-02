@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
-<main>
+<div class="my-posts container">
     <h4 class="text-center">News Feed</h4>
 
     <!-- Recipes / users search form -->
@@ -34,7 +34,7 @@
         </div>
     </div>
 
-    <div class="container my-posts" id="my-posts">
+    <div class="container" id="my-posts">
         {% for post in posts %}
         <div class="row mb-4">
 
@@ -45,16 +45,15 @@
                         <img class="post-image" src="{{ url_for('file', filename=post.postimage) }}" alt="Post Image">
                     </div>
                     {% endif %}
-                    <p>Author: {{ post.author }} <hr class="w-80"></p>
-                    <hr>
+                    <p>Author: {{ post.author }}</p>
                     <p class="lead mb-4">{{ post.posttext }}</p>
-
                 </div>
             </div>
-            
+
         </div>
         {% endfor %}
+        <hr class="width-80">
     </div>
-</main>
+</div>
 
 {% endblock %}

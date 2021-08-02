@@ -175,11 +175,11 @@ def create_recipe():
         categoryList=categoryList)
 
 
-@app.route("/newsfeed")
-def newsFeed():
+@app.route("/newsfeed/posts")
+def posts():
     posts = mongo.db.posts.find().sort("_id", -1)
     return render_template(
-        "newsfeed.html",
+        "posts.html",
         posts=posts)
 
 
@@ -231,6 +231,15 @@ def createPost(username):
             return redirect(url_for('index'))
 
     return render_template("createpost.html")
+
+
+# like post
+@app.route("/posts/<author>/<username>/like_post/",
+           methods=["GET", "POST"])
+def likePost(author, username):
+    print(author)
+    print(username)
+    return redirect(url_for('newsFeed'))
 
 
 # recipes page
@@ -796,4 +805,4 @@ def searchRecipes():
 if __name__ == "__main__":
     app.run(host=os.environ.get("IP"),
             port=int(os.environ.get("PORT")),
-            debug=True)
+            debug=False)

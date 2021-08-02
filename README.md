@@ -1,6 +1,6 @@
 # Food Space
 
-[Food Space](https://mike-recipe-blog.herokuapp.com/) is a website for people who love food!
+[View Live Project Here](https://mike-recipe-blog.herokuapp.com/) is a website for people who love food!
 
 The main goals of the site are to allow users to view and share great recipes with others around the world. 
 
@@ -22,14 +22,19 @@ The site enables the user to create a profile, recipes, make social media style 
 
         * As a First Time Visitor, I want to have the option to sign up for the website in order to post or like a recipe
 
-
     * Returning Visitor Goals
         * As a returning visitor, I would like to view recipes I may have missed since last time I browsed the page
         * As a returning visitor, I would like to view new posts I may have missed since last time I browsed the page
-        * As a returning visitor, I would like to 
+        * As a returning visitor, I would like to be able to delete my profile
+        * As a returning visitor, I would like to be able to delete my recipes
+        * As a returning visitor, I would like to be able amend my personal details
+        * As a returning visitor, I would like to be able to see how many likes I have on my recipes and posts
 
     * Frequent Users Goals
-        * Hell
+        * As a frequent visitor, I would like to return often to check for new recipes
+        * As a frequent visitor, I would like to upload recipes often
+        * As a frequent visitor, I would like to be able to view how many likes my recipes and posts have
+        * As a frequent visitor, I would like to be able to be able
 
 ## Design
 

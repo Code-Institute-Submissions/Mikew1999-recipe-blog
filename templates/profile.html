@@ -342,10 +342,24 @@
     <h2 class="text-center text-primary mt-4 mb-4">My Posts</h2>
     {% if user.hasPosted == "0" %}
     <div class="text-center">
-        <p>You have not made any posts yet. You can create a new post <a href="#">here</a></p>
+        <p>You have not made any posts yet. You can create a new post <a href="{{ url_for('createPost', username=username) }}">here</a></p>
     </div>
     {% else %}
-
+    <div class="container">
+        {% for post in posts %}
+            {% if post.author == user.username.lower() %}
+                <div class="row">
+                    <div class="col">
+                        <p>Author: {{ post.author }}</p>
+                        <p class="lead">
+                            {{ post.posttext }}
+                        </p>
+                    </div>
+                </div>
+                <hr class="width-80">
+            {% endif %}
+        {% endfor %}
+    </div>
     {% endif %}
 </div>
 

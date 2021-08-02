@@ -37,3 +37,5 @@ function showCategories() {
     // toggles visibility of category buttons
     $('#categories').toggle();
 }
+
+$('.my-posts').css("color", "black")
