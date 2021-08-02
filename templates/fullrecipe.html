@@ -1,10 +1,8 @@
 {% extends "base.html" %}
 {% block content %}
 
-{% set recipeName = recipe.recipeName %}
-
 {% if session.user %}
-{% set username = session.user %}
+    {% set username = session.user %}
 {% endif %}
 
 <!-- Search form -->
@@ -39,7 +37,7 @@
         <div class="row">
             <div class="col">
                 <!-- Recipe Name -->
-                <h4 class="card-title  text-center text-primary capitalize">Recipe Name: {{ recipeName }}</h4>
+                <h4 class="card-title text-center text-primary capitalize">{{ recipeName }}</h4>
             </div>
         </div>
         <div class="row">

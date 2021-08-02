@@ -295,9 +295,12 @@ def fullrecipe(recipeName):
     recipe = mongo.db.recipes.find_one({"recipeName": recipeName})
     author = recipe['author']
     x = mongo.db.users.find_one
+    categories = recipe['categories']
+
     return render_template(
         "fullrecipe.html",
         x=x,
+        categories=categories,
         author=author,
         recipeName=recipeName,
         recipe=recipe
