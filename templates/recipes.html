@@ -274,8 +274,8 @@
                             <!-- Sets username variable-->
                             {% set username = session.user %}
 
-                            {% if x({"username": username}) %}
-                                {% set user = x({"username": username}) %}
+                            {% if user({"username": username}) %}
+                                {% set user = user({"username": username}) %}
                                 {% if user.likedRecipes %}
                                     {% set listOfLikedRecipes = user.likedRecipes %}
                                     {% if listOfLikedRecipes|length >= 1  %}

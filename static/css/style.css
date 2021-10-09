@@ -1,7 +1,17 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lobster&family=Montserrat&display=swap');
 
 h1, h2, h3, h4, h5, h6 {
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Lobster', cursive;
+}
+
+.main-header {
+    color: rgb(255, 255, 255);
+    -webkit-text-stroke: 1px black;
+    text-shadow: 
+        1px 1px 1px rgb(0, 0, 0),
+        1px -1px 1px rgb(0, 0, 0),
+        -1px 1px 1px rgb(0, 0, 0),
+        1px 1px 1px rgb(0, 0, 0);
 }
 
 .uppercase {
