@@ -1,14 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
 
-<div class="text-center mb-2">
-    <form class="mt-4" action="{{ url_for('searchRecipes') }}" method="POST" style="line-height: 1.5;">
-        <label for="search"><strong>Search recipes:</strong></label>
-        <input type="text" name="search" id="search" class="rounded search-form" autocomplete="off" placeholder="Spaghetti Bolognaise" required>
-        <button type="submit" class="btn search-button"><i class="fas fa-search text-primary"></i></button>
-    </form>
-</div>
-
 <div class="text-center mb-4">
     <button type="button" onclick="showCategories()" class="btn btn-primary">Categories</button>
 </div>
@@ -36,14 +28,18 @@
     {% endif %}
 </div>
 
+
+{% if results %}
+    Results there
+{% else %}
 <!-- Top Recipes -->
 <div id="top-recipes" class="text-primary">
     <h4 class="text-center">Top Recipes</h4>
 
-    <div class="container">
+    <div class="container-fluid">
         <div class="row">
             {% for recipe in topRecipes %}
-            <div class="col-sm-12 col-xl-6">
+            <div class="col-sm-12 col-lg-6 col-xl-4">
 
                 <div class="card mb-4 mt-4">
                     {% set imageName = recipe.recipeImageName %}
@@ -131,8 +127,8 @@
                             <!-- Sets username variable-->
                             {% set username = session.user %}
 
-                            {% if x({"username": username}) %}
-                            {% set user = x({"username": username}) %}
+                            {% if db.find({"username": username}) %}
+                            {% set user = db.find({"username": username}) %}
                             {% if user.likedRecipes %}
                             {% set listOfLikedRecipes = user.likedRecipes %}
                             {% if listOfLikedRecipes|length >= 1  %}
@@ -182,7 +178,7 @@
 
 <hr class="width-80">
 
-<div class="container text-primary">
+<div class="container-fluid text-primary">
     <div class="row">
         <div class="col">
             <h5 class="text-center">All Recipes</h5>
@@ -322,4 +318,6 @@
         {% endfor %}
     </div>
 </div>
+{% endif %}
+
 {% endblock %}

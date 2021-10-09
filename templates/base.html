@@ -5,7 +5,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <meta name="Description" content="Enter your description here" />
+    <meta name="Description" content="" />
+    <!-- JS -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <script src="https://kit.fontawesome.com/7e5b0bd132.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"
+        integrity="sha384-eMNCOe7tC1doHpGoWe/6oMVemdAVTMs2xqW4mwXrXsW0L84Iytr2wi5v2QjrP/xp" crossorigin="anonymous">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.min.js"
+        integrity="sha384-cn7l7gDp0eyniUwwAZgrzD06kc/tftFf19TOAs2zVinnD/C7E91j9yyk5//jjpt/" crossorigin="anonymous">
+    </script>
+    <!-- Css -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/css/bootstrap.min.css"
         type="text/css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css"
@@ -16,64 +27,110 @@
 
 <body>
     <header>
-        <nav id="nav" class="navbar navbar-light bg-light navbar-expand-lg">
-            <a class="navbar-brand" href="{{ url_for('index') }}"><i class="fas fa-hamburger"></i> Food Space</a>
-    
-            <!--Navbar collapse button-->
-            <div id="nav-collapse-button">
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#nav-collapse">
+        <nav id="nav" class="navbar navbar-expand-md bg-light navbar-light">
+            <div class="container-fluid">
+
+
+                <a class="navbar-brand" href="{{ url_for('index') }}"><img
+                        src="https://img.icons8.com/plasticine/100/000000/kawaii-pizza.png" /></a>
+
+
+                <!--Navbar collapse button-->
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav-collapse"
+                    aria-controls="nav-collapse" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-            </div>
-    
-            <!--links collapsed into collapse button on smaller devices-->
-            <div class="navbar-collapse collapse w-100" id="nav-collapse">
-                <ul class="nav navbar-nav ml-auto w-100 justify-content-end">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('index') }}">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('recipe') }}"> Recipes</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('posts') }}">News Feed</a>
-                    </li>
-                    {% if session.user %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('createPost', username=session.user) }}">Create New Post</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('create_recipe') }}">Create Recipe</a>
-                    </li>
-                    <li class="nav-item">
-                        {% set username = session.user %}
-                        <a class="nav-link" href="{{ url_for('profile', username=username) }}">Profile</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('logout') }}"> Logout</a>
-                    </li>
-                    {% endif %}
-                    {% if not session.user %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('log_in') }}"> Login</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('signup') }}"> Sign Up</a>
-                    </li>
-                    {% endif %}
-                </ul>
+
+                <!--links collapsed into collapse button on smaller devices-->
+                <div class="collapse navbar-collapse" id="nav-collapse">
+
+                    <!-- Search form -->
+                    <span class="mx-auto">
+                        <form class="form" action="{{ url_for('recipe') }}" method="POST">
+                            <div class="input-group">
+                                <input class="form-control border border-success" type="text" name="q"
+                                    placeholder="Search our site">
+
+                                <div class="input-group-append">
+                                    <button class="form-control btn btn-black border border-success" type="submit">
+                                        <span class="icon">
+                                            <i class="fas fa-search"></i>
+                                        </span>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </span>
+
+                    <span class="mr-2">
+                        <ul class="list-inline">
+                            {% if session.user %}
+                            <li class="list-inline-item">
+                                {% set username = session.user %}
+                                <a class="btn" href="{{ url_for('profile', username=username) }}">Profile</a>
+                            </li>
+                            <li class="list-inline-item">
+                                <a class="btn" href="{{ url_for('logout') }}"> Logout</a>
+                            </li>
+                            {% endif %}
+                            {% if not session.user %}
+                            <li class="list-inline-item">
+                                <a class="btn" href="{{ url_for('log_in') }}"> Login</a>
+                            </li>
+                            <li class="list-inline-item">
+                                <a class="btn" href="{{ url_for('signup') }}"> Sign Up</a>
+                            </li>
+                            {% endif %}
+                        </ul>
+                    </span>
+                </div>
             </div>
         </nav>
     </header>
 
+    <nav class="navbar p-0 bg-light navbar-light">
+        <ul class="list-inline mx-auto">
+            <li class="list-inline-item">
+                <div class="dropdown">
+                    <button class="btn dropdown-toggle" type="button" id="recipedropdown" data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                        Recipes
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="recipedropdown">
+                        <li><a class="dropdown-item btn" href="{{ url_for('recipe') }}">All Recipes</a></li>
+                        <li><a class="dropdown-item" href="#">Top Recipes</a></li>
+                        <li><a class="dropdown-item" href="#">Add another recipe</a></li>
+                    </ul>
+                </div>
+            </li>
+            <li class="list-inline-item">
+
+            </li>
+            <li class="list-inline-item">
+                <div class="dropdown">
+                    <button class="btn dropdown-toggle" type="button" id="newsfeeddropdown" data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                        News Feed
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="newsfeeddropdown">
+                        <li><a class="dropdown-item" href="{{ url_for('posts') }}">News Feed</a></li>
+                        <li><a class="dropdown-item" href="#">Make a new post</a></li>
+                    </ul>
+                </div>
+                
+            </li>
+        </ul>
+
+    </nav>
+
     {% with messages = get_flashed_messages() %}
-        {% if messages %}
-            {% for message in messages %}
-            <div class="text-primary mt-4">
-                <p class="text-center"><strong>{{ message }}</strong></p>
-            </div>
-            {% endfor %}
-        {% endif %}
+    {% if messages %}
+    {% for message in messages %}
+    <div class="mt-4">
+        <p class="text-center"><strong>{{ message }}</strong></p>
+    </div>
+    {% endfor %}
+    {% endif %}
     {% endwith %}
 
     {% block content %}
@@ -82,26 +139,16 @@
     <footer class="font-small">
         <ul class="footer">
             <li>
-                <a href="https://facebook.com/"><i class="fab fa-facebook-square"></i>  Facebook </a>
+                <a href="https://facebook.com/"><i class="fab fa-facebook-square"></i> Facebook </a>
             </li>
             <li>
-                <a href="https://twitter.com"><i class="fab fa-twitter-square"></i>  Twitter </a>
+                <a href="https://twitter.com"><i class="fab fa-twitter-square"></i> Twitter </a>
             </li>
             <li>
-                <a href="https://www.instagram.com"><i class="fab fa-instagram-square"></i>  Instagram </a>
+                <a href="https://www.instagram.com"><i class="fab fa-instagram-square"></i> Instagram </a>
             </li>
         </ul>
     </footer>
-
-    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
-        integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous">
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
-        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous">
-    </script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
-        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous">
-    </script>
     <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
 
 </body>

@@ -1,9 +1,7 @@
-body {
-    font-family: 'Open Sans', sans-serif;
-}
+@import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
 
 h1, h2, h3, h4, h5, h6 {
-    font-family: 'sans-serif', Open Sans;
+    font-family: 'Montserrat', sans-serif;
 }
 
 .uppercase {
@@ -46,31 +44,6 @@ h1, h2, h3, h4, h5, h6 {
     margin-top: 6rem;
 }
 
-.bg-grey {
-    background-color: #e9ecef;
-}
-
-.btn-white {
-    color: #007bff;
-    border-color: #fff;
-    background-color: #fff;
-}
-
-.btn-white:hover {
-    color: #fff;
-    background-color: #007bff;
-    border-color: #007bff;
-}
-
-.btn-outline-primary:hover {
-    color: #fff!important;
-    background-color: #007bff;
-}
-
-.full-recipe-details {
-    background-color: #f1f1f1;
-}
-
 .categories {
     list-style-type: none;
     padding-left: 0!important;
@@ -96,26 +69,6 @@ h1, h2, h3, h4, h5, h6 {
 
 .height-95 {
     height: 95vh;
-}
-
-.nav .nav-item .nav-link, .navbar-brand {
-    color: #007bff!important;
-    text-transform: uppercase;
-}
-
-.nav .nav-item .btn-primary {
-    border-radius: 0!important;
-    border-right: 1px solid #fff;
-}
-
-.nav-pills .nav-item .nav-link {
-    border: 1px solid #007bff;
-}
-
-.nav-pills .nav-item .nav-link:hover {
-    border: 1px solid #fff;
-    background-color: #007bff;
-    color: #fff!important;
 }
 
 .align-middle {
@@ -207,10 +160,6 @@ h1, h2, h3, h4, h5, h6 {
     height: auto!important;
 }
 
-label {
-    color: #007bff;
-}
-
 .ingredient-list {
     list-style-type: circle;
 }
@@ -250,8 +199,7 @@ label {
 }
 
 .search-form {
-    width: 40vw;
-    border: 1px solid #007bff;
+    text-align: center;
 }
 
 .profile-background {
@@ -260,10 +208,6 @@ label {
 
 .card {
     box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
-}
-
-.text-white {
-    color: white!important;
 }
 
 .post-image {

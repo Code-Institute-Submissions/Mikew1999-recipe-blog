@@ -20,6 +20,47 @@ app.secret_key = os.environ.get("SECRET_KEY")
 mongo = PyMongo(app)
 
 recipes = mongo.db.recipes.find()
+categories = mongo.db.categories.find_one()
+categoryList = categories['categories']
+
+
+# recipes page
+@app.route("/recipes", methods=["GET", "POST"])
+def recipe():
+    print(request.method)
+    recipes = mongo.db.recipes.find()
+    user = mongo.db.users.find_one
+    topRecipes = mongo.db.recipes.find().limit(2).sort("likes", -1)
+    if request.method == "POST":
+        db = mongo.db.recipes
+        mongo.db.recipes.create_index(
+            [
+                ("recipeName", "text"),
+                ("recipeDescription", "text"),
+                ("author", "text")])
+
+        # gets text input from search form
+        query = request.form.get("q")
+
+        # performs search
+        search = ({"$text": {"$search": query}})
+        # finds results
+        results = mongo.db.recipes.find(search)
+
+        return render_template(
+            "recipes.html",
+            results=results,
+            query=query,
+            db=db)
+    else:
+        return render_template(
+            "recipes.html",
+            recipes=recipes,
+            topRecipes=topRecipes,
+            categories=categories,
+            categoryList=categoryList,
+            user=user,
+            db=mongo.db.recipes)
 
 
 # function to retrieve file
@@ -32,58 +73,12 @@ def file(filename):
 @app.route("/")
 def index():
     topRecipes = mongo.db.recipes.find().limit(3).sort("likes", -1)
-    x = mongo.db.users.find_one
+    user = mongo.db.users.find_one
 
     return render_template(
         "index.html",
-        x=x,
+        user=user,
         topRecipes=topRecipes)
-
-
-@app.route("/search", methods=["GET", "POST"])
-def search():
-    option = request.form.get("search")
-    x = mongo.db.users.find_one
-    if option == "recipes":
-        # creates search index
-        mongo.db.recipes.create_index(
-            [
-                ("recipeName", "text"),
-                ("recipeDescription", "text"),
-                ("author", "text")])
-
-        # gets text input from search form
-        query = request.form.get("query")
-
-        # performs search
-        search = ({"$text": {"$search": query}})
-        # finds results
-        results = mongo.db.recipes.find(search)
-
-        return render_template(
-            "searchedrecipes.html",
-            results=results,
-            query=query,
-            x=x)
-
-    else:
-        mongo.db.users.create_index(
-            [
-                ("username", "text"),
-                ("fname", "text"),
-                ("lname", "text")])
-
-        query = request.form.get("search")
-        searchUser = ({"$text": {"$search": query}})
-
-        results = mongo.db.users.find(searchUser)
-
-        return render_template(
-            "searcheduser.html",
-            results=results,
-            query=query)
-
-    return url_for('index')
 
 
 # sign up page
@@ -172,8 +167,6 @@ def changePassword():
 # create recipe page
 @app.route("/createrecipe")
 def create_recipe():
-    categories = mongo.db.categories.find_one()
-    categoryList = categories['categories']
     return render_template(
         "createrecipe.html",
         categoryList=categoryList)
@@ -246,31 +239,10 @@ def likePost(author, username):
     return redirect(url_for('newsFeed'))
 
 
-# recipes page
-@app.route("/recipes")
-def recipe():
-    recipes = mongo.db.recipes.find()
-    x = mongo.db.users.find_one
-    categories = mongo.db.categories.find_one()
-    categoryList = categories['categories']
-    topRecipes = mongo.db.recipes.find().limit(2).sort("likes", -1)
-
-    return render_template(
-        "recipes.html",
-        recipes=recipes,
-        topRecipes=topRecipes,
-        categories=categories,
-        categoryList=categoryList,
-        x=x)
-
-
 @app.route("/recipes/categories/<categoryName>")
 def category(categoryName):
     print(categoryName)
     x = mongo.db.recipes.find_one
-    recipes = mongo.db.recipes.find()
-    categories = mongo.db.categories.find_one()
-    categoryList = categories['categories']
 
     results = mongo.db.recipes.find({"categories": categoryName})
     numberOfResults = results.count()
@@ -315,8 +287,6 @@ def fullrecipe(recipeName):
 def edit_recipe(recipeName):
     recipe = mongo.db.recipes.find_one({"recipeName": recipeName})
     x = mongo.db.users.find_one
-    categories = mongo.db.categories.find_one()
-    categoryList = categories['categories']
     return render_template(
         "editrecipe.html",
         x=x,
@@ -812,4 +782,4 @@ def searchRecipes():
 if __name__ == "__main__":
     app.run(host=os.environ.get("IP"),
             port=int(os.environ.get("PORT")),
-            debug=False)
+            debug=True)
