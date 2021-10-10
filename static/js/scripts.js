@@ -32,10 +32,4 @@ function showEditPicForm() {
     $('#edit-pic-form').css("display", "block");
 }
 
-// shows / hides categories
-function showCategories() {
-    // toggles visibility of category buttons
-    $('#categories').toggle();
-}
-
 $('.my-posts').css("color", "black")

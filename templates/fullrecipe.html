@@ -5,15 +5,6 @@
     {% set username = session.user %}
 {% endif %}
 
-<!-- Search form -->
-<div class="text-center mt-4 mb-2">
-    <form action="{{ url_for('searchRecipes') }}" method="POST" style="line-height: 1.5;">
-        <label for="search">Search recipes:</label>
-        <input type="text" name="search" placeholder="Spaghetti Bolognaise" required>
-        <button type="submit" class="btn search-button"><i class="fas fa-search text-primary"></i></button>
-    </form>
-</div>
-
 <!-- links back to various pages -->
 <div class="text-center mb-4">
     <a class="btn btn-outline-primary" href="{{ url_for('recipe') }} ">
@@ -25,7 +16,7 @@
 </div>
 
 <main>
-    <div class="container-fluid">
+    <div class="container">
         <div class="row">
             <div class="col">
                 {% set imageName = recipe.recipeImageName %}
@@ -146,36 +137,48 @@
             <div class="col">
                 <p class="mt-4 text-center">
                     <!-- Sets username variable-->
-                    {% set username = session.user %}
-                    {% set user = x({"username": username.lower() }) %}
+                    {% if session.user %}
+                        {% set username = session.user %}
+                        {% set user = user({"username": username.lower() }) %}
 
-                    {% set recipeName = recipe.recipeName %}
-                    {% set likes = user.likedRecipes %}
-                    {% if likes %}
-                        {% set listOfLikedRecipes = likes %}
-                        {% if listOfLikedRecipes|length >= 1  %}
-                            {% if recipeName in listOfLikedRecipes %}
-                                    <a class="likes"
-                                        href="{{ url_for('unlike', recipeName=recipeName, username=username, prevPage=recipe) }}">
-                                        <i class="fas fa-heart"></i>
-                                    </a>
-                                    <span>Likes: {{recipe.likes }} </span>
-                            {% else %}
-                            <a class="likes"
-                                href="{{ url_for('like', recipeName=recipeName, username=username, prevPage=recipe) }}">
-                                <i class="far fa-heart"></i>
-                            </a>
-                            <span>Likes: {{recipe.likes }} </span>
+                        {% set recipeName = recipe.recipeName %}
+                        {% set likes = user.likedRecipes %}
+                        {% if likes %}
+                            {% set listOfLikedRecipes = likes %}
+                            {% if listOfLikedRecipes|length >= 1  %}
+                                {% if recipeName in listOfLikedRecipes %}
+                                        <a class="likes"
+                                            href="{{ url_for('unlike', recipeName=recipeName, username=username, prevPage=recipe) }}">
+                                            <i class="fas fa-heart"></i>
+                                        </a>
+                                        <span>Likes: {{recipe.likes }} </span>
+                                {% else %}
+                                <a class="likes"
+                                    href="{{ url_for('like', recipeName=recipeName, username=username, prevPage=recipe) }}">
+                                    <i class="far fa-heart"></i>
+                                </a>
+                                <span>Likes: {{recipe.likes }} </span>
+                                {% endif %}
                             {% endif %}
+                        {% else %}
+                        <a class="likes"
+                            href="{{ url_for('like', recipeName=recipeName, username=username, prevPage=recipe) }}">
+                            <i class="far fa-heart"></i>
+                        </a>
+
+                        <span>Likes: {{recipe.likes }} </span>
                         {% endif %}
                     {% else %}
-                    <a class="likes"
-                        href="{{ url_for('like', recipeName=recipeName, username=username, prevPage=recipe) }}">
-                        <i class="far fa-heart"></i>
-                    </a>
+                        <a class="likes"
+                            href="{{ url_for('like', recipeName=recipeName, username=username, prevPage=recipe) }}">
+                            <i class="far fa-heart"></i>
+                        </a>
 
-                    <span>Likes: {{recipe.likes }} </span>
+                        <span>Likes: {{recipe.likes }} </span>
                     {% endif %}
+
+                    
+                    
                 </p>
             </div>
         </div>

@@ -4,7 +4,7 @@
 <!--Sign up form with background image-->
 <main class="mb-4">
     <div class="container mt-4">
-        <h2 class="text-center uppercase text-primary signup-title"><strong>Sign Up</strong></h2>
+        <h1 class="text-center"><strong>Sign Up</strong></h1>
 
         <!--Sign Up Form-->
         <form method="POST" action="{{ url_for('register') }}" autocomplete="off" aria-autocomplete="none"
@@ -12,7 +12,7 @@
             <!--Username-->
             <div class="mb-2">
                 <label for="username">Username</label><br>
-                <input type="text" class="form-control" id="username" name="username">
+                <input required aria-required="true" type="text" class="form-control" id="username" name="username">
             </div>
 
             <!--Profile pic -->
@@ -23,22 +23,22 @@
             <!--First name-->
             <div class="mb-2">
                 <label for="fname">First name</label><br>
-                <input type="text" class="form-control" id="fname" name="fname" placeholder="John">
+                <input required aria-required="true" type="text" class="form-control" id="fname" name="fname" placeholder="John">
             </div>
             <!--Surname-->
             <div class="mb-2">
                 <label for="lname">Surname</label><br>
-                <input type="text" class="form-control" id="lname" name="lname" placeholder="Doe">
+                <input required aria-required="true" type="text" class="form-control" id="lname" name="lname" placeholder="Doe">
             </div>
             <!--Email Address-->
             <div class="mb-2">
                 <label for="email">Email address</label><br>
-                <input type="email" class="form-control" id="email" name="email" placeholder="name@example.com">
+                <input required aria-required="true" type="email" class="form-control" id="email" name="email" placeholder="name@example.com">
             </div>
             <!--Password-->
             <div>
                 <label for="password">Password</label><br>
-                <input type="password" class="form-control" id="password" name="password" placeholder="Password">
+                <input required aria-required="true" type="password" class="form-control" id="password" name="password" placeholder="Password">
                 <br>
             </div>
             <!--Submit Button-->

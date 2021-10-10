@@ -2,39 +2,53 @@
 {% block content %}
 
 <div class="text-center mb-4">
-    <button type="button" onclick="showCategories()" class="btn btn-primary">Categories</button>
-</div>
-
-<div class="hide text-center mb-4" id="categories">
     <div class="container">
         <div class="row">
-            <div class="col-10 offset-1">
-                {% for x in categoryList %}
-                <a href="{{ url_for('category', categoryName=x) }}" class="btn btn-outline-primary m-1">{{ x }}</a>
-                {% endfor %}
+            <div class="col mt-4">
+                <ul class="list-inline">
+                    <li class="list-inline-item">
+                        <div class="dropdown">
+                            <button class="btn btn-primary dropdown-toggle" type="button" id="categorydropdown" data-bs-toggle="dropdown"
+                                aria-expanded="false">
+                                Categories
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="categorydropdown">
+                                {% for x in categoryList %}
+                                    <li><a class="dropdown-item" href="{{ url_for('category', categoryName=x) }}">{{ x }}</a></li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </li>
+                    <li class="list-inline-item">
+                        <div class="dropdown">
+                            <button class="btn btn-primary dropdown-toggle" type="button" id="categorydropdown" data-bs-toggle="dropdown"
+                                aria-expanded="false">
+                                Categories
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="categorydropdown">
+                                {% for x in categoryList %}
+                                    <li><a class="dropdown-item" href="{{ url_for('category', categoryName=x) }}">{{ x }}</a></li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
             </div>
         </div>
     </div>
-    
-</div>
-
-<!-- links back to various pages -->
-<div class="text-center mb-4">
-    <a class="btn btn-outline-primary" href="{{ url_for('recipe') }} ">
-        Back to recipes</a>
-    <a class="btn btn-outline-primary" href="{{ url_for('index') }}">Back Home</a>
-    {% if session.user %}
-        <a class="btn btn-outline-primary" href="{{ url_for('profile', username=session.user) }}">Back to Profile</a>
-    {% endif %}
 </div>
 
 
 {% if results %}
-    Results there
+    {% for result in results %}
+        {{ result.recipeName }}
+    {% else %}
+        <p class="text-center">No results found</p>
+    {% endfor %}
 {% else %}
 <!-- Top Recipes -->
 <div id="top-recipes" class="text-primary">
-    <h4 class="text-center">Top Recipes</h4>
+    <h1 class="text-center">Top Recipes</h1>
 
     <div class="container-fluid">
         <div class="row">
@@ -134,13 +148,13 @@
                             {% if listOfLikedRecipes|length >= 1  %}
                             {% if recipeName in listOfLikedRecipes %}
                             <a class="likes"
-                                href="{{ url_for('unlike', recipeName=recipeName, username=username, prevPage=request.referrer) }}">
+                                href="{{ url_for('unlike', recipeName=recipeName, username=username) }}">
                                 <i class="fas fa-heart"></i>
                             </a>
                             <span>Likes: {{recipe.likes }} </span>
                             {% else %}
                             <a class="likes"
-                                href="{{ url_for('like', recipeName=recipeName, username=username, prevPage=request.referrer) }}">
+                                href="{{ url_for('like', recipeName=recipeName, username=username) }}">
                                 <i class="far fa-heart"></i>
                             </a>
                             <span>Likes: {{recipe.likes }} </span>
@@ -148,7 +162,7 @@
                             {% endif %}
                             {% else %}
                             <a class="likes"
-                                href="{{ url_for('like', recipeName=recipeName, username=username, prevPage=request.referrer) }}">
+                                href="{{ url_for('like', recipeName=recipeName, username=username) }}">
                                 <i class="far fa-heart"></i>
                             </a>
 
@@ -156,7 +170,7 @@
                             {% endif %}
                             {% endif %}
                             {% else %}
-                            <a class="likes" href="{{ url_for('signInToLikeRecipe') }}">
+                            <a class="likes" href="{{ url_for('like', recipeName=recipeName, username='None') }}">
                                 <i class="far fa-heart"></i>
                             </a>
 
@@ -181,13 +195,13 @@
 <div class="container-fluid text-primary">
     <div class="row">
         <div class="col">
-            <h5 class="text-center">All Recipes</h5>
+            <h1 class="text-center">All Recipes</h1>
         </div>
     </div>
     <div class="row">
         {% for recipe in recipes %}
 
-        <div class="col-sm-12 col-lg-6">
+        <div class="col-sm-12 col-lg-6 col-xl-4">
             
             <div class="card all-recipes-card mb-4 mt-4">
                 {% set imageName = recipe.recipeImageName %}
@@ -300,7 +314,7 @@
                                 {% endif %}
                             {% endif %}
                         {% else %}
-                        <a class="likes" href="{{ url_for('signInToLikeRecipe') }}">
+                        <a class="likes" href="{{ url_for('like', recipeName=recipeName, username='None') }}">
                             <i class="far fa-heart"></i>
                         </a>
                         

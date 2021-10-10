@@ -5,6 +5,7 @@ from flask import (
 from flask_pymongo import PyMongo
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
+from .email import send_email
 if os.path.exists("env.py"):
     import env
 
@@ -30,7 +31,7 @@ def recipe():
     print(request.method)
     recipes = mongo.db.recipes.find()
     user = mongo.db.users.find_one
-    topRecipes = mongo.db.recipes.find().limit(2).sort("likes", -1)
+    topRecipes = mongo.db.recipes.find().limit(3).sort("likes", -1)
     if request.method == "POST":
         db = mongo.db.recipes
         mongo.db.recipes.create_index(
@@ -46,6 +47,7 @@ def recipe():
         search = ({"$text": {"$search": query}})
         # finds results
         results = mongo.db.recipes.find(search)
+        print(results)
 
         return render_template(
             "recipes.html",
@@ -82,7 +84,7 @@ def index():
 
 
 # sign up page
-@app.route("/signup")
+@app.route("/signup")#
 def signup():
     return render_template("signup.html")
 
@@ -176,7 +178,7 @@ def create_recipe():
 def posts():
     posts = mongo.db.posts.find().sort("_id", -1)
     return render_template(
-        "posts.html",
+        "newsfeed.html",
         posts=posts)
 
 
@@ -270,12 +272,12 @@ def signInToLikeRecipe():
 def fullrecipe(recipeName):
     recipe = mongo.db.recipes.find_one({"recipeName": recipeName})
     author = recipe['author']
-    x = mongo.db.users.find_one
+    user = mongo.db.users.find_one
     categories = recipe['categories']
 
     return render_template(
         "fullrecipe.html",
-        x=x,
+        user=user,
         categories=categories,
         author=author,
         recipeName=recipeName,
@@ -612,27 +614,31 @@ def editPersonalDetails(username):
 @app.route("/recipes/<recipeName>/<username>/like_recipe/",
            methods=["GET", "POST"])
 def like(recipeName, username):
-    user = mongo.db.users.find_one({"username": username})
-    query = mongo.db.users.find_one({"likedRecipes": {"$exists": True}})
-    recipe = mongo.db.recipes.find_one({"recipeName": recipeName})
-    likes = recipe['likes']
-    newLikes = likes + 1
+    if username == 'None':
+        flash("Please Sign in to like recipe")
+        return redirect(url_for('recipe'))
+    else:
+        user = mongo.db.users.find_one({"username": username})
+        query = mongo.db.users.find_one({"likedRecipes": {"$exists": True}})
+        recipe = mongo.db.recipes.find_one({"recipeName": recipeName})
+        likes = recipe['likes']
+        newLikes = likes + 1
 
-    usersWithLikedRecipes = mongo.db.users.find(query)
+        usersWithLikedRecipes = mongo.db.users.find(query)
 
-    if usersWithLikedRecipes:
-        print("usersWithLikedRecipes is true")
-        usersLikedRecipes = user['likedRecipes']
-        if recipeName not in usersLikedRecipes:
-            print("user not yet liked this recipe")
-            mongo.db.users.update_one({"username": username}, {
-                                      "$push": {"likedRecipes": recipeName}})
-            print("Updated liked recipes")
-            updateLikes = {"$set": {"likes": newLikes}}
-            mongo.db.recipes.update_one(recipe, updateLikes)
-            print("updated recipes to add 1 like")
+        if usersWithLikedRecipes:
+            print("usersWithLikedRecipes is true")
+            usersLikedRecipes = user['likedRecipes']
+            if recipeName not in usersLikedRecipes:
+                print("user not yet liked this recipe")
+                mongo.db.users.update_one({"username": username}, {
+                                        "$push": {"likedRecipes": recipeName}})
+                print("Updated liked recipes")
+                updateLikes = {"$set": {"likes": newLikes}}
+                mongo.db.recipes.update_one(recipe, updateLikes)
+                print("updated recipes to add 1 like")
 
-    return redirect(url_for('fullrecipe', recipeName=recipeName))
+        return redirect(url_for('fullrecipe', recipeName=recipeName))
 
 
 # unlike recipe
@@ -777,6 +783,27 @@ def searchRecipes():
         "searchedrecipes.html",
         x=x,
         results=results)
+
+
+@app.route("/get_in_touch", methods=['GET', 'POST'])
+def getInTouch():
+    if request.method == 'POST':
+        full_name = str(request.form.get("full_name"))
+        if 'username' in request.form:
+            username = str(request.form.get("username"))
+        else:
+            username = None
+        email = request.form.get("email")
+        message = request.form.get("message")
+        items = {
+            'full_name': full_name,
+            'username': username,
+            'email': email,
+            'message': message
+        }
+        return redirect(send_email, items)
+    else:
+        return render_template("contact.html")
 
 
 if __name__ == "__main__":
