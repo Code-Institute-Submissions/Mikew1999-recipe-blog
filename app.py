@@ -5,7 +5,6 @@ from flask import (
 from flask_pymongo import PyMongo
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
-from .email import send_email
 if os.path.exists("env.py"):
     import env
 
@@ -793,17 +792,32 @@ def getInTouch():
             username = str(request.form.get("username"))
         else:
             username = None
-        email = request.form.get("email")
-        message = request.form.get("message")
+
+        email = str(request.form.get("email"))
+        message = str(request.form.get("message"))
+
         items = {
             'full_name': full_name,
             'username': username,
             'email': email,
             'message': message
         }
-        return redirect(send_email, items)
+
+        session['email_items'] = items
+
+        return redirect(url_for('contact_us'))
+
     else:
-        return render_template("contact.html")
+        return render_template(
+            "contact.html")
+
+
+@app.route("/contact")
+def contact_us():
+    ''' Sends an email '''
+    email_items = session['email_items']
+    
+    return redirect(url_for('getInTouch'))
 
 
 if __name__ == "__main__":
