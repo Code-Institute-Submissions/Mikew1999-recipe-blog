@@ -8,26 +8,28 @@
                 <ul class="list-inline">
                     <li class="list-inline-item">
                         <div class="dropdown">
-                            <button class="btn btn-primary dropdown-toggle" type="button" id="categorydropdown" data-bs-toggle="dropdown"
-                                aria-expanded="false">
+                            <button class="btn btn-primary dropdown-toggle" type="button" id="categorydropdown"
+                                data-bs-toggle="dropdown" aria-expanded="false">
                                 Categories
                             </button>
                             <ul class="dropdown-menu" aria-labelledby="categorydropdown">
                                 {% for x in categoryList %}
-                                    <li><a class="dropdown-item" href="{{ url_for('category', categoryName=x) }}">{{ x }}</a></li>
+                                <li><a class="dropdown-item"
+                                        href="{{ url_for('category', categoryName=x) }}">{{ x }}</a></li>
                                 {% endfor %}
                             </ul>
                         </div>
                     </li>
                     <li class="list-inline-item">
                         <div class="dropdown">
-                            <button class="btn btn-primary dropdown-toggle" type="button" id="categorydropdown" data-bs-toggle="dropdown"
-                                aria-expanded="false">
+                            <button class="btn btn-primary dropdown-toggle" type="button" id="categorydropdown"
+                                data-bs-toggle="dropdown" aria-expanded="false">
                                 Categories
                             </button>
                             <ul class="dropdown-menu" aria-labelledby="categorydropdown">
                                 {% for x in categoryList %}
-                                    <li><a class="dropdown-item" href="{{ url_for('category', categoryName=x) }}">{{ x }}</a></li>
+                                <li><a class="dropdown-item"
+                                        href="{{ url_for('category', categoryName=x) }}">{{ x }}</a></li>
                                 {% endfor %}
                             </ul>
                         </div>
@@ -40,14 +42,14 @@
 
 
 {% if results %}
-    {% for result in results %}
-        {{ result.recipeName }}
-    {% else %}
-        <p class="text-center">No results found</p>
-    {% endfor %}
+{% for result in results %}
+{{ result.recipeName }}
+{% else %}
+<p class="text-center">No results found</p>
+{% endfor %}
 {% else %}
 <!-- Top Recipes -->
-<div id="top-recipes" class="text-primary">
+<div id="top-recipes">
     <h1 class="text-center">Top Recipes</h1>
 
     <div class="container-fluid">
@@ -62,7 +64,6 @@
                     <div class="card-body height-85">
                         <!-- Recipe Name -->
                         <h4 class="card-title text-center">{{ recipeName }}</h4>
-
                         <!-- Recipe Details -->
 
                         <p class="card-text">
@@ -74,13 +75,13 @@
                         </p>
 
                         {% if recipe.categories %}
-                <div class="recipe-categories">
-                    <h6>Categories</h6>
-                    {% set categories = recipe.categories %}
-                    {% if categories|length > 1 %}
-                    <ul class="list-inline">
-                        {% for category in categories %}
-                            {% if category == "vegetarian" %}
+                        <div class="recipe-categories">
+                            <h6>Categories</h6>
+                            {% set categories = recipe.categories %}
+                            {% if categories|length > 1 %}
+                            <ul class="list-inline">
+                                {% for category in categories %}
+                                {% if category == "vegetarian" %}
                                 <li class="list-inline-item">
                                     {{ category }} <i class="fas fa-carrot"></i>
                                 </li>
@@ -92,12 +93,12 @@
                                 <li class="list-inline-item">
                                     {{ category }}
                                 </li>
-                            {% endif %}
-                        {% endfor %}
-                    </ul>
-                    {% else %}
-                        <ul class="list-inline">
-                            {% if categories[0] == "vegetarian" %}
+                                {% endif %}
+                                {% endfor %}
+                            </ul>
+                            {% else %}
+                            <ul class="list-inline">
+                                {% if categories[0] == "vegetarian" %}
                                 <li class="list-inline-item">
                                     {{ categories[0] }} <i class="fas fa-carrot"></i>
                                 </li>
@@ -109,20 +110,20 @@
                                 <li class="list-inline-item">
                                     {{ categories[0] }}
                                 </li>
+                                {% endif %}
+                            </ul>
                             {% endif %}
-                        </ul>
-                    {% endif %}
-                </div>
-                {% else %}
-                <div class="mb-4 recipe-categories">
-                    <h6>Categories</h6>
-                    <ul class="list-inline">
-                        <li class="list-inline-item">
-                            <p class="text-muted">No categories selected</p>
-                        </li>
-                    </ul>
-                </div>
-                {% endif %}
+                        </div>
+                        {% else %}
+                        <div class="mb-4 recipe-categories">
+                            <h6>Categories</h6>
+                            <ul class="list-inline">
+                                <li class="list-inline-item">
+                                    <p class="text-muted">No categories selected</p>
+                                </li>
+                            </ul>
+                        </div>
+                        {% endif %}
 
                         <h5 class="mt-4">Recipe Description</h5>
 
@@ -147,22 +148,19 @@
                             {% set listOfLikedRecipes = user.likedRecipes %}
                             {% if listOfLikedRecipes|length >= 1  %}
                             {% if recipeName in listOfLikedRecipes %}
-                            <a class="likes"
-                                href="{{ url_for('unlike', recipeName=recipeName, username=username) }}">
+                            <a class="likes" href="{{ url_for('unlike', recipeName=recipeName, username=username) }}">
                                 <i class="fas fa-heart"></i>
                             </a>
                             <span>Likes: {{recipe.likes }} </span>
                             {% else %}
-                            <a class="likes"
-                                href="{{ url_for('like', recipeName=recipeName, username=username) }}">
+                            <a class="likes" href="{{ url_for('like', recipeName=recipeName, username=username) }}">
                                 <i class="far fa-heart"></i>
                             </a>
                             <span>Likes: {{recipe.likes }} </span>
                             {% endif %}
                             {% endif %}
                             {% else %}
-                            <a class="likes"
-                                href="{{ url_for('like', recipeName=recipeName, username=username) }}">
+                            <a class="likes" href="{{ url_for('like', recipeName=recipeName, username=username) }}">
                                 <i class="far fa-heart"></i>
                             </a>
 
@@ -202,7 +200,7 @@
         {% for recipe in recipes %}
 
         <div class="col-sm-12 col-lg-6 col-xl-4">
-            
+
             <div class="card all-recipes-card mb-4 mt-4">
                 {% set imageName = recipe.recipeImageName %}
                 {% set recipeName = recipe.recipeName %}
@@ -223,53 +221,55 @@
 
                     <!-- Categories -->
                     {% if recipe.categories %}
-                        <div class="mb-4 recipe-categories">
-                            <h6>Categories</h6>
+                    <div class="mb-4 recipe-categories">
+                        <h6>Categories</h6>
                         {% set categories = recipe.categories %}
                         {% if categories|length > 1 %}
-                            <ul class="list-inline">
+                        <ul class="list-inline">
                             {% for category in categories %}
-                                {% if category == "vegetarian" %}
-                                    <li class="list-inline-item">
-                                        {{ category }} <i class="fas fa-carrot"></i>
-                                    </li>
-                                {% elif category == "vegan" %}
-                                    <li class="list-inline-item">
-                                        {{ category }} <i class="fas fa-leaf"></i>
-                                    </li>
-                                {% else %}
-                                    <li class="list-inline-item">
-                                        {{ category }}
-                                    </li>
-                                {% endif %}
+                            {% if category == "vegetarian" %}
+                            <li class="list-inline-item">
+                                {{ category }} <i class="fas fa-carrot"></i>
+                            </li>
+                            {% elif category == "vegan" %}
+                            <li class="list-inline-item">
+                                {{ category }} <i class="fas fa-leaf"></i>
+                            </li>
+                            {% else %}
+                            <li class="list-inline-item">
+                                {{ category }}
+                            </li>
+                            {% endif %}
                             {% endfor %}
-                            </ul>
+                        </ul>
                         {% else %}
                         <ul class="list-inline">
-                                {% set category = categories[0] %}
-                                {% if category == "vegetarian" %}
-                                    <li class="list-inline-item">
-                                        {{ category }} <i class="fas fa-carrot"></i>
-                                    </li>
-                                {% elif category == "vegan" %}
-                                    <li class="list-inline-item">
-                                        {{ category }} <i class="fas fa-leaf"></i>
-                                    </li>
-                                {% else %}
-                                    <li class="list-inline-item">
-                                        {{ category }}
-                                    </li>
-                                {% endif %}
-                            </ul>
+                            {% set category = categories[0] %}
+                            {% if category == "vegetarian" %}
+                            <li class="list-inline-item">
+                                {{ category }} <i class="fas fa-carrot"></i>
+                            </li>
+                            {% elif category == "vegan" %}
+                            <li class="list-inline-item">
+                                {{ category }} <i class="fas fa-leaf"></i>
+                            </li>
+                            {% else %}
+                            <li class="list-inline-item">
+                                {{ category }}
+                            </li>
+                            {% endif %}
+                        </ul>
                         {% endif %}
-                        </div>
+                    </div>
                     {% else %}
-                        <div class="mb-4 recipe-categories">
-                            <h6>Categories</h6>
-                            <ul class="list-inline pb-4">
-                                <li class="list-inline-item"><p class="text-muted">No categories selected</p></li>    
-                            </ul>
-                        </div>
+                    <div class="mb-4 recipe-categories">
+                        <h6>Categories</h6>
+                        <ul class="list-inline pb-4">
+                            <li class="list-inline-item">
+                                <p class="text-muted">No categories selected</p>
+                            </li>
+                        </ul>
+                    </div>
                     {% endif %}
 
                     <h5 class="mt-4">Recipe Description</h5>
@@ -279,45 +279,49 @@
                     </p>
 
                     <div class="text-center">
-                        <a class="btn btn-outline-primary btn-lg" href="{{ url_for('fullrecipe', recipeName=recipeName)}}">Go to Recipe</a>
+                        <a class="btn btn-outline-primary btn-lg"
+                            href="{{ url_for('fullrecipe', recipeName=recipeName)}}">Go to Recipe</a>
                     </div>
                     {% set recipeName = recipe.recipeName %}
                     <p class="mt-4 text-center">
                         <!-- Checks if user is logged in -->
                         {% if session.user %}
-                            <!-- Sets username variable-->
-                            {% set username = session.user %}
+                        <!-- Sets username variable-->
+                        {% set username = session.user %}
 
-                            {% if user({"username": username}) %}
-                                {% set user = user({"username": username}) %}
-                                {% if user.likedRecipes %}
-                                    {% set listOfLikedRecipes = user.likedRecipes %}
-                                    {% if listOfLikedRecipes|length >= 1  %}
-                                        {% if recipeName in listOfLikedRecipes %}
-                                            <a class="likes" href="{{ url_for('unlike', recipeName=recipeName, username=username, prevPage=recipe) }}">
-                                                <i class="fas fa-heart"></i>
-                                            </a>
-                                            <span>Likes: {{recipe.likes }} </span>
-                                        {% else %}
-                                            <a class="likes" href="{{ url_for('like', recipeName=recipeName, username=username, prevPage=recipe) }}">
-                                                <i class="far fa-heart"></i>
-                                            </a> 
-                                            <span>Likes: {{recipe.likes }} </span>
-                                        {% endif %}
-                                    {% endif %}
-                                {% else %}
-                                    <a class="likes" href="{{ url_for('like', recipeName=recipeName, username=username, prevPage=recipe) }}">
-                                        <i class="far fa-heart"></i>
-                                    </a> 
-                                    
-                                    <span>Likes: {{recipe.likes }} </span>
-                                {% endif %}
-                            {% endif %}
+                        {% if user({"username": username}) %}
+                        {% set user = user({"username": username}) %}
+                        {% if user.likedRecipes %}
+                        {% set listOfLikedRecipes = user.likedRecipes %}
+                        {% if listOfLikedRecipes|length >= 1  %}
+                        {% if recipeName in listOfLikedRecipes %}
+                        <a class="likes"
+                            href="{{ url_for('unlike', recipeName=recipeName, username=username, prevPage=recipe) }}">
+                            <i class="fas fa-heart"></i>
+                        </a>
+                        <span>Likes: {{recipe.likes }} </span>
+                        {% else %}
+                        <a class="likes"
+                            href="{{ url_for('like', recipeName=recipeName, username=username, prevPage=recipe) }}">
+                            <i class="far fa-heart"></i>
+                        </a>
+                        <span>Likes: {{recipe.likes }} </span>
+                        {% endif %}
+                        {% endif %}
+                        {% else %}
+                        <a class="likes"
+                            href="{{ url_for('like', recipeName=recipeName, username=username, prevPage=recipe) }}">
+                            <i class="far fa-heart"></i>
+                        </a>
+
+                        <span>Likes: {{recipe.likes }} </span>
+                        {% endif %}
+                        {% endif %}
                         {% else %}
                         <a class="likes" href="{{ url_for('like', recipeName=recipeName, username='None') }}">
                             <i class="far fa-heart"></i>
                         </a>
-                        
+
                         <span>Likes: {{recipe.likes }} </span>
                         {% endif %}
                     </p>
@@ -326,7 +330,7 @@
                         Author: {{ recipe.author }}
                     </p>
                 </div>
-                
+
             </div>
         </div>
         {% endfor %}

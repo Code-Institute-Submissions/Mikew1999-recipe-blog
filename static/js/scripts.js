@@ -32,4 +32,3 @@ function showEditPicForm() {
     $('#edit-pic-form').css("display", "block");
 }
 
-$('.my-posts').css("color", "black")
