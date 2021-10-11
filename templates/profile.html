@@ -17,8 +17,8 @@
 
     <!-- Deletes profile pic -->
     <form class="mt-4" action="{{ url_for('deleteProfileImage', username=username) }}" method="POST">
-        <button class="btn btn-white mb-4" type="submit">Delete profile picture</button>
-        <a id="show-edit-pic-form" class="btn btn-white mb-4" onclick="showEditPicForm()">Edit / Upload profile
+        <button class="btn btn-danger mb-4" type="submit">Delete profile picture</button>
+        <a id="show-edit-pic-form" class="btn btn-primaryb-4" onclick="showEditPicForm()">Edit / Upload profile
             pic</a>
     </form>
 
@@ -29,7 +29,7 @@
         <i class="fas fa-user-circle fa-10x"></i>
     </div>
     <div class="text-center mt-4">
-        <a id="show-edit-pic-form" class="btn btn-white mb-4" onclick="showEditPicForm()">Upload profile
+        <a id="show-edit-pic-form" class="btn btn-primary mb-4" onclick="showEditPicForm()">Upload profile
             pic</a>
     </div>
     {% endif %}
@@ -41,23 +41,23 @@
         <br>
         <input name="newProfilePic" accept="image/jpg" type="file" required>
         <br>
-        <button type="submit" class="btn btn-white uppercase mt-1 mb-4">Upload New Profile Picture</button>
+        <button type="submit" class="btn btn-primary uppercase mt-1 mb-4">Upload New Profile Picture</button>
     </form>
 </div>
 
 <!-- Secondary Navbar -->
-<ul class="nav nav-pills nav-fill">
-    <li class="nav-item">
-        <a class="nav-link" href="#personal-details">Personal Details</a>
+<ul class="list-inline text-center">
+    <li class="list-inline-item mr-2">
+        <a class="btn" href="#personal-details">Personal Details</a>
     </li>
-    <li class="nav-item">
-        <a class="nav-link" href="#my-recipes">My recipes</a>
+    <li class="list-inline-item mr-2">
+        <a class="btn" href="#my-recipes">My recipes</a>
     </li>
-    <li class="nav-item">
-        <a class="nav-link" href="#liked-recipes">Liked Recipes</a>
+    <li class="list-inline-item mr-2">
+        <a class="btn" href="#liked-recipes">Liked Recipes</a>
     </li>
-    <li class="nav-item">
-        <a class="nav-link" href="#my-posts">My Posts</a>
+    <li class="list-inline-item mr-2">
+        <a class="btn" href="#my-posts">My Posts</a>
     </li>
 </ul>
 

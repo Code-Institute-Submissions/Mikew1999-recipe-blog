@@ -83,7 +83,7 @@ def index():
 
 
 # sign up page
-@app.route("/signup")#
+@app.route("/signup")
 def signup():
     return render_template("signup.html")
 
@@ -179,6 +179,19 @@ def posts():
     return render_template(
         "newsfeed.html",
         posts=posts)
+
+
+@app.route("/newsfeed/posts/<post_id>", methods=["GET", "POST"])
+def post_comment(post_id):
+    ''' A view to handle the comment form '''
+    user = session['user']
+    if user:
+        # Handles form input
+        title = request.form.get('title')
+        comment = request.form.get('comment')
+        print(f'title: {title}, comment: {comment}')
+    return redirect(url_for('posts'))
+
 
 
 @app.route("/<username>/create_post", methods=["GET", "POST"])
@@ -816,7 +829,7 @@ def getInTouch():
 def contact_us():
     ''' Sends an email '''
     email_items = session['email_items']
-    
+
     return redirect(url_for('getInTouch'))
 
 

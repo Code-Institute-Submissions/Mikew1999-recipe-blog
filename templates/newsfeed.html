@@ -8,7 +8,7 @@
 
   <div class="container-fluid">
     <div class="row">
-      <div class="col">
+      <div class="col d-none d-lg-block">
         <div class="d-flex flex-column align-items-stretch flex-shrink-0 bg-white" style="width: 380px;">
           <div class="list-group list-group-flush border-bottom scrollarea">
             <a href="#" class="list-group-item list-group-item-action active py-3 lh-tight" aria-current="true">
@@ -129,22 +129,41 @@
 
           </div>
           <div class="row">
-            <div class="col">
+            <div class="col-12">
               <ul class="list-inline">
                 <li class="list-inline-item">
                   <img
                     src="https://img.icons8.com/external-flatart-icons-outline-flatarticons/64/000000/external-like-project-management-and-development-flatart-icons-outline-flatarticons.png" />
                 </li>
                 <li class="list-inline-item">
-                  Comment
-                  <img
-                    src="https://img.icons8.com/external-sbts2018-outline-sbts2018/58/000000/external-comment-social-media-basic-1-sbts2018-outline-sbts2018.png" />
+                  <a>
+                    <img class="text-primary"
+                      src="https://img.icons8.com/external-sbts2018-outline-sbts2018/58/000000/external-comment-social-media-basic-1-sbts2018-outline-sbts2018.png" />
+                  </a>
                 </li>
                 <li class="list-inline-item">
 
                 </li>
               </ul>
             </div>
+            <div class="col">
+              <form id="{{ post._id }}" class="comment-form" action="{{ url_for('post_comment', post_id=post._id) }}" method="POST">
+                <div class="mb-2">
+                  <label for="title">Comment Title:</label>
+                  <input class="form-control" type="text" name="title">
+                </div>
+                <div class="mb-2">
+                  <label for="comment">Comment Text:</label>
+                  <input class="form-control" type="text" name="comment">
+                </div>
+                <div class="mb-2 text-center">
+                  <button class="btn btn-primary" type="submit">Submit Comment</button>
+                </div>
+              </form>
+            </div>
+          </div>
+          <div class="row">
+            
           </div>
           {% endfor %}
         </div>
@@ -158,5 +177,4 @@
 
 
 </main>
-
 {% endblock %}
