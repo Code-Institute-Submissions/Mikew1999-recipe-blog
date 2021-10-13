@@ -4,7 +4,6 @@
 <script type="text/javascript">
     window.onload = function() {
         $('#send-email-button').click(function(event) {
-            this.contact_number.value = Math.random() * 100000 | 0;
             event.preventDefault();
             emailjs.sendForm('contact_service', 'contact_form', this)
                 .then(function() {

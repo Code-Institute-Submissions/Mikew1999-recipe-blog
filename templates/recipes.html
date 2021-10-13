@@ -148,7 +148,7 @@
                             {% set listOfLikedRecipes = user.likedRecipes %}
                             {% if listOfLikedRecipes|length >= 1  %}
                             {% if recipeName in listOfLikedRecipes %}
-                            <a class="likes" href="{{ url_for('unlike', recipeName=recipeName, username=username) }}">
+                            <a class="likes" href="{{ url_for('like', recipeName=recipeName, username=username) }}">
                                 <i class="fas fa-heart"></i>
                             </a>
                             <span>Likes: {{recipe.likes }} </span>
@@ -296,13 +296,13 @@
                         {% if listOfLikedRecipes|length >= 1  %}
                         {% if recipeName in listOfLikedRecipes %}
                         <a class="likes"
-                            href="{{ url_for('unlike', recipeName=recipeName, username=username, prevPage=recipe) }}">
+                            href="{{ url_for('like', recipeName=recipeName, username=username) }}">
                             <i class="fas fa-heart"></i>
                         </a>
                         <span>Likes: {{recipe.likes }} </span>
                         {% else %}
                         <a class="likes"
-                            href="{{ url_for('like', recipeName=recipeName, username=username, prevPage=recipe) }}">
+                            href="{{ url_for('like', recipeName=recipeName, username=username) }}">
                             <i class="far fa-heart"></i>
                         </a>
                         <span>Likes: {{recipe.likes }} </span>
@@ -310,7 +310,7 @@
                         {% endif %}
                         {% else %}
                         <a class="likes"
-                            href="{{ url_for('like', recipeName=recipeName, username=username, prevPage=recipe) }}">
+                            href="{{ url_for('like', recipeName=recipeName, username=username) }}">
                             <i class="far fa-heart"></i>
                         </a>
 

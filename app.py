@@ -73,7 +73,7 @@ def file(filename):
 # home page
 @app.route("/")
 def index():
-    topRecipes = mongo.db.recipes.find().limit(3).sort("likes", -1)
+    topRecipes = mongo.db.recipes.find().limit(4).sort("likes", -1)
     user = mongo.db.users.find_one
 
     return render_template(
@@ -193,7 +193,6 @@ def post_comment(post_id):
     return redirect(url_for('posts'))
 
 
-
 @app.route("/<username>/create_post", methods=["GET", "POST"])
 def createPost(username):
     if request.method == "POST":
@@ -271,12 +270,6 @@ def category(categoryName):
         numberOfResults=numberOfResults,
         results=results
     )
-
-
-@app.route("/recipes/signin")
-def signInToLikeRecipe():
-    flash("Please Sign in To Like recipe")
-    return redirect(url_for('signup'))
 
 
 # shows full recipe
@@ -627,7 +620,7 @@ def editPersonalDetails(username):
            methods=["GET", "POST"])
 def like(recipeName, username):
     if username == 'None':
-        flash("Please Sign in to like recipe")
+        flash("Please Sign in to like / unlike recipe")
         return redirect(url_for('recipe'))
     else:
         user = mongo.db.users.find_one({"username": username})
@@ -642,14 +635,18 @@ def like(recipeName, username):
             print("usersWithLikedRecipes is true")
             usersLikedRecipes = user['likedRecipes']
             if recipeName not in usersLikedRecipes:
-                print("user not yet liked this recipe")
                 mongo.db.users.update_one({"username": username}, {
-                                        "$push": {"likedRecipes": recipeName}})
+                    "$push": {"likedRecipes": recipeName}})
                 print("Updated liked recipes")
                 updateLikes = {"$set": {"likes": newLikes}}
                 mongo.db.recipes.update_one(recipe, updateLikes)
-                print("updated recipes to add 1 like")
-
+            else:
+                newLikes = likes - 2
+                mongo.db.users.update_one(
+                    {"username": username}, {
+                        "$pull": {"likedRecipes": recipeName}})
+                updateLikes = {"$set": {"likes": newLikes}}
+                mongo.db.recipes.update_one(recipe, updateLikes)
         return redirect(url_for('fullrecipe', recipeName=recipeName))
 
 
@@ -670,12 +667,6 @@ def unlike(recipeName, username):
         usersLikedRecipes = user['likedRecipes']
         if recipeName in usersLikedRecipes:
             print("user has liked this recipe")
-            mongo.db.users.update_one({"username": username}, {
-                                      "$pull": {"likedRecipes": recipeName}})
-            print("Updated liked recipes")
-            updateLikes = {"$set": {"likes": newLikes}}
-            mongo.db.recipes.update_one(recipe, updateLikes)
-            print("updated recipes to deduct 1 like")
 
     return redirect(url_for('fullrecipe', recipeName=recipeName))
 

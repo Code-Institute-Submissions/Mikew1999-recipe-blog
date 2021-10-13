@@ -175,7 +175,7 @@
                             {% endif %}
                             {% endif %}
                             {% else %}
-                            <a class="likes" href="{{ url_for('signInToLikeRecipe') }}">
+                            <a class="likes" href="{{ url_for('like', recipeName=recipeName, username=username, prevPage=recipe) }}">
                                 <i class="far fa-heart"></i>
                             </a>
 
