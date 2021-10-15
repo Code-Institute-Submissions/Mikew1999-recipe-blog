@@ -46,326 +46,338 @@
 </div>
 
 <!-- Secondary Navbar -->
-<ul class="list-inline text-center">
-    <li class="list-inline-item mr-2">
-        <a class="btn" href="#personal-details">Personal Details</a>
+<ul class="nav nav-pills nav-fill">
+    <li class="nav-item">
+        <form class="profile-select-form" method="POST" action="{{ url_for('profile', username=user.username) }}">
+            <a class="nav-link btn select">Edit Profile</a>
+            <input type="hidden" name="personal_details">
+        </form>
     </li>
-    <li class="list-inline-item mr-2">
-        <a class="btn" href="#my-recipes">My recipes</a>
+    <li class="nav-item">
+        <form class="profile-select-form" method="POST" action="{{ url_for('profile', username=user.username) }}">
+            <a class="nav-link btn select">My Recipes</a>
+            <input type="hidden" name="my_recipes">
+        </form>
     </li>
-    <li class="list-inline-item mr-2">
-        <a class="btn" href="#liked-recipes">Liked Recipes</a>
+    <li class="nav-item">
+        <form class="profile-select-form" method="POST" action="{{ url_for('profile', username=user.username) }}">
+            <a class="nav-link btn select">Liked</a>
+            <input type="hidden" name="liked_recipes">
+        </form>
     </li>
-    <li class="list-inline-item mr-2">
-        <a class="btn" href="#my-posts">My Posts</a>
+    <li class="nav-item">
+        <form class="profile-select-form" method="POST" action="{{ url_for('profile', username=user.username) }}">
+            <a class="nav-link btn select">My Posts</a>
+            <input type="hidden" name="my_posts">
+        </form>
     </li>
 </ul>
 
-<hr class="width-80">
+{% if selected == 'personal_details' %}
+    <!-- Personal Details -->
+    <div id="personal-details" class="mt-4 mb-4 container text-primary">
 
-<!-- Personal Details -->
-<div id="personal-details" class="mt-4 mb-4 container text-primary">
+        <h2 class="masthead-heading text-center text-primary mb-4">Personal Details</h2>
 
-    <h2 class="masthead-heading text-center text-primary mb-4">Personal Details</h2>
-
-    <div id="edit-personal-details-form">
-        <form action="{{ url_for('editPersonalDetails', username=username) }}" method="POST">
-            <div class="row">
-                <div class="col-sm-12 col-md-3 offset-md-3">
-                    <label for="username">Username: </label>
-                    <input type="text" name="username" class="form-control form-personal-details"
-                        value="{{ user['username'] }}" disabled>
-                    <br>
-                    <label for="fname">First Name: </label>
-                    <input type="text" name="fname" class="form-control form-personal-details"
-                        value="{{ user['fname'] }}">
-                </div>
-                <div class="col-sm-12 col-md-3">
-                    <label for="email">Email Address: </label>
-                    <input type="email" name="email" class="form-control form-personal-details"
-                        value="{{ user['email'] }}">
-                    <br>
-                    <label for="lname">Surname: </label>
-                    <input type="text" name="lname" class="form-control form-personal-details"
-                        value="{{ user['lname'] }}">
-                </div>
-            </div>
-            <div class="row">
-                <div class="col text-center">
-                    <br>
-                    <button class="btn btn-primary" type="submit">Save Changes</button>
-                </div>
-            </div>
-        </form>
-    </div>
-</div>
-
-<hr class="width-80">
-
-<!-- My recipes -->
-<div id="my-recipes" class="my-recipes text-primary">
-    <h2 class="text-center mb-4">My Recipes</h2>
-
-    {% set hasUploadedRecipe = user.hasUploadedRecipe %}
-    <!-- Checks if user has uploaded recipe -->
-    {% if hasUploadedRecipe == "1" %}
-    <div class="container">
-        <div class="row">
-            <!-- Counts number of recipes uploaded by this user -->
-            {% set numberOfRecipes = userRecipes.count() %}
-
-            <!-- Check if number of recipes is divisible by 3 -->
-            {% if numberOfRecipes %3 == 0 %}
-            {% set column = "col-md-12 col-lg-4" %}
-            {% elif numberOfRecipes %2 == 0 %}
-            {% set column = "col-md-12 col-lg-6" %}
-            {% else %}
-            {% set column = "col-12" %}
-            {% endif %}
-
-            {% for recipe in userRecipes %}
-            <div class="{{ column }}">
-                <div class="card mb-4 mt-2">
-                    {% set imageName = recipe.recipeImageName %}
-                    {% set recipeName = recipe.recipeName %}
-                    <img class="img-fluid" src="{{ url_for('file', filename=imageName) }}" alt="recipe Image">
-                    <div class="card-body">
-                        <!-- Recipe Name -->
-                        <h4 class="card-title  text-center">{{ recipeName }}</h4>
-
-                        <!-- Recipe Details -->
-
-                        <p class="card-text">
-                            <i class="fas fa-utensils"></i> Serves {{ recipe.serves }}
-                            <br>
-                            <i class="far fa-clock"></i> Preparation time: {{ recipe.prepTime }}
-                            <br>
-                            <i class="far fa-clock"></i> Cooking time: {{ recipe.cookingTime }}
-                        </p>
-
-                        <h5 class="text-center mt-4">Recipe Description</h5>
-
-                        <p class="card-text recipe-description">
-                            {{ recipe.recipeDescription }}
-                        </p>
-
-                        <p>
-                            <span style="color: black;">Author:</span> {{ recipe.author }}
-                        </p>
-
-                        <div class="text-center">
-                            <a class="btn btn-outline-primary btn-lg"
-                                href="{{ url_for('fullrecipe', recipeName=recipeName)}}">Go to / edit Recipe</a>
-                        </div>
-
-                        <p class="mt-4 text-center">
-                            <!-- Sets username variable-->
-                            {% set username = session.user %}
-
-                            {% set user = x({"username": username}) %}
-                            {% set recipeName = recipe.recipeName %}
-                            {% if likes %}
-                                {% set listOfLikedRecipes = likes %}
-                                {% if listOfLikedRecipes|length >= 1  %}
-                                    {% if recipeName in listOfLikedRecipes %}
-                                            <a class="likes"
-                                                href="{{ url_for('unlike', recipeName=recipeName, username=username, prevPage=recipe) }}">
-                                                <i class="fas fa-heart"></i>
-                                            </a>
-                                            <span>Likes: {{recipe.likes }} </span>
-                                    {% else %}
-                                    <a class="likes"
-                                        href="{{ url_for('like', recipeName=recipeName, username=username, prevPage=recipe) }}">
-                                        <i class="far fa-heart"></i>
-                                    </a>
-                                    <span>Likes: {{recipe.likes }} </span>
-                                    {% endif %}
-                                {% endif %}
-                            {% else %}
-                            <a class="likes"
-                                href="{{ url_for('like', recipeName=recipeName, username=username, prevPage=recipe) }}">
-                                <i class="far fa-heart"></i>
-                            </a>
-
-                            <span>Likes: {{recipe.likes }} </span>
-                            {% endif %}
-                        </p>
-
-                    </div>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-    </div>
-    {% else %}
-    <div class="text-center">
-        <p>You have not uploaded any recipes yet. You can upload a new recipe <a
-                href="{{ url_for('create_recipe') }}">here</a></p>
-    </div>
-    {% endif %}
-</div>
-
-<hr class="width-80">
-
-<div id="liked-recipes" class="text-primary">
-    <h2 class="text-center">My Liked Recipes</h2>
-
-    {% if likedRecipes %}
-    <div class="container">
-        <div class="row">
-            {% if likedRecipes|length > 1 %}
-            {% for likedRecipe in likedRecipes %}
-            {% set recipe = x({"recipeName": likedRecipe}) %}
-            <div class="col-sm-12 col-lg-6">
-                <div class="card mb-4 mt-4">
-                    {% set imageName = recipe.recipeImageName %}
-                    {% set recipeName = recipe.recipeName %}
-                    <img class="img-fluid my-recipes-img" src="{{ url_for('file', filename=imageName) }}" alt="recipe Image">
-
-                    <div class="card-body">
-                        <!-- Recipe Name -->
-                        <h4 class="card-title  text-center">{{ recipeName }}</h4>
-
-                        <!-- Recipe Details -->
-
-                        <p class="card-text">
-                            <i class="fas fa-utensils"></i> Serves {{ recipe.serves }}
-                            <br>
-                            <i class="far fa-clock"></i> Preparation time: {{ recipe.prepTime }}
-                            <br>
-                            <i class="far fa-clock"></i> Cooking time: {{ recipe.cookingTime }}
-                        </p>
-
-                        <h5 class="text-center">Recipe Description</h5>
-
-                        <p class="card-text recipe-description">
-                            {{ recipe.recipeDescription }}
-                        </p>
-
-                        <p>
-                            <span style="color: black;">Author:</span> {{ recipe.author }}
-                        </p>
-
-                        <p class="mt-4 text-center">
-                            <!-- Sets username variable-->
-                            {% set username = session.user %}
-
-                            {% set user = x({"username": username}) %}
-                            {% set recipeName = recipe.recipeName %}
-                            {% if likes %}
-                                {% set listOfLikedRecipes = likes %}
-                                {% if listOfLikedRecipes|length >= 1  %}
-                                    {% if recipeName in listOfLikedRecipes %}
-                                            <a class="likes"
-                                                href="{{ url_for('unlike', recipeName=recipeName, username=username, prevPage=recipe) }}">
-                                                <i class="fas fa-heart"></i>
-                                            </a>
-                                            <span>Likes: {{recipe.likes }} </span>
-                                    {% else %}
-                                    <a class="likes"
-                                        href="{{ url_for('like', recipeName=recipeName, username=username, prevPage=recipe) }}">
-                                        <i class="far fa-heart"></i>
-                                    </a>
-                                    <span>Likes: {{recipe.likes }} </span>
-                                    {% endif %}
-                                {% endif %}
-                            {% else %}
-                            <a class="likes"
-                                href="{{ url_for('like', recipeName=recipeName, username=username, prevPage=recipe) }}">
-                                <i class="far fa-heart"></i>
-                            </a>
-
-                            <span>Likes: {{recipe.likes }} </span>
-                            {% endif %}
-                        </p>
-
-                        <div class="text-center">
-                            <a class="btn btn-outline-primary btn-lg"
-                                href="{{ url_for('fullrecipe', recipeName=recipeName)}}">Go to Recipe</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            {% endfor %}
-            {% else %}
-            <div class="col">
-                <div class="card mb-2">
-                    {% set a = x({"recipeName": likedRecipes[0]}) %}
-
-                    {% set imageName = a.recipeImageName %}
-                    {% set recipeName = a.recipeName %}
-                    <img class="img-fluid" src="{{ url_for('file', filename=imageName) }}" alt="recipe Image">
-
-                    <div class="card-body">
-                        <!-- Recipe Name -->
-                        <h4 class="card-title  text-center">{{ a.recipeName }}</h4>
-
-                        <!-- Recipe Details -->
-
-                        <p class="card-text">
-                            <i class="fas fa-utensils"></i> Serves {{ a.serves }}
-                            <br>
-                            <i class="far fa-clock"></i> Preparation time: {{ a.prepTime }}
-                            <br>
-                            <i class="far fa-clock"></i> Cooking time: {{ a.cookingTime }}
-                        </p>
-
-                        <h5 class="text-center">Recipe Description</h5>
-
-                        <p class="card-text recipe-description">
-                            {{ a.recipeDescription }}
-                        </p>
-
-                        <p>
-                            <span style="color: black;">Author:</span> {{ a.author }}
-                        </p>
-
-                        <div class="text-center">
-                            <a class="btn btn-outline-primary btn-lg"
-                                href="{{ url_for('fullrecipe', recipeName=recipeName)}}">Go to / edit Recipe</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            {% endif %}
-        </div>
-    </div>
-    {% else %}
-    <p>You have not liked any recipes</p>
-    {% endif %}
-</div>
-
-<hr class="width-80">
-
-<div class="my-posts" id="my-posts">
-    <h2 class="text-center text-primary mt-4 mb-4">My Posts</h2>
-    {% if user.hasPosted == "0" %}
-    <div class="text-center">
-        <p>You have not made any posts yet. You can create a new post <a href="{{ url_for('createPost', username=username) }}">here</a></p>
-    </div>
-    {% else %}
-    <div class="container">
-        {% for post in posts %}
-            {% if post.author == user.username.lower() %}
+        <div id="edit-personal-details-form">
+            <form action="{{ url_for('editPersonalDetails', username=username) }}" method="POST">
                 <div class="row">
-                    <div class="col">
-                        <p>Author: {{ post.author }}</p>
-                        <p class="lead">
-                            {{ post.posttext }}
-                        </p>
+                    <div class="col-sm-12 col-md-3 offset-md-3">
+                        <label for="username">Username: </label>
+                        <input type="text" name="username" class="form-control form-personal-details"
+                            value="{{ user['username'] }}" disabled>
+                        <br>
+                        <label for="fname">First Name: </label>
+                        <input type="text" name="fname" class="form-control form-personal-details"
+                            value="{{ user['fname'] }}">
+                    </div>
+                    <div class="col-sm-12 col-md-3">
+                        <label for="email">Email Address: </label>
+                        <input type="email" name="email" class="form-control form-personal-details"
+                            value="{{ user['email'] }}">
+                        <br>
+                        <label for="lname">Surname: </label>
+                        <input type="text" name="lname" class="form-control form-personal-details"
+                            value="{{ user['lname'] }}">
                     </div>
                 </div>
-                <hr class="width-80">
-            {% endif %}
-        {% endfor %}
+                <div class="row mb-2">
+                    <div class="col text-center">
+                        <br>
+                        <button class="btn btn-primary" type="submit">Save Changes</button>
+                    </div>
+                </div>
+                <div class="row mt-4">
+                    <div class="col text-center">
+                        <a class="btn btn-danger" href="{{ url_for('deleteProfile', username=user.username)}}">Delete Profile</a>
+                    </div>
+                </div>
+            </form>
+        </div>
     </div>
-    {% endif %}
-</div>
+{% elif selected == 'my_recipes' %}
+    <!-- My recipes -->
+    <div id="my-recipes" class="my-recipes text-primary">
+        <h2 class="text-center mb-4">My Recipes</h2>
 
-<hr class="width-80">
+        {% set hasUploadedRecipe = user.hasUploadedRecipe %}
+        <!-- Checks if user has uploaded recipe -->
+        {% if hasUploadedRecipe == "1" %}
+        <div class="container">
+            <div class="row">
+                <!-- Counts number of recipes uploaded by this user -->
+                {% set numberOfRecipes = user_recipes.count() %}
 
-<div class="col text-center">
-    <a class="btn btn-danger" href="{{ url_for('deleteProfile', username=user.username)}}">Delete Profile</a>
-</div>
+                <!-- Check if number of recipes is divisible by 3 -->
+                {% if numberOfRecipes %3 == 0 %}
+                {% set column = "col-md-12 col-lg-4" %}
+                {% elif numberOfRecipes %2 == 0 %}
+                {% set column = "col-md-12 col-lg-6" %}
+                {% else %}
+                {% set column = "col-12" %}
+                {% endif %}
 
+                {% for recipe in user_recipes %}
+                <div class="{{ column }}">
+                    <div class="card mb-4 mt-2">
+                        {% set imageName = recipe.recipeImageName %}
+                        {% set recipeName = recipe.recipeName %}
+                        <img class="img-fluid" src="{{ url_for('file', filename=imageName) }}" alt="recipe Image">
+                        <div class="card-body">
+                            <!-- Recipe Name -->
+                            <h4 class="card-title  text-center">{{ recipeName }}</h4>
+
+                            <!-- Recipe Details -->
+
+                            <p class="card-text">
+                                <i class="fas fa-utensils"></i> Serves {{ recipe.serves }}
+                                <br>
+                                <i class="far fa-clock"></i> Preparation time: {{ recipe.prepTime }}
+                                <br>
+                                <i class="far fa-clock"></i> Cooking time: {{ recipe.cookingTime }}
+                            </p>
+
+                            <h5 class="text-center mt-4">Recipe Description</h5>
+
+                            <p class="card-text recipe-description">
+                                {{ recipe.recipeDescription }}
+                            </p>
+
+                            <p>
+                                <span style="color: black;">Author:</span> {{ recipe.author }}
+                            </p>
+
+                            <div class="text-center">
+                                <a class="btn btn-outline-primary btn-lg"
+                                    href="{{ url_for('fullrecipe', recipeName=recipeName)}}">Go to / edit Recipe</a>
+                            </div>
+
+                            <p class="mt-4 text-center">
+                                <!-- Sets username variable-->
+                                {% set username = session.user %}
+
+                                {% set user = x({"username": username}) %}
+                                {% set recipeName = recipe.recipeName %}
+                                {% if likes %}
+                                    {% set listOfLikedRecipes = likes %}
+                                    {% if listOfLikedRecipes|length >= 1  %}
+                                        {% if recipeName in listOfLikedRecipes %}
+                                                <a class="likes"
+                                                    href="{{ url_for('unlike', recipeName=recipeName, username=username, prevPage=recipe) }}">
+                                                    <i class="fas fa-heart"></i>
+                                                </a>
+                                                <span>Likes: {{recipe.likes }} </span>
+                                        {% else %}
+                                        <a class="likes"
+                                            href="{{ url_for('like', recipeName=recipeName, username=username, prevPage=recipe) }}">
+                                            <i class="far fa-heart"></i>
+                                        </a>
+                                        <span>Likes: {{recipe.likes }} </span>
+                                        {% endif %}
+                                    {% endif %}
+                                {% else %}
+                                <a class="likes"
+                                    href="{{ url_for('like', recipeName=recipeName, username=username, prevPage=recipe) }}">
+                                    <i class="far fa-heart"></i>
+                                </a>
+
+                                <span>Likes: {{recipe.likes }} </span>
+                                {% endif %}
+                            </p>
+
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% else %}
+        <div class="text-center">
+            <p>You have not uploaded any recipes yet. You can upload a new recipe <a
+                    href="{{ url_for('create_recipe') }}">here</a></p>
+        </div>
+        {% endif %}
+    </div>
+{% elif selected == 'liked_recipes' %}
+    <div id="liked-recipes" class="text-primary">
+        <h2 class="text-center">My Liked Recipes</h2>
+
+        {% if liked_recipes %}
+        <div class="container">
+            <div class="row">
+                {% if liked_recipes|length > 1 %}
+                {% for likedRecipe in liked_recipes %}
+                {% set recipe = x({"recipeName": likedRecipe}) %}
+                <div class="col-sm-12 col-lg-6">
+                    <div class="card mb-4 mt-4">
+                        {% set imageName = recipe.recipeImageName %}
+                        {% set recipeName = recipe.recipeName %}
+                        <img class="img-fluid my-recipes-img" src="{{ url_for('file', filename=imageName) }}" alt="recipe Image">
+
+                        <div class="card-body">
+                            <!-- Recipe Name -->
+                            <h4 class="card-title  text-center">{{ recipeName }}</h4>
+
+                            <!-- Recipe Details -->
+
+                            <p class="card-text">
+                                <i class="fas fa-utensils"></i> Serves {{ recipe.serves }}
+                                <br>
+                                <i class="far fa-clock"></i> Preparation time: {{ recipe.prepTime }}
+                                <br>
+                                <i class="far fa-clock"></i> Cooking time: {{ recipe.cookingTime }}
+                            </p>
+
+                            <h5 class="text-center">Recipe Description</h5>
+
+                            <p class="card-text recipe-description">
+                                {{ recipe.recipeDescription }}
+                            </p>
+
+                            <p>
+                                <span style="color: black;">Author:</span> {{ recipe.author }}
+                            </p>
+
+                            <p class="mt-4 text-center">
+                                <!-- Sets username variable-->
+                                {% set username = session.user %}
+
+                                {% set user = x({"username": username}) %}
+                                {% set recipeName = recipe.recipeName %}
+                                {% if likes %}
+                                    {% set listOfLikedRecipes = likes %}
+                                    {% if listOfLikedRecipes|length >= 1  %}
+                                        {% if recipeName in listOfLikedRecipes %}
+                                                <a class="likes"
+                                                    href="{{ url_for('unlike', recipeName=recipeName, username=username, prevPage=recipe) }}">
+                                                    <i class="fas fa-heart"></i>
+                                                </a>
+                                                <span>Likes: {{recipe.likes }} </span>
+                                        {% else %}
+                                        <a class="likes"
+                                            href="{{ url_for('like', recipeName=recipeName, username=username, prevPage=recipe) }}">
+                                            <i class="far fa-heart"></i>
+                                        </a>
+                                        <span>Likes: {{recipe.likes }} </span>
+                                        {% endif %}
+                                    {% endif %}
+                                {% else %}
+                                <a class="likes"
+                                    href="{{ url_for('like', recipeName=recipeName, username=username, prevPage=recipe) }}">
+                                    <i class="far fa-heart"></i>
+                                </a>
+
+                                <span>Likes: {{recipe.likes }} </span>
+                                {% endif %}
+                            </p>
+
+                            <div class="text-center">
+                                <a class="btn btn-outline-primary btn-lg"
+                                    href="{{ url_for('fullrecipe', recipeName=recipeName)}}">Go to Recipe</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+                {% else %}
+                <div class="col">
+                    <div class="card mb-2">
+                        {% set a = x({"recipeName": liked_recipes[0]}) %}
+
+                        {% set imageName = a.recipeImageName %}
+                        {% set recipeName = a.recipeName %}
+                        <img class="img-fluid" src="{{ url_for('file', filename=imageName) }}" alt="recipe Image">
+
+                        <div class="card-body">
+                            <!-- Recipe Name -->
+                            <h4 class="card-title  text-center">{{ a.recipeName }}</h4>
+
+                            <!-- Recipe Details -->
+
+                            <p class="card-text">
+                                <i class="fas fa-utensils"></i> Serves {{ a.serves }}
+                                <br>
+                                <i class="far fa-clock"></i> Preparation time: {{ a.prepTime }}
+                                <br>
+                                <i class="far fa-clock"></i> Cooking time: {{ a.cookingTime }}
+                            </p>
+
+                            <h5 class="text-center">Recipe Description</h5>
+
+                            <p class="card-text recipe-description">
+                                {{ a.recipeDescription }}
+                            </p>
+
+                            <p>
+                                <span style="color: black;">Author:</span> {{ a.author }}
+                            </p>
+
+                            <div class="text-center">
+                                <a class="btn btn-outline-primary btn-lg"
+                                    href="{{ url_for('fullrecipe', recipeName=recipeName)}}">Go to / edit Recipe</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% else %}
+        <p>You have not liked any recipes</p>
+        {% endif %}
+    </div>
+{% elif selected == 'my_posts' %}
+    <div class="my-posts" id="my-posts">
+        <h2 class="text-center text-primary mt-4 mb-4">My Posts</h2>
+        {% if user.hasPosted == "0" %}
+        <div class="text-center">
+            <p>You have not made any posts yet. You can create a new post <a href="{{ url_for('createPost', username=username) }}">here</a></p>
+        </div>
+        {% else %}
+        <div class="container">
+            {% for post in posts %}
+                {% if post.author == user.username.lower() %}
+                    <div class="row">
+                        <div class="col">
+                            <p>Author: {{ post.author }}</p>
+                            <p class="lead">
+                                {{ post.posttext }}
+                            </p>
+                        </div>
+                    </div>
+                    <hr class="width-80">
+                {% endif %}
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+{% else %}
+
+{% endif %}
+
+<script type="text/javascript">
+    $('.select').click(function(){
+        $(this).parent('.profile-select-form').submit();
+    })
+</script>
 {% endblock %}
