@@ -15,7 +15,7 @@
                             <ul class="dropdown-menu" aria-labelledby="categorydropdown">
                                 {% for x in categoryList %}
                                 <li><a class="dropdown-item"
-                                        href="{{ url_for('category', categoryName=x) }}">{{ x }}</a></li>
+                                        href="#">{{ x }}</a></li>
                                 {% endfor %}
                             </ul>
                         </div>
@@ -29,7 +29,7 @@
                             <ul class="dropdown-menu" aria-labelledby="categorydropdown">
                                 {% for x in categoryList %}
                                 <li><a class="dropdown-item"
-                                        href="{{ url_for('category', categoryName=x) }}">{{ x }}</a></li>
+                                        href="#">{{ x }}</a></li>
                                 {% endfor %}
                             </ul>
                         </div>
@@ -42,28 +42,294 @@
 
 
 {% if results %}
-{% for result in results %}
-{{ result.recipeName }}
-{% else %}
-<p class="text-center">No results found</p>
-{% endfor %}
+    <!-- Number of results -->
+    <div class="text-center mb-2"> {{ results.count() }} results found </div>
+    <!-- Loops through results and renders card for each -->
+    <div class="container">
+        <div class="row">
+            {% for recipe in results %}
+            <div class="col-sm-12 col-lg-6">
+    
+                <div class="card mb-4 mt-4">
+                    <!-- Recipe image -->
+                    <img class="card-img-top" src="{{ url_for('file', filename=recipe.recipeImageName) }}" alt="recipe Image">
+                    <div class="card-body">
+    
+                        <!-- Recipe Name -->
+                        <h4 class="card-title">{{ recipe.recipeName }}</h4>
+    
+                        <!-- Recipe Details -->
+                        <p class="card-text">
+                            <i class="fas fa-utensils"></i> Serves {{ recipe.serves }}
+                            <br>
+                            <i class="far fa-clock"></i> Preparation time: {{ recipe.prepTime }}
+                            <br>
+                            <i class="far fa-clock"></i> Cooking time: {{ recipe.cookingTime }}
+                        </p>
+    
+                        <!-- Categories -->
+                        {% if recipe.categories %}
+                            <div class="mb-4 recipe-categories">
+                                <h6>Categories</h6>
+                            {% if recipe.categories|length > 1 %}
+                                <ul class="list-inline">
+                                {% for category in recipe.categories %}
+                                    {% if category == "vegetarian" %}
+                                        <li class="list-inline-item">
+                                            {{ category }} <i class="fas fa-carrot"></i>
+                                        </li>
+                                    {% elif category == "vegan" %}
+                                        <li class="list-inline-item">
+                                            {{ category }} <i class="fas fa-leaf"></i>
+                                        </li>
+                                    {% else %}
+                                        <li class="list-inline-item">
+                                            {{ category }}
+                                        </li>
+                                    {% endif %}
+                                {% endfor %}
+                                </ul>
+                            {% endif %}
+                            </div>
+                        {% else %}
+                            <div class="mb-4 recipe-categories">
+                                <h6>Categories</h6>
+                                <ul class="list-inline pb-4">
+                                    <li class="list-inline-item"></li>
+                                    <li class="list-inline-item"></li>
+                                    <li class="list-inline-item"></li>
+                                    <li class="list-inline-item"></li>
+                                </ul>
+                                <p class="text-muted">No categories selected</p>
+                            </div>
+                        {% endif %}
+    
+                        <!-- Recipe Description -->
+                        <h5 class="">Recipe Description</h5>
+    
+                        <p class="card-text recipe-description">
+                            {{ recipe.recipeDescription }}
+                        </p>
+    
+                        <!-- Button linking to full recipe -->
+                        <div class="text-center">
+                            <a href="{{ url_for('fullrecipe', recipeName=recipe.recipeName) }}" class="btn btn-outline-primary btn-lg">Go to Recipe</a>
+                        </div>
+    
+                        <p class="mt-4 text-center">
+                            {% if user %}
+                                {% if recipe.recipeName in listOfLikedRecipes %}
+                                    <a class="likes" href="{{ url_for('like', recipeName=recipe.recipeName, username=user.username) }}">
+                                        <i class="fas fa-heart"></i>
+                                    </a>
+                                
+                                    <span>Likes: {{recipe.likes }} </span>
+                                {% else %}
+                                    <a class="likes" href="{{ url_for('like', recipeName=recipe.recipeName, username=user.username) }}">
+                                        <i class="far fa-heart"></i>
+                                    </a>
+                                    
+                                    <span>Likes: {{recipe.likes }} </span>
+                                {% endif %}
+                            {% else %}
+                                <a class="likes" href="{{ url_for('like', recipeName=recipe.recipeName, username=user.username) }}">
+                                    <i class="far fa-heart"></i>
+                                </a>
+                                <span>Likes: {{recipe.likes }} </span>
+                            {% endif %}
+
+
+                            <!-- {% if session.user %}
+                                {% set username = session.user %}
+                                
+                                {% if db.find({"username": username}) %}
+                                    
+                                    {% set user = db.find({"username": username}) %}
+                                    
+                                    {% if user.likedRecipes %}
+                                        {% set listOfLikedRecipes = user.likedRecipes %}
+                                        
+                                        {% if listOfLikedRecipes|length >= 1  %}
+                                            {% if recipe.recipeName in listOfLikedRecipes %}
+                                            
+                                                <a class="likes" href="{{ url_for('unlike', recipeName=recipe.recipeName, username=username) }}">
+                                                        <i class="fas fa-heart"></i>
+                                                    </a>
+                                                    
+                                                <span>Likes: {{recipe.likes }} </span>
+                                            {% else %}
+                                                <a class="likes" href="{{ url_for('like', recipeName=recipe.recipeName, username=username) }}">
+                                                    <i class="far fa-heart"></i>
+                                                </a> 
+                                                <span>Likes: {{recipe.likes }} </span>
+                                            {% endif %}
+                                        
+                                        {% endif %}
+                                        
+                                    {% else %}
+                                        <a class="likes" href="{{ url_for('like', recipeName=recipe.recipeName, username=username) }}">
+                                            <i class="far fa-heart"></i>
+                                        </a> 
+                                        
+                                        <span>Likes: {{recipe.likes }} </span>
+                                    {% endif %}
+                                
+                                {% endif %}
+                            {% else %}
+                                <a class="likes" href="{{ url_for('like', recipeName=recipe.recipeName, username='None') }}">
+                                    <i class="far fa-heart"></i>
+                                </a>
+                                
+                                <span>Likes: {{recipe.likes }} </span>
+                            {% endif %} -->
+                        </p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
 {% else %}
 <!-- Top Recipes -->
-<div id="top-recipes">
-    <h1 class="text-center">Top Recipes</h1>
+    <div id="top-recipes">
+        <h1 class="text-center">Top Recipes</h1>
+
+        <div class="container-fluid">
+            <div class="row">
+                {% for recipe in topRecipes %}
+                <div class="col-sm-12 col-lg-6 col-xl-4">
+
+                    <div class="card mb-4 mt-4">
+                        <img class="card-img-top" src="{{ url_for('file', filename=recipe.recipeImageName) }}" alt="recipe Image">
+                        <div class="card-body height-85">
+                            <!-- Recipe Name -->
+                            <h4 class="card-title text-center">{{ recipe.recipeName }}</h4>
+                            <!-- Recipe Details -->
+
+                            <p class="card-text">
+                                <i class="fas fa-utensils"></i> Serves {{ recipe.serves }}
+                                <br>
+                                <i class="far fa-clock"></i> Preparation time: {{ recipe.prepTime }}
+                                <br>
+                                <i class="far fa-clock"></i> Cooking time: {{ recipe.cookingTime }}
+                            </p>
+
+                            {% if recipe.categories %}
+                            <div class="recipe-categories">
+                                <h6>Categories</h6>
+                                {% set categories = recipe.categories %}
+                                {% if categories|length > 1 %}
+                                <ul class="list-inline">
+                                    {% for category in categories %}
+                                    {% if category == "vegetarian" %}
+                                    <li class="list-inline-item">
+                                        {{ category }} <i class="fas fa-carrot"></i>
+                                    </li>
+                                    {% elif category == "vegan" %}
+                                    <li class="list-inline-item">
+                                        {{ category }} <i class="fas fa-leaf"></i>
+                                    </li>
+                                    {% else %}
+                                    <li class="list-inline-item">
+                                        {{ category }}
+                                    </li>
+                                    {% endif %}
+                                    {% endfor %}
+                                </ul>
+                                {% else %}
+                                <ul class="list-inline">
+                                    {% if categories[0] == "vegetarian" %}
+                                    <li class="list-inline-item">
+                                        {{ categories[0] }} <i class="fas fa-carrot"></i>
+                                    </li>
+                                    {% elif categories[0] == "vegan" %}
+                                    <li class="list-inline-item">
+                                        {{ categories[0] }} <i class="fas fa-leaf"></i>
+                                    </li>
+                                    {% else %}
+                                    <li class="list-inline-item">
+                                        {{ categories[0] }}
+                                    </li>
+                                    {% endif %}
+                                </ul>
+                                {% endif %}
+                            </div>
+                            {% else %}
+                            <div class="mb-4 recipe-categories">
+                                <h6>Categories</h6>
+                                <ul class="list-inline">
+                                    <li class="list-inline-item">
+                                        <p class="text-muted">No categories selected</p>
+                                    </li>
+                                </ul>
+                            </div>
+                            {% endif %}
+
+                            <h5 class="mt-4">Recipe Description</h5>
+
+                            <p class="card-text recipe-description">
+                                {{ recipe.recipeDescription }}
+                            </p>
+
+                            <div class="text-center">
+                                <a class="btn btn-outline-primary btn-lg"
+                                    href="{{ url_for('fullrecipe', recipeName=recipe.recipeName)}}">Go to Recipe</a>
+                            </div>
+
+                            <p class="mt-4 text-center">
+                                {% if user %}
+                                {% if recipe.recipeName in listOfLikedRecipes %}
+                                    <a class="likes" href="{{ url_for('like', recipeName=recipe.recipeName, username=user.username) }}">
+                                        <i class="fas fa-heart"></i>
+                                    </a>
+                                
+                                    <span>Likes: {{recipe.likes }} </span>
+                                {% else %}
+                                    <a class="likes" href="{{ url_for('like', recipeName=recipe.recipeName, username=user.username) }}">
+                                        <i class="far fa-heart"></i>
+                                    </a>
+                                    
+                                    <span>Likes: {{recipe.likes }} </span>
+                                {% endif %}
+                            {% else %}
+                                <a class="likes" href="{{ url_for('like', recipeName=recipe.recipeName, username=user.username) }}">
+                                    <i class="far fa-heart"></i>
+                                </a>
+                                <span>Likes: {{recipe.likes }} </span>
+                            {% endif %}
+                            </p>
+
+                            <p>
+                                Author: {{ recipe.author }}
+                            </p>
+                        </div>
+
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <hr class="width-80">
 
     <div class="container-fluid">
         <div class="row">
-            {% for recipe in topRecipes %}
+            <div class="col">
+                <h1 class="text-center">All Recipes</h1>
+            </div>
+        </div>
+        <div class="row">
+            {% for recipe in recipes %}
+
             <div class="col-sm-12 col-lg-6 col-xl-4">
 
-                <div class="card mb-4 mt-4">
-                    {% set imageName = recipe.recipeImageName %}
-                    {% set recipeName = recipe.recipeName %}
-                    <img class="card-img-top" src="{{ url_for('file', filename=imageName) }}" alt="recipe Image">
-                    <div class="card-body height-85">
+                <div class="card all-recipes-card mb-4 mt-4">
+                    <img class="card-img-top" src="{{ url_for('file', filename=recipe.recipeImageName) }}" alt="recipe Image">
+                    <div class="recipe-card-body height-85">
                         <!-- Recipe Name -->
-                        <h4 class="card-title text-center">{{ recipeName }}</h4>
+                        <h4 class="card-title  text-center">{{ recipe.recipeName }}</h4>
+
                         <!-- Recipe Details -->
 
                         <p class="card-text">
@@ -74,13 +340,13 @@
                             <i class="far fa-clock"></i> Cooking time: {{ recipe.cookingTime }}
                         </p>
 
+                        <!-- Categories -->
                         {% if recipe.categories %}
-                        <div class="recipe-categories">
+                        <div class="mb-4 recipe-categories">
                             <h6>Categories</h6>
-                            {% set categories = recipe.categories %}
-                            {% if categories|length > 1 %}
+                            {% if recipe.categories|length > 1 %}
                             <ul class="list-inline">
-                                {% for category in categories %}
+                                {% for category in recipe.categories %}
                                 {% if category == "vegetarian" %}
                                 <li class="list-inline-item">
                                     {{ category }} <i class="fas fa-carrot"></i>
@@ -98,17 +364,18 @@
                             </ul>
                             {% else %}
                             <ul class="list-inline">
-                                {% if categories[0] == "vegetarian" %}
+                                {% set category = categories[0] %}
+                                {% if category == "vegetarian" %}
                                 <li class="list-inline-item">
-                                    {{ categories[0] }} <i class="fas fa-carrot"></i>
+                                    {{ category }} <i class="fas fa-carrot"></i>
                                 </li>
-                                {% elif categories[0] == "vegan" %}
+                                {% elif category == "vegan" %}
                                 <li class="list-inline-item">
-                                    {{ categories[0] }} <i class="fas fa-leaf"></i>
+                                    {{ category }} <i class="fas fa-leaf"></i>
                                 </li>
                                 {% else %}
                                 <li class="list-inline-item">
-                                    {{ categories[0] }}
+                                    {{ category }}
                                 </li>
                                 {% endif %}
                             </ul>
@@ -117,7 +384,7 @@
                         {% else %}
                         <div class="mb-4 recipe-categories">
                             <h6>Categories</h6>
-                            <ul class="list-inline">
+                            <ul class="list-inline pb-4">
                                 <li class="list-inline-item">
                                     <p class="text-muted">No categories selected</p>
                                 </li>
@@ -133,46 +400,28 @@
 
                         <div class="text-center">
                             <a class="btn btn-outline-primary btn-lg"
-                                href="{{ url_for('fullrecipe', recipeName=recipeName)}}">Go to Recipe</a>
+                                href="{{ url_for('fullrecipe', recipeName=recipe.recipeName)}}">Go to Recipe</a>
                         </div>
-                        {% set recipeName = recipe.recipeName %}
                         <p class="mt-4 text-center">
-                            <!-- Checks if user is logged in -->
-                            {% if session.user %}
-                            <!-- Sets username variable-->
-                            {% set username = session.user %}
-
-                            {% if db.find({"username": username}) %}
-                            {% set user = db.find({"username": username}) %}
-                            {% if user.likedRecipes %}
-                            {% set listOfLikedRecipes = user.likedRecipes %}
-                            {% if listOfLikedRecipes|length >= 1  %}
-                            {% if recipeName in listOfLikedRecipes %}
-                            <a class="likes" href="{{ url_for('like', recipeName=recipeName, username=username) }}">
-                                <i class="fas fa-heart"></i>
-                            </a>
-                            <span>Likes: {{recipe.likes }} </span>
+                            {% if user %}
+                                {% if recipe.recipeName in listOfLikedRecipes %}
+                                    <a class="likes" href="{{ url_for('like', recipeName=recipe.recipeName, username=user.username) }}">
+                                        <i class="fas fa-heart"></i>
+                                    </a>
+                                
+                                    <span>Likes: {{recipe.likes }} </span>
+                                {% else %}
+                                    <a class="likes" href="{{ url_for('like', recipeName=recipe.recipeName, username=user.username) }}">
+                                        <i class="far fa-heart"></i>
+                                    </a>
+                                    
+                                    <span>Likes: {{recipe.likes }} </span>
+                                {% endif %}
                             {% else %}
-                            <a class="likes" href="{{ url_for('like', recipeName=recipeName, username=username) }}">
-                                <i class="far fa-heart"></i>
-                            </a>
-                            <span>Likes: {{recipe.likes }} </span>
-                            {% endif %}
-                            {% endif %}
-                            {% else %}
-                            <a class="likes" href="{{ url_for('like', recipeName=recipeName, username=username) }}">
-                                <i class="far fa-heart"></i>
-                            </a>
-
-                            <span>Likes: {{recipe.likes }} </span>
-                            {% endif %}
-                            {% endif %}
-                            {% else %}
-                            <a class="likes" href="{{ url_for('like', recipeName=recipeName, username='None') }}">
-                                <i class="far fa-heart"></i>
-                            </a>
-
-                            <span>Likes: {{recipe.likes }} </span>
+                                <a class="likes" href="{{ url_for('like', recipeName=recipe.recipeName, username=user.username) }}">
+                                    <i class="far fa-heart"></i>
+                                </a>
+                                <span>Likes: {{recipe.likes }} </span>
                             {% endif %}
                         </p>
 
@@ -186,156 +435,6 @@
             {% endfor %}
         </div>
     </div>
-</div>
-
-<hr class="width-80">
-
-<div class="container-fluid text-primary">
-    <div class="row">
-        <div class="col">
-            <h1 class="text-center">All Recipes</h1>
-        </div>
-    </div>
-    <div class="row">
-        {% for recipe in recipes %}
-
-        <div class="col-sm-12 col-lg-6 col-xl-4">
-
-            <div class="card all-recipes-card mb-4 mt-4">
-                {% set imageName = recipe.recipeImageName %}
-                {% set recipeName = recipe.recipeName %}
-                <img class="card-img-top" src="{{ url_for('file', filename=imageName) }}" alt="recipe Image">
-                <div class="recipe-card-body height-85">
-                    <!-- Recipe Name -->
-                    <h4 class="card-title  text-center">{{ recipeName }}</h4>
-
-                    <!-- Recipe Details -->
-
-                    <p class="card-text">
-                        <i class="fas fa-utensils"></i> Serves {{ recipe.serves }}
-                        <br>
-                        <i class="far fa-clock"></i> Preparation time: {{ recipe.prepTime }}
-                        <br>
-                        <i class="far fa-clock"></i> Cooking time: {{ recipe.cookingTime }}
-                    </p>
-
-                    <!-- Categories -->
-                    {% if recipe.categories %}
-                    <div class="mb-4 recipe-categories">
-                        <h6>Categories</h6>
-                        {% set categories = recipe.categories %}
-                        {% if categories|length > 1 %}
-                        <ul class="list-inline">
-                            {% for category in categories %}
-                            {% if category == "vegetarian" %}
-                            <li class="list-inline-item">
-                                {{ category }} <i class="fas fa-carrot"></i>
-                            </li>
-                            {% elif category == "vegan" %}
-                            <li class="list-inline-item">
-                                {{ category }} <i class="fas fa-leaf"></i>
-                            </li>
-                            {% else %}
-                            <li class="list-inline-item">
-                                {{ category }}
-                            </li>
-                            {% endif %}
-                            {% endfor %}
-                        </ul>
-                        {% else %}
-                        <ul class="list-inline">
-                            {% set category = categories[0] %}
-                            {% if category == "vegetarian" %}
-                            <li class="list-inline-item">
-                                {{ category }} <i class="fas fa-carrot"></i>
-                            </li>
-                            {% elif category == "vegan" %}
-                            <li class="list-inline-item">
-                                {{ category }} <i class="fas fa-leaf"></i>
-                            </li>
-                            {% else %}
-                            <li class="list-inline-item">
-                                {{ category }}
-                            </li>
-                            {% endif %}
-                        </ul>
-                        {% endif %}
-                    </div>
-                    {% else %}
-                    <div class="mb-4 recipe-categories">
-                        <h6>Categories</h6>
-                        <ul class="list-inline pb-4">
-                            <li class="list-inline-item">
-                                <p class="text-muted">No categories selected</p>
-                            </li>
-                        </ul>
-                    </div>
-                    {% endif %}
-
-                    <h5 class="mt-4">Recipe Description</h5>
-
-                    <p class="card-text recipe-description">
-                        {{ recipe.recipeDescription }}
-                    </p>
-
-                    <div class="text-center">
-                        <a class="btn btn-outline-primary btn-lg"
-                            href="{{ url_for('fullrecipe', recipeName=recipeName)}}">Go to Recipe</a>
-                    </div>
-                    {% set recipeName = recipe.recipeName %}
-                    <p class="mt-4 text-center">
-                        <!-- Checks if user is logged in -->
-                        {% if session.user %}
-                        <!-- Sets username variable-->
-                        {% set username = session.user %}
-
-                        {% if user({"username": username}) %}
-                        {% set user = user({"username": username}) %}
-                        {% if user.likedRecipes %}
-                        {% set listOfLikedRecipes = user.likedRecipes %}
-                        {% if listOfLikedRecipes|length >= 1  %}
-                        {% if recipeName in listOfLikedRecipes %}
-                        <a class="likes"
-                            href="{{ url_for('like', recipeName=recipeName, username=username) }}">
-                            <i class="fas fa-heart"></i>
-                        </a>
-                        <span>Likes: {{recipe.likes }} </span>
-                        {% else %}
-                        <a class="likes"
-                            href="{{ url_for('like', recipeName=recipeName, username=username) }}">
-                            <i class="far fa-heart"></i>
-                        </a>
-                        <span>Likes: {{recipe.likes }} </span>
-                        {% endif %}
-                        {% endif %}
-                        {% else %}
-                        <a class="likes"
-                            href="{{ url_for('like', recipeName=recipeName, username=username) }}">
-                            <i class="far fa-heart"></i>
-                        </a>
-
-                        <span>Likes: {{recipe.likes }} </span>
-                        {% endif %}
-                        {% endif %}
-                        {% else %}
-                        <a class="likes" href="{{ url_for('like', recipeName=recipeName, username='None') }}">
-                            <i class="far fa-heart"></i>
-                        </a>
-
-                        <span>Likes: {{recipe.likes }} </span>
-                        {% endif %}
-                    </p>
-
-                    <p>
-                        Author: {{ recipe.author }}
-                    </p>
-                </div>
-
-            </div>
-        </div>
-        {% endfor %}
-    </div>
-</div>
 {% endif %}
 
 {% endblock %}

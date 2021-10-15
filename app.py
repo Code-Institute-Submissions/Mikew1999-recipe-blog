@@ -22,15 +22,26 @@ mongo = PyMongo(app)
 recipes = mongo.db.recipes.find()
 categories = mongo.db.categories.find_one()
 categoryList = categories['categories']
+user = mongo.db.users.find_one
 
 
 # recipes page
 @app.route("/recipes", methods=["GET", "POST"])
 def recipe():
-    print(request.method)
+    topRecipes = mongo.db.recipes.find().limit(4).sort("likes", -1)
     recipes = mongo.db.recipes.find()
-    user = mongo.db.users.find_one
-    topRecipes = mongo.db.recipes.find().limit(3).sort("likes", -1)
+    username = None
+    if session['user']:
+        username = session['user']
+        user = mongo.db.users.find_one({"username": username})
+        if user['likedRecipes']:
+            listOfLikedRecipes = user['likedRecipes']
+        else:
+            listOfLikedRecipes = None
+    else:
+        user = None
+        listOfLikedRecipes = None
+
     if request.method == "POST":
         db = mongo.db.recipes
         mongo.db.recipes.create_index(
@@ -46,17 +57,21 @@ def recipe():
         search = ({"$text": {"$search": query}})
         # finds results
         results = mongo.db.recipes.find(search)
-        print(results)
 
         return render_template(
             "recipes.html",
+            user=user,
             results=results,
+            listOfLikedRecipes=listOfLikedRecipes,
+            categories=categories,
+            categoryList=categoryList,
             query=query,
             db=db)
     else:
         return render_template(
             "recipes.html",
             recipes=recipes,
+            listOfLikedRecipes=listOfLikedRecipes,
             topRecipes=topRecipes,
             categories=categories,
             categoryList=categoryList,
@@ -74,7 +89,7 @@ def file(filename):
 @app.route("/")
 def index():
     topRecipes = mongo.db.recipes.find().limit(4).sort("likes", -1)
-    user = mongo.db.users.find_one
+    
 
     return render_template(
         "index.html",
@@ -250,26 +265,6 @@ def likePost(author, username):
     print(author)
     print(username)
     return redirect(url_for('newsFeed'))
-
-
-@app.route("/recipes/categories/<categoryName>")
-def category(categoryName):
-    print(categoryName)
-    x = mongo.db.recipes.find_one
-
-    results = mongo.db.recipes.find({"categories": categoryName})
-    numberOfResults = results.count()
-
-    return render_template(
-        'searchedcategory.html',
-        x=x,
-        recipes=recipes,
-        categories=categories,
-        categoryList=categoryList,
-        categoryName=categoryName,
-        numberOfResults=numberOfResults,
-        results=results
-    )
 
 
 # shows full recipe
@@ -627,48 +622,47 @@ def like(recipeName, username):
         query = mongo.db.users.find_one({"likedRecipes": {"$exists": True}})
         recipe = mongo.db.recipes.find_one({"recipeName": recipeName})
         likes = recipe['likes']
-        newLikes = likes + 1
-
         usersWithLikedRecipes = mongo.db.users.find(query)
 
         if usersWithLikedRecipes:
-            print("usersWithLikedRecipes is true")
             usersLikedRecipes = user['likedRecipes']
             if recipeName not in usersLikedRecipes:
+                newLikes = likes + 1
                 mongo.db.users.update_one({"username": username}, {
                     "$push": {"likedRecipes": recipeName}})
                 print("Updated liked recipes")
                 updateLikes = {"$set": {"likes": newLikes}}
                 mongo.db.recipes.update_one(recipe, updateLikes)
             else:
-                newLikes = likes - 2
+                newLikes = likes - 1
                 mongo.db.users.update_one(
                     {"username": username}, {
                         "$pull": {"likedRecipes": recipeName}})
                 updateLikes = {"$set": {"likes": newLikes}}
                 mongo.db.recipes.update_one(recipe, updateLikes)
+
         return redirect(url_for('fullrecipe', recipeName=recipeName))
 
 
-# unlike recipe
-@app.route("/recipes/<recipeName>/<username>/unlike_recipe",
-           methods=["GET", "POST"])
-def unlike(recipeName, username):
-    user = mongo.db.users.find_one({"username": username})
-    query = mongo.db.users.find_one({"likedRecipes": {"$exists": True}})
-    recipe = mongo.db.recipes.find_one({"recipeName": recipeName})
-    likes = recipe['likes']
-    newLikes = likes - 1
+# # unlike recipe
+# @app.route("/recipes/<recipeName>/<username>/unlike_recipe",
+#            methods=["GET", "POST"])
+# def unlike(recipeName, username):
+#     user = mongo.db.users.find_one({"username": username})
+#     query = mongo.db.users.find_one({"likedRecipes": {"$exists": True}})
+#     recipe = mongo.db.recipes.find_one({"recipeName": recipeName})
+#     likes = recipe['likes']
+#     newLikes = likes - 1
 
-    usersWithLikedRecipes = mongo.db.users.find(query)
+#     usersWithLikedRecipes = mongo.db.users.find(query)
 
-    if usersWithLikedRecipes:
-        print("usersWithLikedRecipes is true")
-        usersLikedRecipes = user['likedRecipes']
-        if recipeName in usersLikedRecipes:
-            print("user has liked this recipe")
+#     if usersWithLikedRecipes:
+#         print("usersWithLikedRecipes is true")
+#         usersLikedRecipes = user['likedRecipes']
+#         if recipeName in usersLikedRecipes:
+#             print("user has liked this recipe")
 
-    return redirect(url_for('fullrecipe', recipeName=recipeName))
+#     return redirect(url_for('fullrecipe', recipeName=recipeName))
 
 
 # create recipe form handling
@@ -762,30 +756,6 @@ def deleteProfile(username):
     mongo.db.users.delete_one(userRecord)
     flash("Profile Successfully Deleted.")
     return redirect(url_for('index'))
-
-
-# Searches recipes
-@app.route("/recipes/search_recipes", methods=["GET", "POST"])
-def searchRecipes():
-    x = mongo.db.users.find_one
-    # creates search index
-    mongo.db.recipes.create_index(
-        [
-            ("recipeName", "text"),
-            ("recipeDescription", "text"),
-            ("author", "text")])
-
-    # gets text input from search form
-    query = request.form.get("search")
-    # performs search
-    search = ({"$text": {"$search": query}})
-    # finds results
-    results = mongo.db.recipes.find(search)
-
-    return render_template(
-        "searchedrecipes.html",
-        x=x,
-        results=results)
 
 
 @app.route("/get_in_touch", methods=['GET', 'POST'])
