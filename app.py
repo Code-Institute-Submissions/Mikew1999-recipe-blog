@@ -82,15 +82,21 @@ def changePassword():
 @app.route("/profile/<username>", methods=["GET", "POST"])
 def profile(username):
     ''' Renders profile page '''
-    # grab the session users username from db
-    user = mongo.db.users.find_one_or_404({"username": username})
-    user_recipes = mongo.db.recipes.find({"author": username})
-    liked_recipes = user['likedRecipes']
-    likes = user['likedRecipes']
-    posts = mongo.db.posts.find()
-    x = mongo.db.recipes.find_one
-
     if session["user"]:
+        # grab the session users username from db
+        user = mongo.db.users.find_one_or_404({"username": username})
+        user_recipes = mongo.db.recipes.find({"author": username})
+        posts = mongo.db.posts.find({"author": username})
+
+        profile_image = user['profileImageName']
+        if profile_image == 'None':
+            profile_image = None
+
+        list_of_liked_recipes = []
+        for item in user['likedRecipes']:
+            x = mongo.db.recipes.find_one({"recipeName": item})
+            list_of_liked_recipes.append(x)
+
         selected = 'personal_details'
         if 'personal_details' in request.form:
             selected = 'personal_details'
@@ -103,14 +109,13 @@ def profile(username):
 
         return render_template(
             "profile.html",
-            selected=selected,
-            liked_recipes=liked_recipes,
-            username=username,
-            likes=likes,
-            user_recipes=user_recipes,
+            profile_image=profile_image,
             posts=posts,
-            x=x,
-            user=user)
+            selected=selected,
+            username=username,
+            user_recipes=user_recipes,
+            user=user,
+            list_of_liked_recipes=list_of_liked_recipes)
 
     else:
         flash("Please login to view your profile")
@@ -215,10 +220,10 @@ def create_recipe():
 @app.route("/newsfeed/posts")
 def posts():
     ''' Newfeed page '''
-    posts = mongo.db.posts.find().sort("_id", -1)
+    all_posts = mongo.db.posts.find().sort("_id", -1)
     return render_template(
         "newsfeed.html",
-        posts=posts)
+        posts=all_posts)
 
 
 @app.route("/newsfeed/posts/<post_id>", methods=["GET", "POST"])
@@ -240,19 +245,19 @@ def createPost(username):
         posts = mongo.db.posts.find().limit(1).sort("postID", -1)
 
         for post in posts:
-            postID = post['_id']
-            newPostID = postID + 1
+            post_id = post['_id']
+            new_post_id = post_id + 1
 
         user = mongo.db.users.find_one({"username": username})
 
         if 'postimage' in request.files:
             image = request.files['postimage']
-            securedImage = secure_filename(image.filename)
+            secured_image = secure_filename(image.filename)
             # saves file to mongodb
-            mongo.save_file(securedImage, image)
+            mongo.save_file(secured_image, image)
             post = {
-                "_id": newPostID,
-                "postimage": securedImage,
+                "_id": new_post_id,
+                "postimage": secured_image,
                 "posttext": request.form.get("posttext"),
                 "author": username
             }
@@ -267,7 +272,7 @@ def createPost(username):
             return redirect(url_for('index'))
         else:
             post = {
-                "_id": newPostID,
+                "_id": new_post_id,
                 "posttext": request.form.get("posttext"),
                 "author": username
             }
