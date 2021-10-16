@@ -151,7 +151,6 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .card-body {
-    background: #f1f1f1;
     height: 80vh;
 }
 
@@ -160,13 +159,13 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .recipe-card-body {
-    background: #f1f1f1;
     height: 80vh;
     padding: 10px;
 }
 
-.post-card-body {
-    background: #f1f1f1;
+.box {
+    border: 1px solid black;
+    box-shadow: 4px 4px 4px 4px rgba(0,0,0,0.2);
 }
 
 .search-profile-card {

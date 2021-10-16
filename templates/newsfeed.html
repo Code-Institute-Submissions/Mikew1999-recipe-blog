@@ -114,7 +114,7 @@
 
             <div class="col-12">
               <div>
-                {% if post.postimage %}
+                {% if post.postimage != 'None' %}
                 <div class="text-center">
                   <img class="post-image" src="{{ url_for('file', filename=post.postimage) }}" alt="Post Image">
                 </div>
@@ -162,19 +162,10 @@
               </form>
             </div>
           </div>
-          <div class="row">
-            
-          </div>
           {% endfor %}
         </div>
       </div>
     </div>
   </div>
-
-
-
-  <hr class="width-80">
-
-
 </main>
 {% endblock %}

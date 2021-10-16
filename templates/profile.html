@@ -73,9 +73,9 @@
 
 {% if selected == 'personal_details' %}
     <!-- Personal Details -->
-    <div id="personal-details" class="mt-4 mb-4 container text-primary">
+    <div id="personal-details" class="mt-4 mb-4 container">
 
-        <h2 class="masthead-heading text-center text-primary mb-4">Personal Details</h2>
+        <h2 class="masthead-heading text-center mb-4">Personal Details</h2>
 
         <div id="edit-personal-details-form">
             <form action="{{ url_for('editPersonalDetails', username=username) }}" method="POST">
@@ -115,7 +115,7 @@
     </div>
 {% elif selected == 'my_recipes' %}
     <!-- My recipes -->
-    <div id="my-recipes" class="my-recipes text-primary">
+    <div id="my-recipes" class="my-recipes">
         <h2 class="text-center mb-4">My Recipes</h2>
 
         {% if user_recipes %}
@@ -203,7 +203,7 @@
         {% endif %}
     </div>
 {% elif selected == 'liked_recipes' %}
-    <div id="liked-recipes" class="text-primary">
+    <div id="liked-recipes">
         <h2 class="text-center">My Liked Recipes</h2>
 
         {% if list_of_liked_recipes %}
@@ -221,17 +221,31 @@
         {% endif %}
     </div>
 {% elif selected == 'my_posts' %}
-    <div class="my-posts" id="my-posts">
-        <h2 class="text-center text-primary mt-4 mb-4">My Posts</h2>
+    <div class="my-posts mt-4 mb-4" id="my-posts">
+        <h2 class="text-center">My Posts</h2>
         {% if posts.count() == "0" %}
-        <div class="text-center">
-            <p>You have not made any posts yet. You can create a new post <a href="{{ url_for('createPost', username=username) }}">here</a></p>
-        </div>
+            <div class="text-center">
+                <p>You have not made any posts yet. You can create a new post <a href="{{ url_for('createPost', username=username) }}">here</a></p>
+            </div>
         {% else %}
         <div class="container">
-            {% for post in posts %}
-                {{ post }}
-            {% endfor %}
+                {% for post in posts %}
+                <div class="row">
+                    <div class="col">
+                    <div class="box mb-4 mt-2">
+                        {% if post.postimage != 'None' %}
+                        <div class="text-center mt-2 mb-2">
+                            <img class="img-fluid" src="{{ url_for('file', filename=post.postimage) }}" alt="Post Image">
+                        </div>
+                        {% endif %}
+
+                        <h2>{{ post.title }}</h2>
+                        <p class="lead p-4">{{ post.posttext }}</p>
+                        <p>{{ post.author }}</p>
+                    </div>
+                    </div>
+                </div>
+                {% endfor %}
         </div>
         {% endif %}
     </div>
