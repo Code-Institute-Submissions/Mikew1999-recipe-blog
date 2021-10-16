@@ -2,7 +2,7 @@
 {% block content %}
 
 {% if session.user %}
-    {% set username = session.user %}
+{% set username = session.user %}
 {% endif %}
 
 <!-- links back to various pages -->
@@ -25,111 +25,123 @@
     {% if edit_recipe %}
     <main class="mb-4">
         <div class="container mt-4">
-            <h2 class="text-center text-primary create-recipe-title">Create Recipe</h2>
-    
-            <hr>
-    
-            <form class="col position-relative text-primary" method="POST" action="{{ url_for('create_recipe') }}"
-                enctype="multipart/form-data">
-                <div id="recipe-details">
-                    <!-- Recipe Name -->
-                    <label for="recipeName">Recipe Name:</label>
-                    <input class="form-control" type="text" name="recipeName" required>
-    
-                    <br>
-    
-                    <!-- Recipe Image-->
-                    <label for="recipeImage">Recipe Image:</label>
-                    <br>
-                    <input type="file" name="recipeImage" accept="image/jpg" required>
-                    <br>
-                    <small>Must be .jpg and under 16Mb</small>
-    
-                    <hr class="w-100">
-    
-                    <!-- Recipe Details -->
-                    <h4 class="text-center text-primary uppercase">Recipe Details</h4>
-    
-                    <label for="serves">Serves:</label>
-                    <input class="form-control" type="text" name="serves" required>
-    
-                    <label for="prepTime">Preparation Time</label>
-                    <input class="form-control" type="text" name="prepTime" required>
-    
-                    <label for="cookingTime">Cooking Time:</label>
-                    <input class="form-control" type="text" name="cookingTime" required>
-    
-                    <label for="recipeDescription">Recipe Description:</label>
-                    <textarea class="form-control" type="text" name="recipeDescription" required></textarea>
-    
-                    <hr class="w-100">
-    
-                    <!-- Categories / Dietary Requirements -->
-                    <h4 class="text-center text-primary">Categories / dietary requirements</h4>
-    
-                    <p class="text-center">Please select any that apply</p>
-    
-                    <div class="text-center">
-                        {% for category in categoryList %}
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="checkbox" value="{{category}}" name="category">
-                                <label class="form-check-label" for="{{category}}">{{category}}</label>
-                            </div>
-                        {% endfor %}
-    
-                        <hr>
-    
+            <div class="row">
+                <div class="col">
+                    <div class="card">
+                        <div style="height: auto;" class="card-body">
+                            <h1 class="text-center diplay-1 create-recipe-title">Edit Recipe</h1>
+                            <form class="position-relative" method="POST"
+                                action="{{ url_for('edit_recipe', recipeName=recipe.recipeName) }}"
+                                enctype="multipart/form-data">
+                                <div id="recipe-details">
+                                    <!-- Recipe Name -->
+                                    <label for="recipeName">Recipe Name:</label>
+                                    <input class="form-control" type="text" value="{{ recipe.recipeName }}"
+                                        name="recipeName" required>
+
+                                    <br>
+
+                                    <!-- Recipe Image-->
+                                    <label for="recipeImage">Recipe Image:</label>
+                                    <br>
+                                    <input type="file" name="recipeImage" accept="image/jpg">
+                                    <br>
+                                    <small>Must be .jpg and under 16Mb</small>
+
+                                    <hr class="w-100">
+
+                                    <!-- Recipe Details -->
+                                    <h4 class="text-center uppercase">Recipe Details</h4>
+
+                                    <label for="serves">Serves:</label>
+                                    <input class="form-control" type="text" value="{{ recipe.serves }}" name="serves"
+                                        required>
+
+                                    <label for="prepTime">Preparation Time</label>
+                                    <input class="form-control" type="text" value="{{ recipe.prepTime }}"
+                                        name="prepTime" required>
+
+                                    <label for="cookingTime">Cooking Time:</label>
+                                    <input class="form-control" type="text" value="{{ recipe.cookingTime }}"
+                                        name="cookingTime" required>
+
+                                    <label for="recipeDescription">Recipe Description:</label>
+                                    <textarea class="form-control" name="recipeDescription" required>
+                                {{ recipe.recipeDescription }}
+                            </textarea>
+
+                                    <hr class="w-100">
+
+                                    <!-- Categories / Dietary Requirements -->
+                                    <h4>Categories / dietary requirements</h4>
+
+                                    <p>Please select any that apply</p>
+
+                                    <div class="text-center">
+                                        {% for category in category_list %}
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="checkbox"
+                                                {% if category in recipe.categories %}selected{% endif %}
+                                                value="{{category}}" name="category">
+                                            <label class="form-check-label" for="{{category}}">{{category}}</label>
+                                        </div>
+                                        {% endfor %}
+
+                                        <hr>
+
+                                    </div>
+                                </div>
+
+                                <!-- Ingredients -->
+                                <div id="ingredients">
+                                    <div class="mb-2">
+
+                                        <h4 class="uppercase create-recipe-headers">Ingredients</h4>
+
+                                        {% for ingredient in recipe.ingredients %}
+                                        <div class="mb-3">
+                                            <label for="Ingredient{{loop.index}}">Ingredient {{ loop.index }}</label>
+                                            <input class="form-control ingredient" type="text"
+                                                name="ingredient{{ loop.index }}" value="{{ ingredient }}">
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                    <!-- Adds another ingredient item -->
+                                    <button class="btn btn-primary" onclick="moreIngredients()"
+                                        id="moreingredientsbutton" type="button">Add more
+                                        ingredients</button>
+
+                                </div>
+
+                                <!-- Steps -->
+                                <div id="steps">
+                                    <div class="mb-2 mt-4">
+                                        <h4 class="uppercase create-recipe-headers">Steps</h4>
+
+                                        {% for step in recipe.steps %}
+                                        <div class="mb-3">
+                                            <label for="step{{loop.index}}">Step {{ loop.index }}</label>
+                                            <input class="form-control step" type="text" name="step{{ loop.index }}"
+                                                value="{{ step }}">
+                                        </div>
+                                        {% endfor %}
+                                        <!-- Adds another step item -->
+                                        <button class="btn btn-primary" onclick="moresteps()" id="morestepsbutton"
+                                            type="button">Add
+                                            more steps</button>
+                                    </div>
+
+                                    <div class="text-center mt-3">
+                                        <button class="btn btn-outline-primary" type="submit">Save changes</button>
+                                    </div>
+
+                            </form>
+                        </div>
                     </div>
+
                 </div>
-    
-                <!-- Ingredients -->
-                <div id="ingredients">
-                    <div class="mb-2">
-    
-                        <h4 class="text-center uppercase text-primary create-recipe-headers">Ingredients</h4>
-    
-                        <label class="ingredient" for="ingredient1">Ingredient 1:</label>
-                        <input class="form-control" type="text" name="ingredient1" required>
-    
-                        <label class="ingredient" for="ingredient2">Ingredient 2:</label>
-                        <input class="form-control" type="text" name="ingredient2" required>
-    
-                        <label class="ingredient" for="ingredient3">Ingredient 3:</label>
-                        <input class="form-control" type="text" name="ingredient3">
-                    </div>
-                    <!-- Adds another ingredient item -->
-                    <button class="btn btn-primary w-100" onclick="moreIngredients()" id="moreingredientsbutton"
-                        type="button">Add another
-                        ingredient</button>
-    
-                    <hr>
-    
-                </div>
-    
-                <!-- Steps -->
-                <div id="steps">
-                    <div class="mb-2">
-                        <h4 class="text-center uppercase text-primary create-recipe-headers">Steps</h4>
-    
-                        <label class="step" for="step1">Step 1:</label>
-                        <input class="form-control" type="text" name="step1" required>
-    
-                        <label class="step" for="step2">Step 2:</label>
-                        <input class="form-control" type="text" name="step2" required>
-    
-                        <label class="step" for="step3">Step 3:</label>
-                        <input class="form-control" type="text" name="step3">
-                    </div>
-                    <!-- Adds another step item -->
-                    <button class="btn btn-primary w-100" onclick="moresteps()" id="morestepsbutton" type="button">Add
-                        another step</button>
-                </div>
-    
-                <div class="text-center mt-3">
-                    <button class="btn btn-primary" type="submit">Submit Recipe</button>
-                </div>
-    
-            </form>
+            </div>
+
         </div>
     </main>
     {% else %}
@@ -143,7 +155,8 @@
                     </div>
                     <div class="col-12 text-center">
                         <div class="mb-4">
-                            <img class="full-recipe-image" src="{{ url_for('file', filename=recipe.imageName) }}" alt="recipe Image">
+                            <img class="full-recipe-image" src="{{ url_for('file', filename=recipe.recipeImageName) }}"
+                                alt="recipe Image">
                         </div>
                     </div>
                 </div>
@@ -153,9 +166,9 @@
                             {{ recipe.recipeDescription }}
                         </p>
                     </div>
-                    
+
                 </div>
-        
+
                 <div class="row">
                     <div class="col-12 col-md-6 text-center">
                         <!-- Recipe Details -->
@@ -177,37 +190,37 @@
                             {% if categories|length > 1 %}
                             <ul class="list-inline">
                                 {% for category in categories %}
-                                    {% if category == "vegetarian" %}
-                                        <li class="list-inline-item">
-                                            {{ category }} <i class="fas fa-carrot"></i>
-                                        </li>
-                                        {% elif category == "vegan" %}
-                                        <li class="list-inline-item">
-                                            {{ category }} <i class="fas fa-leaf"></i>
-                                        </li>
-                                        {% else %}
-                                        <li class="list-inline-item">
-                                            {{ category }}
-                                        </li>
-                                    {% endif %}
+                                {% if category == "vegetarian" %}
+                                <li class="list-inline-item">
+                                    {{ category }} <i class="fas fa-carrot"></i>
+                                </li>
+                                {% elif category == "vegan" %}
+                                <li class="list-inline-item">
+                                    {{ category }} <i class="fas fa-leaf"></i>
+                                </li>
+                                {% else %}
+                                <li class="list-inline-item">
+                                    {{ category }}
+                                </li>
+                                {% endif %}
                                 {% endfor %}
                             </ul>
                             {% else %}
-                                <ul class="list-inline">
-                                    {% if categories[0] == "vegetarian" %}
-                                        <li class="list-inline-item">
-                                            {{ categories[0] }} <i class="fas fa-carrot"></i>
-                                        </li>
-                                        {% elif categories[0] == "vegan" %}
-                                        <li class="list-inline-item">
-                                            {{ categories[0] }} <i class="fas fa-leaf"></i>
-                                        </li>
-                                        {% else %}
-                                        <li class="list-inline-item">
-                                            {{ categories[0] }}
-                                        </li>
-                                    {% endif %}
-                                </ul>
+                            <ul class="list-inline">
+                                {% if categories[0] == "vegetarian" %}
+                                <li class="list-inline-item">
+                                    {{ categories[0] }} <i class="fas fa-carrot"></i>
+                                </li>
+                                {% elif categories[0] == "vegan" %}
+                                <li class="list-inline-item">
+                                    {{ categories[0] }} <i class="fas fa-leaf"></i>
+                                </li>
+                                {% else %}
+                                <li class="list-inline-item">
+                                    {{ categories[0] }}
+                                </li>
+                                {% endif %}
+                            </ul>
                             {% endif %}
                         </div>
                         {% else %}
@@ -222,7 +235,7 @@
                         {% endif %}
                     </div>
                 </div>
-        
+
                 <div class="row mt-4">
                     <div class="col-xs-12 col-lg-4 offset-lg-2">
                         <h4 class="text-center mb-4">Ingredients</h4>
@@ -247,61 +260,58 @@
                         </ol>
                     </div>
                 </div>
-        
+
                 <div class="row">
                     <div class="col">
                         <p class="mt-4 text-center">
                             <!-- Sets username variable-->
                             {% if session.user %}
-                                {% set username = session.user %}
-                                {% set user = user({"username": username.lower() }) %}
-        
-                                {% set recipeName = recipe.recipeName %}
-                                {% set likes = user.likedRecipes %}
-                                {% if likes %}
-                                    {% set listOfLikedRecipes = likes %}
-                                    {% if listOfLikedRecipes|length >= 1  %}
-                                        {% if recipeName in listOfLikedRecipes %}
-                                                <a class="likes"
-                                                    href="{{ url_for('like', recipeName=recipeName, username=username) }}">
-                                                    <i class="fas fa-heart"></i>
-                                                </a>
-                                                <span>Likes: {{recipe.likes }} </span>
-                                        {% else %}
-                                        <a class="likes"
-                                            href="{{ url_for('like', recipeName=recipeName, username=username) }}">
-                                            <i class="far fa-heart"></i>
-                                        </a>
-                                        <span>Likes: {{recipe.likes }} </span>
-                                        {% endif %}
-                                    {% endif %}
-                                {% else %}
-                                <a class="likes"
-                                    href="{{ url_for('like', recipeName=recipeName, username=username) }}">
-                                    <i class="far fa-heart"></i>
-                                </a>
-        
-                                <span>Likes: {{recipe.likes }} </span>
-                                {% endif %}
+                            {% set username = session.user %}
+                            {% set user = user({"username": username.lower() }) %}
+
+                            {% set recipeName = recipe.recipeName %}
+                            {% set likes = user.likedRecipes %}
+                            {% if likes %}
+                            {% set listOfLikedRecipes = likes %}
+                            {% if listOfLikedRecipes|length >= 1  %}
+                            {% if recipeName in listOfLikedRecipes %}
+                            <a class="likes" href="{{ url_for('like', recipeName=recipeName, username=username) }}">
+                                <i class="fas fa-heart"></i>
+                            </a>
+                            <span>Likes: {{recipe.likes }} </span>
                             {% else %}
-                                <a class="likes"
-                                    href="{{ url_for('like', recipeName=recipeName, username=username) }}">
-                                    <i class="far fa-heart"></i>
-                                </a>
-        
-                                <span>Likes: {{recipe.likes }} </span>
+                            <a class="likes" href="{{ url_for('like', recipeName=recipeName, username=username) }}">
+                                <i class="far fa-heart"></i>
+                            </a>
+                            <span>Likes: {{recipe.likes }} </span>
                             {% endif %}
-        
-                            
-                            
+                            {% endif %}
+                            {% else %}
+                            <a class="likes" href="{{ url_for('like', recipeName=recipeName, username=username) }}">
+                                <i class="far fa-heart"></i>
+                            </a>
+
+                            <span>Likes: {{recipe.likes }} </span>
+                            {% endif %}
+                            {% else %}
+                            <a class="likes" href="{{ url_for('like', recipeName=recipeName, username=username) }}">
+                                <i class="far fa-heart"></i>
+                            </a>
+
+                            <span>Likes: {{recipe.likes }} </span>
+                            {% endif %}
+
+
+
                         </p>
                     </div>
                 </div>
-        
+
                 {% if session.user == author %}
                 <div class="row text-center">
                     <div class="col">
-                        <form action="{{ url_for('deleteRecipe', recipeName=recipe.recipeName, username=session.user) }}"
+                        <form
+                            action="{{ url_for('deleteRecipe', recipeName=recipe.recipeName, username=session.user) }}"
                             method="POST">
                             <button tyle="submit" class="btn btn-danger">Delete Recipe</button>
                         </form>

@@ -401,16 +401,28 @@ def fullrecipe(recipeName):
         edit_recipe = False
 
     user = mongo.db.users.find_one
-    categories = recipe['categories']
+    all_categories = mongo.db.categories.find_one()
+    category_list = all_categories['categories']
+
     return render_template(
         "fullrecipe.html",
         edit_recipe=edit_recipe,
         user=user,
-        categories=categories,
         author=author,
         recipeName=recipeName,
-        recipe=recipe
+        recipe=recipe,
+        category_list=category_list
     )
+
+
+@app.route("/recipes/<recipeName>/edit_recipe", methods=['GET', 'POST'])
+def edit_recipe(recipeName):
+    ''' Edit recipe form handling '''
+    if request.method == "POST":
+        recipe_dict = {}
+        if 'recipeName' in request.form:
+            recipeName = request.form.get("recipeName")
+    return redirect(url_for('fullrecipe', recipeName=recipeName))
 
 
 @app.route("/recipes/<recipeName>/<username>/delete_recipe",
