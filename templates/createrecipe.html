@@ -1,14 +1,13 @@
 {% extends "base.html" %}
 {% block content %}
 
-{% if session.user %}
 <main class="mb-4">
     <div class="container mt-4">
         <h2 class="text-center text-primary create-recipe-title">Create Recipe</h2>
 
         <hr>
 
-        <form class="col position-relative text-primary" method="POST" action="{{ url_for('add_recipe') }}"
+        <form class="col position-relative text-primary" method="POST" action="{{ url_for('create_recipe') }}"
             enctype="multipart/form-data">
             <div id="recipe-details">
                 <!-- Recipe Name -->
@@ -111,5 +110,4 @@
         </form>
     </div>
 </main>
-{% endif %}
 {% endblock %}

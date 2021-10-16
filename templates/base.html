@@ -16,6 +16,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.min.js"
         integrity="sha384-cn7l7gDp0eyniUwwAZgrzD06kc/tftFf19TOAs2zVinnD/C7E91j9yyk5//jjpt/" crossorigin="anonymous">
     </script>
+    <script src="https://terrylinooo.github.io/jquery.disableAutoFill/assets/js/jquery.disableAutoFill.min.js"></script>
     <!-- Emailjs -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
     <script type="text/javascript">
@@ -95,7 +96,7 @@
                                 <a class="btn" href="{{ url_for('log_in') }}"> Login</a>
                             </li>
                             <li class="list-inline-item">
-                                <a class="btn" href="{{ url_for('signup') }}"> Sign Up</a>
+                                <a class="btn" href="{{ url_for('sign_up') }}"> Sign Up</a>
                             </li>
                             {% endif %}
                         </ul>
@@ -116,7 +117,7 @@
                     <ul class="dropdown-menu" aria-labelledby="recipedropdown">
                         <li><a class="dropdown-item btn" href="{{ url_for('recipe') }}">All Recipes</a></li>
                         <li><a class="dropdown-item" href="#">Top Recipes</a></li>
-                        <li><a class="dropdown-item" href="#">Add another recipe</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('create_recipe') }}">Add another recipe</a></li>
                     </ul>
                 </div>
             </li>
@@ -146,7 +147,7 @@
             <div class="mt-4">
                 <p class="text-center">
                     {% if message == 'Please Sign in to like recipe' %}
-                    <strong>Please <a href="">Sign in</a> Or <a href="">Sign up</a> to like recipe</strong>
+                    <strong>Please <a href="{{ url_for('log_in') }}">Sign in</a> Or <a href="{{ url_for('sign_up') }}">Sign up</a> to like recipe</strong>
                     {% else %}
                     <strong>{{ message }}</strong>
                     {% endif %}

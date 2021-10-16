@@ -4,11 +4,11 @@
 <div class="text-center mb-4">
     <div class="container">
         <div class="row">
-            <div class="col mt-4">
+            <div class="col">
                 <ul class="list-inline">
                     <li class="list-inline-item">
                         <div class="dropdown">
-                            <button class="btn btn-primary dropdown-toggle" type="button" id="categorydropdown"
+                            <button class="btn dropdown-toggle" type="button" id="categorydropdown"
                                 data-bs-toggle="dropdown" aria-expanded="false">
                                 Categories
                             </button>
@@ -22,17 +22,18 @@
                     </li>
                     <li class="list-inline-item">
                         <div class="dropdown">
-                            <button class="btn btn-primary dropdown-toggle" type="button" id="categorydropdown"
+                            <button class="btn dropdown-toggle" type="button" id="sort-by"
                                 data-bs-toggle="dropdown" aria-expanded="false">
-                                Categories
+                                Sort By
                             </button>
-                            <ul class="dropdown-menu" aria-labelledby="categorydropdown">
-                                {% for x in categoryList %}
+                            <ul class="dropdown-menu" aria-labelledby="sort-by">
                                 <li><a class="dropdown-item"
-                                        href="#">{{ x }}</a></li>
-                                {% endfor %}
+                                        href="#">Recntly added</a></li>
                             </ul>
                         </div>
+                    </li>
+                    <li class="list-inline-item">
+                        <a class="btn" href="{{ url_for('create_recipe') }}">Create new recipe</a>
                     </li>
                 </ul>
             </div>
@@ -97,12 +98,6 @@
                         {% else %}
                             <div class="mb-4 recipe-categories">
                                 <h6>Categories</h6>
-                                <ul class="list-inline pb-4">
-                                    <li class="list-inline-item"></li>
-                                    <li class="list-inline-item"></li>
-                                    <li class="list-inline-item"></li>
-                                    <li class="list-inline-item"></li>
-                                </ul>
                                 <p class="text-muted">No categories selected</p>
                             </div>
                         {% endif %}

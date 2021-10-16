@@ -6,9 +6,8 @@
     <div class="container mt-4">
         <h3 class="text-center uppercase text-primary login-title">Login</h3>
 
-        <!--Login Card-->
         <!--Login Form-->
-        <form method="POST" action="{{ url_for('login') }}">
+        <form method="POST" action="{{ url_for('log_in') }}">
             <!--Username-->
             <div class="mb-2">
                 <label for="username">Username</label><br>
@@ -24,7 +23,7 @@
             <input class="btn btn-primary w-100" type="submit" value="Log In">
         </form>
         <!--Link to login page-->
-        <p class="text-center">Don't have an account? <a href="{{ url_for('signup') }}">Signup</a></p>
+        <p class="text-center">Don't have an account? <a href="{{ url_for('sign_up') }}">Signup</a></p>
         <p class="text-center"><a href="{{ url_for('changePassword') }}">Need help logging in?</a></p>
     </div>
 </main>

@@ -111,6 +111,13 @@
                     </div>
                 </div>
             </form>
+            
+            <div class="row">
+                <div class="col">
+                    <a href="{{ url_for('changePassword') }}">Reset password</a>
+                </div>
+            </div>
+            
         </div>
     </div>
 {% elif selected == 'my_recipes' %}
@@ -125,33 +132,21 @@
                 {% set numberOfRecipes = user_recipes.count() %}
 
                 <!-- Check if number of recipes is divisible by 3 -->
-                {% if numberOfRecipes %3 == 0 %}
+                {% if numberOfRecipes >= 3 %}
                 {% set column = "col-md-12 col-lg-4" %}
-                {% elif numberOfRecipes %2 == 0 %}
+                {% elif numberOfRecipes >= 2 %}
                 {% set column = "col-md-12 col-lg-6" %}
                 {% else %}
-                {% set column = "col-12" %}
+                {% set column = "col-8 offset-2" %}
                 {% endif %}
 
                 {% for recipe in user_recipes %}
                 <div class="{{ column }}">
                     <div class="card mb-4 mt-2">
                         <img class="img-fluid" src="{{ url_for('file', filename=recipe.recipeImageName) }}" alt="recipe Image">
-                        <div class="card-body">
+                        <div class="card-body" style="height: auto;">
                             <!-- Recipe Name -->
-                            <h4 class="card-title  text-center">{{ recipeName }}</h4>
-
-                            <!-- Recipe Details -->
-
-                            <p class="card-text">
-                                <i class="fas fa-utensils"></i> Serves {{ recipe.serves }}
-                                <br>
-                                <i class="far fa-clock"></i> Preparation time: {{ recipe.prepTime }}
-                                <br>
-                                <i class="far fa-clock"></i> Cooking time: {{ recipe.cookingTime }}
-                            </p>
-
-                            <h5 class="text-center mt-4">Recipe Description</h5>
+                            <h4 class="card-title  text-center">{{ recipe.recipeName }}</h4>
 
                             <p class="card-text recipe-description">
                                 {{ recipe.recipeDescription }}
@@ -162,8 +157,9 @@
                             </p>
 
                             <div class="text-center">
-                                <a class="btn btn-outline-primary btn-lg"
-                                    href="{{ url_for('fullrecipe', recipeName=recipeName)}}">Go to / edit Recipe</a>
+                                <form method="get" action="{{ url_for('fullrecipe', recipeName=recipe.recipeName) }}">
+                                    <button class="btn btn-primary" type="submit">Go to / Edit recipe</button>
+                                </form>
                             </div>
 
                             <p class="mt-4 text-center">
@@ -223,13 +219,13 @@
 {% elif selected == 'my_posts' %}
     <div class="my-posts mt-4 mb-4" id="my-posts">
         <h2 class="text-center">My Posts</h2>
-        {% if posts.count() == "0" %}
+        {% if my_posts.count() == "0" %}
             <div class="text-center">
                 <p>You have not made any posts yet. You can create a new post <a href="{{ url_for('createPost', username=username) }}">here</a></p>
             </div>
         {% else %}
         <div class="container">
-                {% for post in posts %}
+                {% for post in my_posts %}
                 <div class="row">
                     <div class="col">
                     <div class="box mb-4 mt-2">
