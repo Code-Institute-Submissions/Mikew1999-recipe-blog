@@ -419,9 +419,39 @@ def fullrecipe(recipeName):
 def edit_recipe(recipeName):
     ''' Edit recipe form handling '''
     if request.method == "POST":
-        recipe_dict = {}
-        if 'recipeName' in request.form:
-            recipeName = request.form.get("recipeName")
+        recipe = mongo.db.recipes.find_one_or_404({"recipeName": recipeName})
+        changes = {"$set": {}}
+        steps = []
+        ingredients = []
+        recipe_categories = []
+
+        for key, value in request.form.items():
+            if 'step' in str(key):
+                steps.append(str(value))
+            elif 'ingredient' in str(key):
+                ingredients.append(str(value))
+            elif 'category' not in str(key):
+                changes["$set"][str(key)] = str(value) 
+
+        if 'step' in request.form.keys():
+            mongo.db.recipes.update_one(recipe, {"$set": {"steps": []}})
+            changes["$set"]['steps'] = steps
+        if 'ingredient' in request.form.keys():
+            mongo.db.recipes.update_one(recipe, {"$set": {"ingredients": []}})
+            changes["$set"]['ingredients'] = ingredients
+        if 'category' in request.form.keys():
+            mongo.db.recipes.update_one(recipe, {"$set": {"categories": []}})
+            selected_categories = request.form.getlist("category")
+            for item in selected_categories:
+                recipe_categories.append(str(item))
+            changes["$set"]['categories'] = recipe_categories
+        if 'recipeImage' in request.files:
+            recipe_image = request.files['recipeImage']
+            secured_image = secure_filename(recipe_image.filename)
+            mongo.save_file(secured_image, recipe_image)
+            changes["$set"]['recipeImageName'] = secured_image
+
+        mongo.db.recipes.update_one(recipe, changes)
     return redirect(url_for('fullrecipe', recipeName=recipeName))
 
 

@@ -16,7 +16,7 @@
     </li>
     {% if session.user %}
     <li class="list-inline-item">
-        <a class="btn btn-outline-primary" href="{{ url_for('profile', username=session.user) }}">Profile</a>
+        <a class="btn btn-outline-primary" href="{{ url_for('profile', username=username) }}">Profile</a>
     </li>
     {% endif %}
 </ul>
@@ -100,7 +100,7 @@
 
                                         {% for ingredient in recipe.ingredients %}
                                         <div class="mb-3">
-                                            <label for="Ingredient{{loop.index}}">Ingredient {{ loop.index }}</label>
+                                            <label for="ingredient{{loop.index}}">Ingredient {{ loop.index }}</label>
                                             <input class="form-control ingredient" type="text"
                                                 name="ingredient{{ loop.index }}" value="{{ ingredient }}">
                                         </div>
