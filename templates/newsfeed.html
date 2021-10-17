@@ -3,7 +3,7 @@
 <main>
   <div class="text-center">
     <h1>News Feed</h1>
-    <a class="btn btn-lg btn-primary" href="{{ url_for('createPost', username=session.user) }}">Create New Post</a>
+    <a class="btn btn-lg btn-primary" href="{{ url_for('create_post', username=session.user) }}">Create New Post</a>
   </div>
 
   <div class="container-fluid">
@@ -120,6 +120,7 @@
                 </div>
                 {% endif %}
                 <hr>
+                <h2>{{ post.posttitle }}</h2>
                 <p class="lead mb-4">{{ post.posttext }}</p>
                 <p>
                   Author: {{ post.author }}

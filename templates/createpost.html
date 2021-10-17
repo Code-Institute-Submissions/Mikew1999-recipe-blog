@@ -8,18 +8,23 @@
                 <div class="card-body" style="background-color: #fff;">
                     <h2 class="text-center">Create Post</h2>
                     <hr class="width-80">
-                    <form action="{{ url_for('createPost', username=session.user) }}" method="POST" enctype="multipart/form-data">
-                        <div>
+                    <form action="{{ url_for('create_post', username=session.user) }}" method="POST" enctype="multipart/form-data">
+                        <div class="mb-2">
+                            <label for="posttitle">Post Title:</label>
+                            <input type="text" class="form-control" name="posttitle">
+                        </div>
+                        <div class="mb-2">
                             <h5>Select an image <small>(optional)</small></h5>
                             <label for="postimage">Image:</label>
-                            <input type="file" name="postimage" id="postimage">
-                            
-                            <hr class="width-80">
-                            <br>
-                    
+                            <input type="file" name="postimage">
+                        </div>
+                        <div class="mb-2">
                             <h4 class="mt-4">Post Text</h4>
         
                             <textarea name="posttext" class="form-control" required></textarea>
+                            
+                        </div>
+                        <div class="mb-2">
                             <div class="text-center">
                                 <button class="mt-4 btn btn-primary" type="submit">Submit Post</button>
                             </div>

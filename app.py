@@ -458,9 +458,10 @@ def edit_recipe(recipeName):
 
 @app.route("/recipes/<recipeName>/<username>/delete_recipe",
            methods=["GET", "POST"])
-def deleteRecipe(recipeName, username):
+def delete_recipe(recipeName, username):
     ''' Delete recipe '''
-    recipe_to_delete = mongo.db.recipes.find_one_or_404({"recipeName": recipeName})
+    recipe_to_delete = mongo.db.recipes.find_one_or_404(
+        {"recipeName": recipeName})
     image_name = secure_filename(recipe_to_delete['recipeImageName'])
     mongo.db.fs.files.delete_one({"filename": image_name})
 
@@ -497,53 +498,35 @@ def post_comment(post_id):
 
 
 @app.route("/<username>/create_post", methods=["GET", "POST"])
-def createPost(username):
+def create_post(username):
     ''' Create post page '''
     if request.method == "POST":
-        posts = mongo.db.posts.find().limit(1).sort("postID", -1)
+        latest_post = mongo.db.posts.find_one(
+            {"$query": {}, "$orderby": {"_id": -1}})
 
-        for post in posts:
-            post_id = post['_id']
-            new_post_id = post_id + 1
+        post_id = latest_post['_id']
+        new_post_id = post_id + 1
 
-        user = mongo.db.users.find_one({"username": username})
+        post = {}
+
+        for key, value in request.form.items():
+            if 'postimage' not in str(key):
+                post[str(key)] = str(value)
 
         if 'postimage' in request.files:
             image = request.files['postimage']
             secured_image = secure_filename(image.filename)
             # saves file to mongodb
             mongo.save_file(secured_image, image)
-            post = {
-                "_id": new_post_id,
-                "postimage": secured_image,
-                "posttext": request.form.get("posttext"),
-                "author": username
-            }
+            post['postimage'] = secured_image
 
-            mongo.db.posts.insert_one(post)
+        post["_id"] = new_post_id
+        mongo.db.posts.insert_one(post)
 
-            if user['hasPosted'] == "0":
-                setHasPosted = {"$set": {"hasPosted": "1"}}
-                mongo.db.users.update_one(user, setHasPosted)
-
-            flash("Post Uploaded!")
-            return redirect(url_for('index'))
-        else:
-            post = {
-                "_id": new_post_id,
-                "posttext": request.form.get("posttext"),
-                "author": username
-            }
-
-            mongo.db.posts.insert_one(post)
-
-            if user['hasPosted'] == "0":
-                setHasPosted = {"$set": {"hasPosted": "1"}}
-                mongo.db.users.update_one(user, setHasPosted)
-
-            flash("Post Uploaded!")
-            return redirect(url_for('index'))
-
+        mongo.db.users.update_one({"username": username}, {
+                                  "$addToSet": {"posts": new_post_id}})
+        flash("Post Uploaded!")
+        return redirect(url_for('index'))
     return render_template("createpost.html")
 
 
