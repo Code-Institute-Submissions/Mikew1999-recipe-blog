@@ -1,17 +1,15 @@
 @import url('https://fonts.googleapis.com/css2?family=Lobster&family=Montserrat&display=swap');
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3 {
     font-family: 'Lobster', cursive;
 }
 
 .main-header {
     color: rgb(255, 255, 255);
     -webkit-text-stroke: 1px black;
-    text-shadow: 
-        1px 1px 1px rgb(0, 0, 0),
-        1px -1px 1px rgb(0, 0, 0),
-        -1px 1px 1px rgb(0, 0, 0),
-        1px 1px 1px rgb(0, 0, 0);
+    text-shadow: 1px 1px 1px rgb(255 255 255), 2px -2px 2px rgb(255 255 255), -1px 1px 1px rgb(0 0 0), 1px 1px 1px rgb(0 0 0);
 }
 
 .uppercase {
@@ -35,19 +33,19 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .margin-top-1 {
-    margin-top: 1rem!important;
+    margin-top: 1rem !important;
 }
 
 .margin-top-4 {
-    margin-top: 4rem!important;
+    margin-top: 4rem !important;
 }
 
 .margin-bottom-1 {
-    margin-bottom: 1rem!important;
+    margin-bottom: 1rem !important;
 }
 
 .mt-5 {
-    margin-top: 5rem!important;
+    margin-top: 5rem !important;
 }
 
 .mt-6 {
@@ -56,12 +54,12 @@ h1, h2, h3, h4, h5, h6 {
 
 .categories {
     list-style-type: none;
-    padding-left: 0!important;
+    padding-left: 0 !important;
 }
 
 .recipe-categories {
     height: 4rem;
-    margin-bottom: 2rem!important;
+    margin-bottom: 2rem !important;
 }
 
 .categories li {
@@ -70,11 +68,11 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .height-80 {
-    height: 80vh!important;
+    height: 80vh !important;
 }
 
 .height-85 {
-    height: 85vh!important;
+    height: 85vh !important;
 }
 
 .height-95 {
@@ -88,12 +86,12 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .nav-link .navbar-text {
-    padding: 8px!important;
+    padding: 8px !important;
 }
 
 .jumbotron {
     margin-bottom: 0rem;
-    padding: 10px!important;
+    padding: 10px !important;
 }
 
 .height-auto {
@@ -112,6 +110,7 @@ h1, h2, h3, h4, h5, h6 {
 .w-80 {
     width: 80%;
 }
+
 .width-80 {
     width: 80vw;
 }
@@ -124,7 +123,8 @@ h1, h2, h3, h4, h5, h6 {
     padding-top: 1rem;
 }
 
-.form-card, #add-recipe-card {
+.form-card,
+#add-recipe-card {
     width: 80vw;
     margin: 0 auto;
 }
@@ -143,7 +143,7 @@ h1, h2, h3, h4, h5, h6 {
     margin-bottom: 5px;
 }
 
-.profile-image{
+.profile-image {
     border-radius: 60%;
     border: 2px solid #fff;
     height: 350px;
@@ -165,11 +165,11 @@ h1, h2, h3, h4, h5, h6 {
 
 .box {
     border: 1px solid black;
-    box-shadow: 4px 4px 4px 4px rgba(0,0,0,0.2);
+    box-shadow: 4px 4px 4px 4px rgba(0, 0, 0, 0.2);
 }
 
 .search-profile-card {
-    height: auto!important;
+    height: auto !important;
 }
 
 .ingredient-list {
@@ -177,17 +177,24 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .card-img-top {
-    width: 100%!important;
+    width: 100% !important;
     height: 50vh;
 }
 
 .my-recipes-img {
-    height: 70vh!important;
+    height: 70vh !important;
 }
 
 .full-recipe-image {
     width: 80vw;
     height: 75vh;
+}
+
+@media only screen and (max-width: 600px) {
+    .full-recipe-image {
+        width: 80%;
+        height: auto;
+    }
 }
 
 .recipe-description {
@@ -219,17 +226,17 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .card {
-    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
 }
 
 .post-image {
-    width: 60vw;
-    height: 60vh;
+    width: 100%;
+    height: 30vh;
 }
 
 @media only screen and (max-width: 800px) {
     .post-image {
-      width: 100%;
-      height: auto;
+        width: 100%;
+        height: auto;
     }
 }

@@ -2,7 +2,7 @@
 {% block content %}
 <main>
   <div class="text-center">
-    <h1 class="display-1">News Feed</h1>
+    <h1 class="display-1 main-header">News Feed</h1>
     {% if session.user %}
       <a class="btn btn-lg btn-primary" href="{{ url_for('create_post', username=session.user) }}">Create New Post</a>
     {% else %}

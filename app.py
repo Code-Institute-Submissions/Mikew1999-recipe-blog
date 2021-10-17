@@ -135,7 +135,7 @@ def logout():
 
 # changes users password
 @app.route("/changepassword", methods=["GET", "POST"])
-def changePassword():
+def change_password():
     ''' Changes users password '''
     if request.method == "POST":
         username = request.form.get("username").lower()
@@ -164,16 +164,16 @@ def changePassword():
                                     username=session['user']))
                 else:
                     flash("Email address doesn't match our records")
-                    return redirect(url_for('changePassword'))
+                    return redirect(url_for('change_password'))
 
             else:
                 print("user doesn't exist")
                 flash(f'Username: {username} does not exist')
-                return redirect(url_for('changePassword'))
+                return redirect(url_for('change_password'))
 
         else:
             flash("Password and Confirm new password boxes do not match!")
-            return redirect(url_for('changePassword'))
+            return redirect(url_for('change_password'))
     username = session['user']
     user = mongo.db.users.find_one_or_404({"username": username})
     return render_template('resetpassword.html', user=user)
@@ -274,7 +274,7 @@ def recipe():
         list_of_liked_recipes = None
 
     if request.method == "POST":
-        db = mongo.db.recipes
+        all_recipes = mongo.db.recipes
         mongo.db.recipes.create_index(
             [
                 ("recipeName", "text"),
@@ -297,7 +297,7 @@ def recipe():
             categories=categories,
             categoryList=categoryList,
             query=query,
-            db=db)
+            db=all_recipes)
     else:
         return render_template(
             "recipes.html",
@@ -350,8 +350,8 @@ def create_recipe():
                     ingredient_values.append(str(item))
 
                 for step in step_keys:
-                    a = request.form.get(f'{step}')
-                    step_values.append(str(a))
+                    item = request.form.get(f'{step}')
+                    step_values.append(str(item))
 
                 recipe_details = {
                     "recipeImageName": secured_image,
@@ -394,8 +394,12 @@ def fullrecipe(recipe_name):
 
     if not session.get('user') is None:
         user = mongo.db.users.find_one({"username": session['user']})
+        list_of_liked_recipes = user['likedRecipes']
+        if len(list_of_liked_recipes) == 0:
+            list_of_liked_recipes = None
     else:
         user = None
+        list_of_liked_recipes = None
 
     all_categories = mongo.db.categories.find_one()
     category_list = all_categories['categories']
@@ -407,7 +411,8 @@ def fullrecipe(recipe_name):
         author=author,
         recipe_name=recipe_name,
         recipe=selected_recipe,
-        category_list=category_list
+        category_list=category_list,
+        list_of_liked_recipes=list_of_liked_recipes
     )
 
 
