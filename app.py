@@ -153,7 +153,8 @@ def changePassword():
                 if str(email) == users_email:
                     print("email matches users email")
                     print(new_password)
-                    set_new_password = {"$set": {"password": generate_password_hash(new_password)}}
+                    set_new_password = {
+                        "$set": {"password": generate_password_hash(new_password)}}
                     mongo.db.users.update_one(is_user, set_new_password)
                     session['user'] = request.form.get("username").lower()
                     flash("Password updated!")
@@ -431,7 +432,7 @@ def edit_recipe(recipeName):
             elif 'ingredient' in str(key):
                 ingredients.append(str(value))
             elif 'category' not in str(key):
-                changes["$set"][str(key)] = str(value) 
+                changes["$set"][str(key)] = str(value)
 
         if 'step' in request.form.keys():
             mongo.db.recipes.update_one(recipe, {"$set": {"steps": []}})
@@ -459,34 +460,19 @@ def edit_recipe(recipeName):
            methods=["GET", "POST"])
 def deleteRecipe(recipeName, username):
     ''' Delete recipe '''
-    recipes = mongo.db.recipes.find()
-    user = mongo.db.users.find_one({"username": username})
+    recipe_to_delete = mongo.db.recipes.find_one_or_404({"recipeName": recipeName})
+    image_name = secure_filename(recipe_to_delete['recipeImageName'])
+    mongo.db.fs.files.delete_one({"filename": image_name})
 
-    items = mongo.db.recipes.find_one_and_delete(
+    mongo.db.recipes.find_one_and_delete(
         {"$and": [{"author": username}, {"recipeName": recipeName}]})
 
-    imageName = items['recipeImageName']
-
-    mongo.db.fs.files.delete_one({"filename": imageName})
-
-    if not mongo.db.recipes.find({"author": username}):
-        update = {"$set": {"hasUploadedRecipe": "0"}}
-
-        mongo.db.users.update_one(user, update)
-
-    query = mongo.db.users.find_one({"likedRecipes": {"$exists": True}})
-    usersWithLikedRecipes = mongo.db.users.find(query)
-
-    if usersWithLikedRecipes:
-        for x in usersWithLikedRecipes:
-            usernames = x['username']
-            mongo.db.users.update({"username": usernames}, {
+    query = mongo.db.users.find()
+    for item in query:
+        user_name = item['username']
+        mongo.db.users.update_one({"username": user_name}, {
                                   "$pull": {"likedRecipes": recipeName}})
-
-            print(f'Username: {usernames}')
-            print(f'Recipe Name: {recipeName}')
-
-    return redirect(url_for('recipe', recipes=recipes))
+    return redirect(url_for('recipe'))
 
 
 @app.route("/newsfeed/posts")
