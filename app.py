@@ -618,61 +618,34 @@ def post_comment(posttitle, username):
 @app.route("/profile/<username>/edit_profile_picture", methods=["GET", "POST"])
 def edit_profile_picture(username):
     ''' Edits profile pic '''
-    user = mongo.db.users.find_one({"username": username})
+    user = mongo.db.users.find_one_or_404({"username": username})
     if request.method == "POST":
         if 'newProfilePic' not in request.files:
             flash("No file selected! Please select a file to upload.")
             return render_template("profile.html")
 
-        if 'newProfilePic' in request.files:
-            user = mongo.db.users.find_one({"username": username})
-            hasProfileImage = str(user['hasProfileImage'])
+        else:
             # pulls new profile pic from form
             new = request.files['newProfilePic']
-
-            # if user has a profile image
-            if hasProfileImage == "1":
-                # finds old profile image
-                oldProfileImage = user['profileImageName']
-                # deletes old profile image from fs.files
-                mongo.db.fs.files.delete_one({"filename": oldProfileImage})
-
-                # finds record where profile image name
-                # matches oldProfileImage variable
-                old = mongo.db.users.find_one(
-                    {"profileImageName": oldProfileImage})
-
-                # generates secure filename
-                securedImage = secure_filename(new.filename)
+            if user['profileImageName'] == "None":
+                secured_image = secure_filename(new.filename)
                 # saves file to mongodb
-                mongo.save_file(securedImage, new)
-                # new image
-                image = securedImage
-
-                # updates image to new image
-                update = {"$set": {"profileImageName": image}}
-
-                mongo.db.users.update_one(old, update)
-                # flashes message to user
-                flash("Profile image successfully changed!")
+                mongo.save_file(secured_image, new)
+                mongo.db.users.update_one(user, {
+                    "$set": {"profileImageName": secured_image}
+                })
+                flash("New Profile Pic uploaded!")
                 return redirect(url_for('profile', username=username))
-
-            # if user doesn't have a profile pic
-            if hasProfileImage == "0":
-                # generates secure filename
-                securedImage = secure_filename(new.filename)
-                value = "1"
+            else:
+                old_profile_image = user['profileImageName']
+                mongo.db.fs.files.delete_one({"filename": old_profile_image})
+                secured_image = secure_filename(new.filename)
                 # saves file to mongodb
-                mongo.save_file(securedImage, new)
-                # info to update
-                update = {"$set": {
-                    "profileImageName": securedImage,
-                    "hasProfileImage": value}}
-                # updates profile image name to new profile image name
-                mongo.db.users.update_one(user, update)
-                # flashes message to user
-                flash("Profile image successfully uploaded!")
-
+                mongo.save_file(secured_image, new)
+                mongo.db.users.update_one(user, {
+                    "$set": {"profileImageName": secured_image}
+                })
+                flash("Profile image successfully changed!")
                 return redirect(url_for('profile', username=username))
     return render_template("profile.html")
 
@@ -686,9 +659,9 @@ def delete_profile_image(username):
     # finds profile image name
     profile_image = user['profileImageName']
     # finds profile image record
-    file = mongo.db.fs.files.find_one({"filename": profile_image})
+    file_image = mongo.db.fs.files.find_one({"filename": profile_image})
     # finds file_id
-    file_id = file['_id']
+    file_id = file_image['_id']
     # deletes file from db
     mongo.db.fs.files.delete_one({"_id": file_id})
 
