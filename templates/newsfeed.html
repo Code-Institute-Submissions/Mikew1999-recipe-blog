@@ -130,7 +130,7 @@
               <ul class="list-inline">
                 <li class="list-inline-item">
                   {% if session.user %}
-                  <form method="POST" action="{{ url_for('like_post', post_title=post.posttitle, username=session.user) }}">
+                  <form method="POST" action="{{ url_for('like_post', posttitle=post.posttitle, username=session.user) }}">
                     <input name="like" type="hidden">
                     <button type="submit"><img
                       src="https://img.icons8.com/external-flatart-icons-outline-flatarticons/64/000000/external-like-project-management-and-development-flatart-icons-outline-flatarticons.png" /></button>
@@ -150,7 +150,9 @@
               </ul>
             </div>
             <div class="col">
-              <form id="{{ post._id }}" class="comment-form" action="{{ url_for('post_comment', post_id=post._id) }}" method="POST">
+              {% if session.user %}
+
+              <form id="{{ post._id }}" class="comment-form" action="{{ url_for('post_comment', posttitle=post.posttitle, username=session.user) }}" method="POST">
                 <div class="mb-2">
                   <label for="title">Comment Title:</label>
                   <input class="form-control" type="text" name="title">
@@ -163,6 +165,7 @@
                   <button class="btn btn-primary" type="submit">Submit Comment</button>
                 </div>
               </form>
+              {% endif %}
             </div>
           </div>
           {% endfor %}

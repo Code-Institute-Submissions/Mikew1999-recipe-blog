@@ -542,6 +542,7 @@ def create_post(username):
             post['comments'] = []
 
             post["_id"] = new_post_id
+            post['postid'] = new_post_id
             mongo.db.posts.insert_one(post)
 
             mongo.db.users.update_one({"username": username}, {
@@ -555,9 +556,9 @@ def create_post(username):
 
 
 # like post
-@app.route("/posts/<post_title>/<username>/like_post/",
+@app.route("/posts/<posttitle>/<username>/like_post/",
            methods=["GET", "POST"])
-def like_post(post_title, username):
+def like_post(posttitle, username):
     ''' Likes post '''
     if username == 'None':
         flash("Please Sign in to like recipe")
@@ -565,16 +566,16 @@ def like_post(post_title, username):
     else:
         if request.method == "POST":
             user = mongo.db.users.find_one({"username": username})
-            post = mongo.db.posts.find_one({"posttitle": post_title})
+            post = mongo.db.posts.find_one({"posttitle": posttitle})
             print(post)
-            if post_title in user['likedPosts']:
+            if posttitle in user['likedPosts']:
                 likes = post['likes']
                 likes -= 1
                 mongo.db.posts.update_one(post, {
                     "$set": {"likes": likes}
                 })
                 mongo.db.users.update_one(user, {
-                    "$pull": {"likedPosts": post_title}
+                    "$pull": {"likedPosts": posttitle}
                 })
             else:
                 if post['likes'] == 0:
@@ -586,21 +587,30 @@ def like_post(post_title, username):
                     "$set": {"likes": likes}
                 })
                 mongo.db.users.update_one(user, {
-                    "$addToSet": {"likedPosts": post_title}})
+                    "$addToSet": {"likedPosts": posttitle}})
         else:
             return redirect(url_for('posts'))
     return redirect(url_for('posts'))
 
 
-@app.route("/newsfeed/posts/<post_id>", methods=["GET", "POST"])
-def post_comment(post_id):
+@app.route("/posts/<posttitle>/<username>/", methods=["GET", "POST"])
+def post_comment(posttitle, username):
     ''' A view to handle the comment form '''
-    user = session['user']
-    if user:
+    if request.method == "POST":
         # Handles form input
-        title = request.form.get('title')
-        comment = request.form.get('comment')
-        print(f'title: {title}, comment: {comment}')
+        post = mongo.db.posts.find_one({"posttitle": posttitle})
+        comment = {}
+        comment['title'] = request.form.get("title")
+        comment['comment'] = request.form.get("comment")
+        comment['author'] = username
+
+        mongo.db.posts.update_one(post, {
+            "$addToSet": {
+                "comments": comment
+            }
+        })
+        flash("Comment Added!")
+        return redirect(url_for('posts'))
     return redirect(url_for('posts'))
 
 
