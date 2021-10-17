@@ -1,102 +1,25 @@
 {% extends "base.html" %}
 {% block content %}
-<main>
-  <div class="text-center">
+<main style="background-image: url('/static/images/platter.jpg'); background-position: center; background-repeat: no-repeat; background-size: cover;">
+  <div class="text-center mb-4">
     <h1 class="display-1 main-header">News Feed</h1>
     {% if session.user %}
-      <a class="btn btn-lg btn-primary" href="{{ url_for('create_post', username=session.user) }}">Create New Post</a>
+    <a class="btn btn-lg btn-primary" href="{{ url_for('create_post', username=session.user) }}">Create New Post</a>
     {% else %}
-      <a class="btn btn-lg btn-primary" href="{{ url_for('create_post', username='None') }}">Create New Post</a>
+    <a class="btn btn-lg btn-primary" href="{{ url_for('create_post', username='None') }}">Create New Post</a>
     {% endif %}
   </div>
 
   <div class="container-fluid">
     <div class="row">
-      <div class="col d-none d-lg-block">
-        <div class="d-flex flex-column align-items-stretch flex-shrink-0 bg-white" style="width: 380px;">
+      <div class="col-3 d-none d-lg-block">
+        <div class="d-flex flex-column align-items-stretch bg-white" style="width: 100%;">
           <div class="list-group list-group-flush border-bottom scrollarea">
+            <h2>Activity</h2>
             <a href="#" class="list-group-item list-group-item-action active py-3 lh-tight" aria-current="true">
               <div class="d-flex w-100 align-items-center justify-content-between">
                 <strong class="mb-1">List group item heading</strong>
                 <small>Wed</small>
-              </div>
-              <div class="col-10 mb-1 small">Some placeholder content in a paragraph below the heading and date.</div>
-            </a>
-            <a href="#" class="list-group-item list-group-item-action py-3 lh-tight">
-              <div class="d-flex w-100 align-items-center justify-content-between">
-                <strong class="mb-1">List group item heading</strong>
-                <small class="text-muted">Tues</small>
-              </div>
-              <div class="col-10 mb-1 small">Some placeholder content in a paragraph below the heading and date.</div>
-            </a>
-            <a href="#" class="list-group-item list-group-item-action py-3 lh-tight">
-              <div class="d-flex w-100 align-items-center justify-content-between">
-                <strong class="mb-1">List group item heading</strong>
-                <small class="text-muted">Mon</small>
-              </div>
-              <div class="col-10 mb-1 small">Some placeholder content in a paragraph below the heading and date.</div>
-            </a>
-
-            <a href="#" class="list-group-item list-group-item-action py-3 lh-tight" aria-current="true">
-              <div class="d-flex w-100 align-items-center justify-content-between">
-                <strong class="mb-1">List group item heading</strong>
-                <small class="text-muted">Wed</small>
-              </div>
-              <div class="col-10 mb-1 small">Some placeholder content in a paragraph below the heading and date.</div>
-            </a>
-            <a href="#" class="list-group-item list-group-item-action py-3 lh-tight">
-              <div class="d-flex w-100 align-items-center justify-content-between">
-                <strong class="mb-1">List group item heading</strong>
-                <small class="text-muted">Tues</small>
-              </div>
-              <div class="col-10 mb-1 small">Some placeholder content in a paragraph below the heading and date.</div>
-            </a>
-            <a href="#" class="list-group-item list-group-item-action py-3 lh-tight">
-              <div class="d-flex w-100 align-items-center justify-content-between">
-                <strong class="mb-1">List group item heading</strong>
-                <small class="text-muted">Mon</small>
-              </div>
-              <div class="col-10 mb-1 small">Some placeholder content in a paragraph below the heading and date.</div>
-            </a>
-            <a href="#" class="list-group-item list-group-item-action py-3 lh-tight" aria-current="true">
-              <div class="d-flex w-100 align-items-center justify-content-between">
-                <strong class="mb-1">List group item heading</strong>
-                <small class="text-muted">Wed</small>
-              </div>
-              <div class="col-10 mb-1 small">Some placeholder content in a paragraph below the heading and date.</div>
-            </a>
-            <a href="#" class="list-group-item list-group-item-action py-3 lh-tight">
-              <div class="d-flex w-100 align-items-center justify-content-between">
-                <strong class="mb-1">List group item heading</strong>
-                <small class="text-muted">Tues</small>
-              </div>
-              <div class="col-10 mb-1 small">Some placeholder content in a paragraph below the heading and date.</div>
-            </a>
-            <a href="#" class="list-group-item list-group-item-action py-3 lh-tight">
-              <div class="d-flex w-100 align-items-center justify-content-between">
-                <strong class="mb-1">List group item heading</strong>
-                <small class="text-muted">Mon</small>
-              </div>
-              <div class="col-10 mb-1 small">Some placeholder content in a paragraph below the heading and date.</div>
-            </a>
-            <a href="#" class="list-group-item list-group-item-action py-3 lh-tight" aria-current="true">
-              <div class="d-flex w-100 align-items-center justify-content-between">
-                <strong class="mb-1">List group item heading</strong>
-                <small class="text-muted">Wed</small>
-              </div>
-              <div class="col-10 mb-1 small">Some placeholder content in a paragraph below the heading and date.</div>
-            </a>
-            <a href="#" class="list-group-item list-group-item-action py-3 lh-tight">
-              <div class="d-flex w-100 align-items-center justify-content-between">
-                <strong class="mb-1">List group item heading</strong>
-                <small class="text-muted">Tues</small>
-              </div>
-              <div class="col-10 mb-1 small">Some placeholder content in a paragraph below the heading and date.</div>
-            </a>
-            <a href="#" class="list-group-item list-group-item-action py-3 lh-tight">
-              <div class="d-flex w-100 align-items-center justify-content-between">
-                <strong class="mb-1">List group item heading</strong>
-                <small class="text-muted">Mon</small>
               </div>
               <div class="col-10 mb-1 small">Some placeholder content in a paragraph below the heading and date.</div>
             </a>
@@ -106,66 +29,80 @@
       <div class="col">
         <div class="container my-posts" id="my-posts">
           {% for post in posts %}
-          <div class="row mb-4">
+          <div class="card mt-2 mb-4">
+            <div class="card-body">
+              <div class="row mb-4">
 
-            <div class="col-12">
-              <div>
-                {% if post.postimage != 'None' or '' %}
-                <div class="text-center">
-                  <img class="post-image" src="{{ url_for('file', filename=post.postimage) }}" alt="Post Image">
+                <div class="col-12">
+
+                  <div>
+                    {% if post.postimage != 'None' or '' %}
+                    <div class="text-center">
+                      <img class="post-image" src="{{ url_for('file', filename=post.postimage) }}" alt="Post Image">
+                    </div>
+                    {% endif %}
+                    <hr>
+                    <h2>{{ post.posttitle }}</h2>
+                    <p class="lead mb-4">{{ post.posttext }}</p>
+                    <p>
+                      Author: {{ post.author }}
+                    </p>
+                  </div>
                 </div>
-                {% endif %}
-                <hr>
-                <h2>{{ post.posttitle }}</h2>
-                <p class="lead mb-4">{{ post.posttext }}</p>
-                <p>
-                  Author: {{ post.author }}
-                </p>
+
               </div>
-            </div>
+              <div class="row">
+                <div class="col-12">
+                  <ul class="list-inline">
+                    <li class="list-inline-item">
+                      {% if session.user %}
+                      <form method="POST"
+                        action="{{ url_for('like_post', posttitle=post.posttitle, username=session.user) }}">
+                        <input name="like" type="hidden">
+                        <button type="submit"><img
+                            src="https://img.icons8.com/external-flatart-icons-outline-flatarticons/64/000000/external-like-project-management-and-development-flatart-icons-outline-flatarticons.png" /></button>
+                      </form>
+                      {% else %}
+                      <form method="POST"
+                        action="{{ url_for('like_post', posttitle=post.posttitle, username='None') }}">
+                        <input name="like" type="hidden">
+                        <button class="btn btn-primary" type="submit"><img
+                            src="https://img.icons8.com/external-flatart-icons-outline-flatarticons/64/000000/external-like-project-management-and-development-flatart-icons-outline-flatarticons.png" /></button>
+                      </form>
+                      {% endif %}
 
-          </div>
-          <div class="row">
-            <div class="col-12">
-              <ul class="list-inline">
-                <li class="list-inline-item">
-                  {% if session.user %}
-                  <form method="POST" action="{{ url_for('like_post', posttitle=post.posttitle, username=session.user) }}">
-                    <input name="like" type="hidden">
-                    <button type="submit"><img
-                      src="https://img.icons8.com/external-flatart-icons-outline-flatarticons/64/000000/external-like-project-management-and-development-flatart-icons-outline-flatarticons.png" /></button>
-                  </form>
-                  {% endif %}
-                  
-                </li>
-                <li class="list-inline-item">
-                  <a>
-                    <img class="text-primary"
-                      src="https://img.icons8.com/external-sbts2018-outline-sbts2018/58/000000/external-comment-social-media-basic-1-sbts2018-outline-sbts2018.png" />
-                  </a>
-                </li>
-                <li class="list-inline-item">
+                    </li>
+                    {% if session.user %}
+                    <li class="list-inline-item">
 
-                </li>
-              </ul>
-            </div>
-            <div class="col">
-              {% if session.user %}
-
-              <form id="{{ post._id }}" class="comment-form" action="{{ url_for('post_comment', posttitle=post.posttitle, username=session.user) }}" method="POST">
-                <div class="mb-2">
-                  <label for="title">Comment Title:</label>
-                  <input class="form-control" type="text" name="title">
+                      <div class="dropdown">
+                        <button class="btn dropdown-toggle" type="button" id="commentdropdown" data-bs-toggle="dropdown"
+                          aria-expanded="false">
+                          <img
+                            src="https://img.icons8.com/external-sbts2018-outline-sbts2018/58/000000/external-comment-social-media-basic-1-sbts2018-outline-sbts2018.png" />
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="commentdropdown">
+                          <form action="{{ url_for('post_comment', posttitle=post.posttitle, username=session.user) }}"
+                            method="POST">
+                            <div class="mb-2">
+                              <label for="title">Comment Title:</label>
+                              <input class="form-control" type="text" name="title">
+                            </div>
+                            <div class="mb-2">
+                              <label for="comment">Comment Text:</label>
+                              <input class="form-control" type="text" name="comment">
+                            </div>
+                            <div class="mb-2 text-center">
+                              <button class="btn btn-primary" type="submit">Submit Comment</button>
+                            </div>
+                          </form>
+                        </ul>
+                      </div>
+                    </li>
+                    {% endif %}
+                  </ul>
                 </div>
-                <div class="mb-2">
-                  <label for="comment">Comment Text:</label>
-                  <input class="form-control" type="text" name="comment">
-                </div>
-                <div class="mb-2 text-center">
-                  <button class="btn btn-primary" type="submit">Submit Comment</button>
-                </div>
-              </form>
-              {% endif %}
+              </div>
             </div>
           </div>
           {% endfor %}

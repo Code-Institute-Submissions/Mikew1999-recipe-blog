@@ -132,7 +132,11 @@
                     </button>
                     <ul class="dropdown-menu" aria-labelledby="newsfeeddropdown">
                         <li><a class="dropdown-item" href="{{ url_for('posts') }}">News Feed</a></li>
-                        <li><a class="dropdown-item" href="#">Make a new post</a></li>
+                        {% if session.user %}
+                            <li><a class="dropdown-item" href="{{ url_for('create_post', username=session.user) }}">Make a new post</a></li>
+                        {% else %}
+                            <li><a class="dropdown-item" href="{{ url_for('create_post', username='None') }}">Make a new post</a></li>
+                        {% endif %}
                     </ul>
                 </div>
 

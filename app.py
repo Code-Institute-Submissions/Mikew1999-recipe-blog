@@ -81,7 +81,8 @@ def sign_up():
                     "password": generate_password_hash(
                         request.form.get("password")),
                     "posts": [],
-                    "likedRecipes": []
+                    "likedRecipes": [],
+                    "likedPosts": []
                 }
 
                 # inserts new user info into users collection
@@ -109,7 +110,9 @@ def sign_up():
                     "password": generate_password_hash(
                         request.form.get("password")),
                     "posts": [],
-                    "likedRecipes": []}
+                    "likedRecipes": [],
+                    "liked_posts": []
+                    }
 
                 # inserts new user info into users collection
                 mongo.db.users.insert_one(create_account)
@@ -139,20 +142,15 @@ def change_password():
     ''' Changes users password '''
     if request.method == "POST":
         username = request.form.get("username").lower()
-        print(username)
         is_user = mongo.db.users.find_one({"username": username})
         new_password = request.form.get("password")
         confirm_new_password = request.form.get("confirmNewPassword")
 
         if str(new_password) == str(confirm_new_password):
-            print("passwords match")
             if is_user:
-                print("user matches")
                 users_email = is_user['email']
                 email = request.form.get("email")
                 if str(email) == users_email:
-                    print("email matches users email")
-                    print(new_password)
                     set_new_password = {"$set": {"password":
                                                  generate_password_hash(
                                                      new_password)}}
@@ -167,7 +165,6 @@ def change_password():
                     return redirect(url_for('change_password'))
 
             else:
-                print("user doesn't exist")
                 flash(f'Username: {username} does not exist')
                 return redirect(url_for('change_password'))
 
@@ -438,8 +435,8 @@ def like(recipe_name, username):
                 new_likes = likes + 1
                 mongo.db.users.update_one({"username": username}, {
                     "$push": {"likedRecipes": recipe_name}})
-                print("Updated liked recipes")
                 update_likes = {"$set": {"likes": new_likes}}
+                flash("Liked recipe")
                 mongo.db.recipes.update_one(selected_recipe, update_likes)
             else:
                 new_likes = likes - 1
@@ -448,6 +445,7 @@ def like(recipe_name, username):
                         "$pull": {"likedRecipes": recipe_name}})
                 update_likes = {"$set": {"likes": new_likes}}
                 mongo.db.recipes.update_one(selected_recipe, update_likes)
+                flash("Unliked recipe")
 
         return redirect(url_for('fullrecipe', recipe_name=recipe_name))
 
@@ -532,6 +530,9 @@ def posts():
 def create_post(username):
     ''' Create post page '''
     if not session.get('user') is None:
+        if username == 'None':
+            flash("Please login to like create post")
+            return redirect(url_for('log_in'))
         if request.method == "POST":
             latest_post = mongo.db.posts.find_one(
                 {"$query": {}, "$orderby": {"_id": -1}})
