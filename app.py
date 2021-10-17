@@ -378,39 +378,43 @@ def create_recipe():
 
 
 # shows full recipe
-@app.route("/recipes/<recipeName>", methods=['GET', 'POST'])
-def fullrecipe(recipeName):
+@app.route("/recipes/<recipe_name>", methods=['GET', 'POST'])
+def fullrecipe(recipe_name):
     ''' Full recipe '''
-    recipe = mongo.db.recipes.find_one({"recipeName": recipeName})
-    author = recipe['author'].lower()
+    selected_recipe = mongo.db.recipes.find_one({"recipeName": recipe_name})
+    author = selected_recipe['author'].lower()
 
     if request.method == "POST":
         if 'edit_recipe' in request.form:
-            edit_recipe = request.form.get("edit_recipe")
+            can_edit_recipe = request.form.get("edit_recipe")
         else:
-            edit_recipe = False
+            can_edit_recipe = False
     else:
-        edit_recipe = False
+        can_edit_recipe = False
 
-    user = mongo.db.users.find_one
+    if not session.get('user') is None:
+        user = mongo.db.users.find_one({"username": session['user']})
+    else:
+        user = None
+
     all_categories = mongo.db.categories.find_one()
     category_list = all_categories['categories']
 
     return render_template(
         "fullrecipe.html",
-        edit_recipe=edit_recipe,
+        edit_recipe=can_edit_recipe,
         user=user,
         author=author,
-        recipeName=recipeName,
-        recipe=recipe,
+        recipe_name=recipe_name,
+        recipe=selected_recipe,
         category_list=category_list
     )
 
 
 # like recipe
-@app.route("/recipes/<recipeName>/<username>/like_recipe/",
+@app.route("/recipes/<recipe_name>/<username>/like_recipe/",
            methods=["GET", "POST"])
-def like(recipeName, username):
+def like(recipe_name, username):
     ''' likes / dislikes recipe '''
     if username == 'None':
         flash("Please Sign in to like / unlike recipe")
@@ -418,35 +422,37 @@ def like(recipeName, username):
     else:
         user = mongo.db.users.find_one({"username": username})
         query = mongo.db.users.find_one({"likedRecipes": {"$exists": True}})
-        recipe = mongo.db.recipes.find_one({"recipeName": recipeName})
-        likes = recipe['likes']
-        usersWithLikedRecipes = mongo.db.users.find(query)
+        selected_recipe = mongo.db.recipes.find_one(
+            {"recipeName": recipe_name})
+        likes = selected_recipe['likes']
+        users_with_liked_recipes = mongo.db.users.find(query)
 
-        if usersWithLikedRecipes:
-            usersLikedRecipes = user['likedRecipes']
-            if recipeName not in usersLikedRecipes:
-                newLikes = likes + 1
+        if users_with_liked_recipes:
+            users_liked_recipes = user['likedRecipes']
+            if recipe_name not in users_liked_recipes:
+                new_likes = likes + 1
                 mongo.db.users.update_one({"username": username}, {
-                    "$push": {"likedRecipes": recipeName}})
+                    "$push": {"likedRecipes": recipe_name}})
                 print("Updated liked recipes")
-                updateLikes = {"$set": {"likes": newLikes}}
-                mongo.db.recipes.update_one(recipe, updateLikes)
+                update_likes = {"$set": {"likes": new_likes}}
+                mongo.db.recipes.update_one(selected_recipe, update_likes)
             else:
-                newLikes = likes - 1
+                new_likes = likes - 1
                 mongo.db.users.update_one(
                     {"username": username}, {
-                        "$pull": {"likedRecipes": recipeName}})
-                updateLikes = {"$set": {"likes": newLikes}}
-                mongo.db.recipes.update_one(recipe, updateLikes)
+                        "$pull": {"likedRecipes": recipe_name}})
+                update_likes = {"$set": {"likes": new_likes}}
+                mongo.db.recipes.update_one(selected_recipe, update_likes)
 
-        return redirect(url_for('fullrecipe', recipeName=recipeName))
+        return redirect(url_for('fullrecipe', recipe_name=recipe_name))
 
 
-@app.route("/recipes/<recipeName>/edit_recipe", methods=['GET', 'POST'])
-def edit_recipe(recipeName):
+@app.route("/recipes/<recipe_name>/edit_recipe", methods=['GET', 'POST'])
+def edit_recipe(recipe_name):
     ''' Edit recipe form handling '''
     if request.method == "POST":
-        recipe = mongo.db.recipes.find_one_or_404({"recipeName": recipeName})
+        selected_recipe = mongo.db.recipes.find_one_or_404(
+            {"recipeName": recipe_name})
         changes = {"$set": {}}
         steps = []
         ingredients = []
@@ -461,17 +467,23 @@ def edit_recipe(recipeName):
                 changes["$set"][str(key)] = str(value)
 
         if 'step' in request.form.keys():
-            mongo.db.recipes.update_one(recipe, {"$set": {"steps": []}})
+            mongo.db.recipes.update_one(
+                selected_recipe, {"$set": {"steps": []}})
             changes["$set"]['steps'] = steps
+
         if 'ingredient' in request.form.keys():
-            mongo.db.recipes.update_one(recipe, {"$set": {"ingredients": []}})
+            mongo.db.recipes.update_one(
+                selected_recipe, {"$set": {"ingredients": []}})
             changes["$set"]['ingredients'] = ingredients
+
         if 'category' in request.form.keys():
-            mongo.db.recipes.update_one(recipe, {"$set": {"categories": []}})
+            mongo.db.recipes.update_one(
+                selected_recipe, {"$set": {"categories": []}})
             selected_categories = request.form.getlist("category")
             for item in selected_categories:
                 recipe_categories.append(str(item))
             changes["$set"]['categories'] = recipe_categories
+
         if 'recipeImage' in request.files:
             recipe_image = request.files['recipeImage']
             secured_image = secure_filename(recipe_image.filename)
@@ -479,7 +491,7 @@ def edit_recipe(recipeName):
             changes["$set"]['recipeImageName'] = secured_image
 
         mongo.db.recipes.update_one(recipe, changes)
-    return redirect(url_for('fullrecipe', recipeName=recipeName))
+    return redirect(url_for('fullrecipe', recipe_name=recipe_name))
 
 
 @app.route("/recipes/<recipe_name>/<username>/delete_recipe",
@@ -738,7 +750,7 @@ def delete_profile(username):
 
 
 @app.route("/get_in_touch", methods=['GET', 'POST'])
-def getInTouch():
+def get_in_touch():
     ''' Get in touch form '''
     if request.method == 'POST':
         full_name = str(request.form.get("full_name"))
@@ -764,14 +776,6 @@ def getInTouch():
     else:
         return render_template(
             "contact.html")
-
-
-@app.route("/contact")
-def contact_us():
-    ''' Sends an email '''
-    email_items = session['email_items']
-
-    return redirect(url_for('getInTouch'))
 
 
 if __name__ == "__main__":

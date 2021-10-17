@@ -135,32 +135,32 @@
 
                         <div class="text-center">
                             <a class="btn btn-primary btn-lg"
-                                href="{{ url_for('fullrecipe', recipeName=recipe.recipeName)}}">Go to Recipe</a>
+                                href="{{ url_for('fullrecipe', recipe_name=recipe.recipeName)}}">Go to Recipe</a>
                         </div>
                         <p class="mt-4 text-center">
                             {% if user %}
                                 {% if list_of_liked_recipes != None %}
                                     {% if recipe.recipeName in list_of_liked_recipes %}
-                                        <a class="likes" href="{{ url_for('like', recipeName=recipe.recipeName, username=user.username) }}">
+                                        <a class="likes" href="{{ url_for('like', recipe_name=recipe.recipeName, username=user.username) }}">
                                             <i class="fas fa-heart"></i>
                                         </a>
                                     
                                         <span>Likes: {{recipe.likes }} </span>
                                     {% else %}
-                                        <a class="likes" href="{{ url_for('like', recipeName=recipe.recipeName, username=user.username) }}">
+                                        <a class="likes" href="{{ url_for('like', recipe_name=recipe.recipeName, username=user.username) }}">
                                             <i class="far fa-heart"></i>
                                         </a>
                                         
                                         <span>Likes: {{recipe.likes }} </span>
                                     {% endif %}
                                 {% else %}
-                                    <a class="likes" href="{{ url_for('like', recipeName=recipe.recipeName, username=user.username) }}">
+                                    <a class="likes" href="{{ url_for('like', recipe_name=recipe.recipeName, username=user.username) }}">
                                         <i class="far fa-heart"></i>
                                     </a>
                                     <span>Likes: {{recipe.likes }} </span>
                                 {% endif %}
                             {% else %}
-                                <a class="likes" href="{{ url_for('like', recipeName=recipe.recipeName, username=user.username) }}">
+                                <a class="likes" href="{{ url_for('like', recipe_name=recipe.recipeName, username='None') }}">
                                     <i class="far fa-heart"></i>
                                 </a>
                                 <span>Likes: {{recipe.likes }} </span>

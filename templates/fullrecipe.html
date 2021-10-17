@@ -1,10 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
 
-{% if session.user %}
-{% set username = session.user %}
-{% endif %}
-
 <!-- links back to various pages -->
 <ul class="list-inline text-center">
     <li class="list-inline-item">
@@ -16,7 +12,7 @@
     </li>
     {% if session.user %}
     <li class="list-inline-item">
-        <a class="btn btn-outline-primary" href="{{ url_for('profile', username=username) }}">Profile</a>
+        <a class="btn btn-outline-primary" href="{{ url_for('profile', username=user.username) }}">Profile</a>
     </li>
     {% endif %}
 </ul>
@@ -31,7 +27,7 @@
                         <div style="height: auto;" class="card-body">
                             <h1 class="text-center diplay-1 create-recipe-title">Edit Recipe</h1>
                             <form class="position-relative" method="POST"
-                                action="{{ url_for('edit_recipe', recipeName=recipe.recipeName) }}"
+                                action="{{ url_for('edit_recipe', recipe_name=recipe.recipeName) }}"
                                 enctype="multipart/form-data">
                                 <div id="recipe-details">
                                     <!-- Recipe Name -->
@@ -265,40 +261,32 @@
                     <div class="col">
                         <p class="mt-4 text-center">
                             <!-- Sets username variable-->
-                            {% if session.user %}
-                            {% set username = session.user %}
-                            {% set user = user({"username": username.lower() }) %}
-
-                            {% set recipeName = recipe.recipeName %}
-                            {% set likes = user.likedRecipes %}
-                            {% if likes %}
-                            {% set listOfLikedRecipes = likes %}
-                            {% if listOfLikedRecipes|length >= 1  %}
-                            {% if recipeName in listOfLikedRecipes %}
-                            <a class="likes" href="{{ url_for('like', recipeName=recipeName, username=username) }}">
-                                <i class="fas fa-heart"></i>
-                            </a>
-                            <span>Likes: {{recipe.likes }} </span>
+                            {% if user %}
+                                {% if list_of_liked_recipes != None %}
+                                    {% if recipe.recipeName in list_of_liked_recipes %}
+                                        <a class="likes" href="{{ url_for('like', recipe_name=recipe.recipeName, username=user.username) }}">
+                                            <i class="fas fa-heart"></i>
+                                        </a>
+                                    
+                                        <span>Likes: {{recipe.likes }} </span>
+                                    {% else %}
+                                        <a class="likes" href="{{ url_for('like', recipe_name=recipe.recipeName, username=user.username) }}">
+                                            <i class="far fa-heart"></i>
+                                        </a>
+                                        
+                                        <span>Likes: {{recipe.likes }} </span>
+                                    {% endif %}
+                                {% else %}
+                                    <a class="likes" href="{{ url_for('like', recipe_name=recipe.recipeName, username=user.username) }}">
+                                        <i class="far fa-heart"></i>
+                                    </a>
+                                    <span>Likes: {{recipe.likes }} </span>
+                                {% endif %}
                             {% else %}
-                            <a class="likes" href="{{ url_for('like', recipeName=recipeName, username=username) }}">
-                                <i class="far fa-heart"></i>
-                            </a>
-                            <span>Likes: {{recipe.likes }} </span>
-                            {% endif %}
-                            {% endif %}
-                            {% else %}
-                            <a class="likes" href="{{ url_for('like', recipeName=recipeName, username=username) }}">
-                                <i class="far fa-heart"></i>
-                            </a>
-
-                            <span>Likes: {{recipe.likes }} </span>
-                            {% endif %}
-                            {% else %}
-                            <a class="likes" href="{{ url_for('like', recipeName=recipeName, username=username) }}">
-                                <i class="far fa-heart"></i>
-                            </a>
-
-                            <span>Likes: {{recipe.likes }} </span>
+                                <a class="likes" href="{{ url_for('like', recipe_name=recipe.recipeName, username='None') }}">
+                                    <i class="far fa-heart"></i>
+                                </a>
+                                <span>Likes: {{recipe.likes }} </span>
                             {% endif %}
 
 

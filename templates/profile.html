@@ -166,19 +166,19 @@
 
                             <p class="mt-4 text-center">
                                 {% if list_of_liked_recipes == [] %}
-                                    <a class="likes" href="{{ url_for('like', recipeName=recipe.recipeName, username=username) }}">
+                                    <a class="likes" href="{{ url_for('like', recipe_name=recipe.recipeName, username=username) }}">
                                         <i class="far fa-heart"></i>
                                     </a>
                                     <span>Likes: {{recipe.likes }} </span>
                                 {% else %}
                                     {% if recipe.recipeName in list_of_liked_recipes %}
-                                        <a class="likes" href="{{ url_for('like', recipeName=recipe.recipeName, username=username) }}">
+                                        <a class="likes" href="{{ url_for('like', recipe_name=recipe.recipeName, username=username) }}">
                                             <i class="fas fa-heart"></i>
                                         </a>
                                     
                                         <span>Likes: {{recipe.likes }} </span>
                                     {% else %}
-                                        <a class="likes" href="{{ url_for('like', recipeName=recipe.recipeName, username=username) }}">
+                                        <a class="likes" href="{{ url_for('like', recipe_name=recipe.recipeName, username=username) }}">
                                             <i class="far fa-heart"></i>
                                         </a>
                                         
