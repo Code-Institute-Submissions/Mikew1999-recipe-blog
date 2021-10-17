@@ -14,7 +14,7 @@
     </div>
 
     <!-- Deletes profile pic -->
-    <form class="mt-4" action="{{ url_for('deleteProfileImage', username=username) }}" method="POST">
+    <form class="mt-4" action="{{ url_for('delete_profile_image', username=username) }}" method="POST">
         <button class="btn btn-danger mb-4" type="submit">Delete profile picture</button>
         <a id="show-edit-pic-form" class="btn btn-primaryb-4" onclick="showEditPicForm()">Edit / Upload profile
             pic</a>
@@ -78,7 +78,7 @@
         <h2 class="masthead-heading text-center mb-4">Personal Details</h2>
 
         <div id="edit-personal-details-form">
-            <form action="{{ url_for('editPersonalDetails', username=username) }}" method="POST">
+            <form action="{{ url_for('edit_personal_details', username=user.username) }}" method="POST">
                 <div class="row">
                     <div class="col-sm-12 col-md-3 offset-md-3">
                         <label for="username">Username: </label>

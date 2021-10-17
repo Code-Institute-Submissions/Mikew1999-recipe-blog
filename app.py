@@ -679,24 +679,22 @@ def edit_profile_picture(username):
 
 # deletes profile picture
 @app.route("/profile/<username>/delete_profile_image", methods=["GET", "POST"])
-def deleteProfileImage(username):
+def delete_profile_image(username):
     ''' Deletes profile pic '''
     # grabs users account
-    user = mongo.db.users.find_one({"username": username})
+    user = mongo.db.users.find_one_or_404({"username": username})
     # finds profile image name
-    profileImage = user['profileImageName']
+    profile_image = user['profileImageName']
     # finds profile image record
-    file = mongo.db.fs.files.find_one({"filename": profileImage})
+    file = mongo.db.fs.files.find_one({"filename": profile_image})
     # finds file_id
     file_id = file['_id']
     # deletes file from db
     mongo.db.fs.files.delete_one({"_id": file_id})
 
-    value = "0"
     # changes to update
     update = {"$set": {
-        "hasProfileImage": value,
-        "profileImageName": " "}}
+        "profileImageName": "None"}}
 
     # updates hasProfileImage in users collection
     mongo.db.users.update_one(user, update)
@@ -706,27 +704,31 @@ def deleteProfileImage(username):
 # edits personal details
 @app.route("/profile/<username>/edit_personal_details",
            methods=["GET", "POST"])
-def editPersonalDetails(username):
+def edit_personal_details(username):
     ''' Edits personal details '''
-    user = mongo.db.users.find_one({"username": username})
-    newEmail = request.form.get("email").lower()
-    newFirstName = request.form.get("fname").lower()
-    newLastName = request.form.get("lname").lower()
+    if request.method == "POST":
+        user = mongo.db.users.find_one_or_404({"username": username})
+        new_email = request.form.get("email").lower()
+        new_first_name = request.form.get("fname").lower()
+        new_last_name = request.form.get("lname").lower()
 
-    update = {"$set": {
-        "email": newEmail,
-        "fname": newFirstName,
-        "lname": newLastName}}
+        update = {"$set": {
+            "email": new_email,
+            "fname": new_first_name,
+            "lname": new_last_name}}
 
-    mongo.db.users.update_one(user, update)
+        mongo.db.users.update_one(user, update)
 
-    session.pop("user")
-    session['user'] = request.form.get("username").lower()
-
-    return redirect(url_for(
-                    'profile',
-                    username=request.form.
-                    get("username").lower()))
+        session.pop("user")
+        session['user'] = username
+        flash("Personal details updated successfully!")
+        return redirect(url_for(
+                        'profile',
+                        username=username))
+    else:
+        return redirect(url_for(
+                        'profile',
+                        username=username))
 
 
 # deletes profile pic
