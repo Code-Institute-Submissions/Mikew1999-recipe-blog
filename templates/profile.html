@@ -105,12 +105,14 @@
                         <button class="btn btn-primary" type="submit">Save Changes</button>
                     </div>
                 </div>
-                <div class="row mt-4">
-                    <div class="col text-center">
-                        <a class="btn btn-danger" href="{{ url_for('deleteProfile', username=user.username)}}">Delete Profile</a>
-                    </div>
-                </div>
             </form>
+            <div class="row mt-4">
+                <div class="col text-center">
+                    <form method="POST" action="{{ url_for('delete_profile', username=user.username) }}">
+                        <button type="submit" class="btn btn-danger">Delete Profile</button>
+                    </form>
+                </div>
+            </div>
             
             <div class="row">
                 <div class="col">

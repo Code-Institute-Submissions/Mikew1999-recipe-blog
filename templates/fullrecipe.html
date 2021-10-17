@@ -311,7 +311,7 @@
                 <div class="row text-center">
                     <div class="col">
                         <form
-                            action="{{ url_for('delete_recipe', recipeName=recipe.recipeName, username=session.user) }}"
+                            action="{{ url_for('delete_recipe', recipe_name=recipe.recipeName, username=session.user) }}"
                             method="POST">
                             <button tyle="submit" class="btn btn-danger">Delete Recipe</button>
                         </form>

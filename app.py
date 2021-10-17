@@ -482,23 +482,23 @@ def edit_recipe(recipeName):
     return redirect(url_for('fullrecipe', recipeName=recipeName))
 
 
-@app.route("/recipes/<recipeName>/<username>/delete_recipe",
+@app.route("/recipes/<recipe_name>/<username>/delete_recipe",
            methods=["GET", "POST"])
-def delete_recipe(recipeName, username):
+def delete_recipe(recipe_name, username):
     ''' Delete recipe '''
     recipe_to_delete = mongo.db.recipes.find_one_or_404(
-        {"recipeName": recipeName})
+        {"recipeName": recipe_name})
     image_name = secure_filename(recipe_to_delete['recipeImageName'])
     mongo.db.fs.files.delete_one({"filename": image_name})
 
     mongo.db.recipes.find_one_and_delete(
-        {"$and": [{"author": username}, {"recipeName": recipeName}]})
+        {"$and": [{"author": username}, {"recipeName": recipe_name}]})
 
     query = mongo.db.users.find()
     for item in query:
         user_name = item['username']
         mongo.db.users.update_one({"username": user_name}, {
-                                  "$pull": {"likedRecipes": recipeName}})
+                                  "$pull": {"likedRecipes": recipe_name}})
     return redirect(url_for('recipe'))
 
 
@@ -540,7 +540,7 @@ def create_post(username):
                 post['postimage'] = 'None'
             post['likes'] = 0
             post['comments'] = []
-
+            post['author'] = username
             post["_id"] = new_post_id
             post['postid'] = new_post_id
             mongo.db.posts.insert_one(post)
@@ -706,30 +706,35 @@ def edit_personal_details(username):
 
 # deletes profile pic
 @app.route("/profile/<username>/delete_profile", methods=["GET", "POST"])
-def deleteProfile(username):
+def delete_profile(username):
     ''' Deletes profile '''
-    userRecord = mongo.db.users.find_one({"username": username})
-    # if user has profile picture
-    if userRecord['hasProfileImage'] == "1":
-        # deletes profile image data from fs.files in db
-        profileImage = userRecord['profileImageName']
-        securedImage = secure_filename(profileImage)
-        file = mongo.db.fs.files.find_one({"filename": securedImage})
-        mongo.db.fs.files.delete_one(file)
+    if request.method == "POST":
+        user_record = mongo.db.users.find_one_or_404({"username": username})
+        # if user has profile picture
+        if user_record['profileImageName'] != "None":
+            profile_image = user_record['profileImageName']
+            secure_image = secure_filename(profile_image)
+            new_file = mongo.db.fs.files.find_one({"filename": secure_image})
+            mongo.db.fs.files.delete_one(new_file)
 
-    # checks if user has uploaded recipes
-    if userRecord['hasUploadedRecipe'] == "1":
         # finds list of user recipes
-        for recipe in mongo.db.recipes.find():
-            author = recipe['author']
+        for item in mongo.db.recipes.find():
+            author = item['author']
             if author == username:
                 update = {"$set": {"author": "User Deleted"}}
                 mongo.db.recipes.update_many({"author": username}, update)
 
-    session.pop("user")
-    mongo.db.users.delete_one(userRecord)
-    flash("Profile Successfully Deleted.")
-    return redirect(url_for('index'))
+        for item in mongo.db.posts.find():
+            author = item['author']
+            if author == username:
+                update = {"$set": {"author": "User Deleted"}}
+
+        session.pop("user")
+        mongo.db.users.delete_one(user_record)
+        flash("Profile Successfully Deleted.")
+        return redirect(url_for('index'))
+    else:
+        return redirect(url_for('profile', username=username))
 
 
 @app.route("/get_in_touch", methods=['GET', 'POST'])
