@@ -317,49 +317,43 @@ def create_recipe():
         if request.method == "POST":
             # finds username
             user = session['user']
-            # finds users record
-            userRecord = mongo.db.users.find_one({"username": user})
-            # amend hasUploaded Recipe value on users record
-            setHasUploadedRecipe = {"$set": {"hasUploadedRecipe": "1"}}
 
             if 'recipeImage' in request.files:
-                mongo.db.users.update_one(userRecord, setHasUploadedRecipe)
-
-                recipeImage = request.files['recipeImage']
-                securedImage = secure_filename(recipeImage.filename)
-                mongo.save_file(securedImage, recipeImage)
+                recipe_image = request.files['recipeImage']
+                secured_image = secure_filename(recipe_image.filename)
+                mongo.save_file(secured_image, recipe_image)
 
                 # finds keys in form items dictionary
-                formKeys = request.form.keys()
+                form_keys = request.form.keys()
 
                 # containers for keys and values
 
-                ingredientKeys = []
+                ingredient_keys = []
                 # contains ingredients inputted by user
-                ingredientValues = []
+                ingredient_values = []
 
-                stepKeys = []
+                step_keys = []
                 # contains steps inputted by user
-                stepValues = []
+                step_values = []
 
                 # loops over keys in form items dictionary
                 # where ingredient is in the key name
-                for key in formKeys:
+                for key in form_keys:
                     if "ingredient" in key:
-                        ingredientKeys.append(key)
+                        ingredient_keys.append(key)
                     if "step" in key:
-                        stepKeys.append(key)
+                        step_keys.append(key)
 
-                for ingredient in ingredientKeys:
-                    a = request.form.get(f'{ingredient}')
-                    ingredientValues.append(str(a))
+                for ingredient in ingredient_keys:
+                    item = request.form.get(f'{ingredient}')
+                    ingredient_values.append(str(item))
 
-                for step in stepKeys:
+                for step in step_keys:
                     a = request.form.get(f'{step}')
-                    stepValues.append(str(a))
+                    step_values.append(str(a))
 
-                recipeDetails = {
-                    "recipeImageName": securedImage,
+                recipe_details = {
+                    "recipeImageName": secured_image,
                     "recipeName": request.form.get("recipeName"),
                     "serves": request.form.get("serves"),
                     "prepTime": request.form.get("prepTime"),
@@ -367,12 +361,12 @@ def create_recipe():
                     "recipeDescription": request.form.get("recipeDescription"),
                     "likes": 0,
                     "author": user,
-                    "ingredients": ingredientValues,
-                    "steps": stepValues,
+                    "ingredients": ingredient_values,
+                    "steps": step_values,
                     "categories": request.form.getlist('category')
                 }
 
-                mongo.db.recipes.insert_one(recipeDetails)
+                mongo.db.recipes.insert_one(recipe_details)
 
         return render_template(
             "createrecipe.html",
@@ -388,10 +382,6 @@ def fullrecipe(recipeName):
     ''' Full recipe '''
     recipe = mongo.db.recipes.find_one({"recipeName": recipeName})
     author = recipe['author'].lower()
-    if not session.get('user') is None:
-        username = session['user']
-    else:
-        username = None
 
     if request.method == "POST":
         if 'edit_recipe' in request.form:
