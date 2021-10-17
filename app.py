@@ -153,8 +153,9 @@ def changePassword():
                 if str(email) == users_email:
                     print("email matches users email")
                     print(new_password)
-                    set_new_password = {
-                        "$set": {"password": generate_password_hash(new_password)}}
+                    set_new_password = {"$set": {"password":
+                                                 generate_password_hash(
+                                                     new_password)}}
                     mongo.db.users.update_one(is_user, set_new_password)
                     session['user'] = request.form.get("username").lower()
                     flash("Password updated!")
@@ -406,6 +407,41 @@ def fullrecipe(recipeName):
     )
 
 
+# like recipe
+@app.route("/recipes/<recipeName>/<username>/like_recipe/",
+           methods=["GET", "POST"])
+def like(recipeName, username):
+    ''' likes / dislikes recipe '''
+    if username == 'None':
+        flash("Please Sign in to like / unlike recipe")
+        return redirect(url_for('recipe'))
+    else:
+        user = mongo.db.users.find_one({"username": username})
+        query = mongo.db.users.find_one({"likedRecipes": {"$exists": True}})
+        recipe = mongo.db.recipes.find_one({"recipeName": recipeName})
+        likes = recipe['likes']
+        usersWithLikedRecipes = mongo.db.users.find(query)
+
+        if usersWithLikedRecipes:
+            usersLikedRecipes = user['likedRecipes']
+            if recipeName not in usersLikedRecipes:
+                newLikes = likes + 1
+                mongo.db.users.update_one({"username": username}, {
+                    "$push": {"likedRecipes": recipeName}})
+                print("Updated liked recipes")
+                updateLikes = {"$set": {"likes": newLikes}}
+                mongo.db.recipes.update_one(recipe, updateLikes)
+            else:
+                newLikes = likes - 1
+                mongo.db.users.update_one(
+                    {"username": username}, {
+                        "$pull": {"likedRecipes": recipeName}})
+                updateLikes = {"$set": {"likes": newLikes}}
+                mongo.db.recipes.update_one(recipe, updateLikes)
+
+        return redirect(url_for('fullrecipe', recipeName=recipeName))
+
+
 @app.route("/recipes/<recipeName>/edit_recipe", methods=['GET', 'POST'])
 def edit_recipe(recipeName):
     ''' Edit recipe form handling '''
@@ -475,6 +511,87 @@ def posts():
         posts=all_posts)
 
 
+@app.route("/<username>/create_post", methods=["GET", "POST"])
+def create_post(username):
+    ''' Create post page '''
+    if not session.get('user') is None:
+        if request.method == "POST":
+            latest_post = mongo.db.posts.find_one(
+                {"$query": {}, "$orderby": {"_id": -1}})
+            if latest_post is None:
+                new_post_id = 1
+            else:
+                post_id = latest_post['_id']
+                new_post_id = post_id + 1
+
+            post = {}
+
+            for key, value in request.form.items():
+                if 'postimage' not in str(key):
+                    post[str(key)] = str(value)
+
+            if 'postimage' in request.files:
+                image = request.files['postimage']
+                secured_image = secure_filename(image.filename)
+                # saves file to mongodb
+                mongo.save_file(secured_image, image)
+                post['postimage'] = secured_image
+            else:
+                post['postimage'] = 'None'
+            post['likes'] = 0
+            post['comments'] = []
+
+            post["_id"] = new_post_id
+            mongo.db.posts.insert_one(post)
+
+            mongo.db.users.update_one({"username": username}, {
+                "$addToSet": {"posts": new_post_id}})
+            flash("Post Uploaded!")
+            return redirect(url_for('index'))
+        return render_template("createpost.html")
+    else:
+        flash("Please login to like create post")
+        return redirect(url_for('log_in'))
+
+
+# like post
+@app.route("/posts/<post_title>/<username>/like_post/",
+           methods=["GET", "POST"])
+def like_post(post_title, username):
+    ''' Likes post '''
+    if username == 'None':
+        flash("Please Sign in to like recipe")
+        return redirect(url_for('log_in'))
+    else:
+        if request.method == "POST":
+            user = mongo.db.users.find_one({"username": username})
+            post = mongo.db.posts.find_one({"posttitle": post_title})
+            print(post)
+            if post_title in user['likedPosts']:
+                likes = post['likes']
+                likes -= 1
+                mongo.db.posts.update_one(post, {
+                    "$set": {"likes": likes}
+                })
+                mongo.db.users.update_one(user, {
+                    "$pull": {"likedPosts": post_title}
+                })
+            else:
+                if post['likes'] == 0:
+                    likes = 1
+                else:
+                    likes = post['likes']
+                    likes += 1
+                mongo.db.posts.update_one(post, {
+                    "$set": {"likes": likes}
+                })
+                mongo.db.users.update_one(user, {
+                    "$addToSet": {"likedPosts": post_title}})
+        else:
+            return redirect(url_for('posts'))
+    return redirect(url_for('posts'))
+
+
 @app.route("/newsfeed/posts/<post_id>", methods=["GET", "POST"])
 def post_comment(post_id):
     ''' A view to handle the comment form '''
@@ -485,49 +602,6 @@ def post_comment(post_id):
         comment = request.form.get('comment')
         print(f'title: {title}, comment: {comment}')
     return redirect(url_for('posts'))
-
-
-@app.route("/<username>/create_post", methods=["GET", "POST"])
-def create_post(username):
-    ''' Create post page '''
-    if request.method == "POST":
-        latest_post = mongo.db.posts.find_one(
-            {"$query": {}, "$orderby": {"_id": -1}})
-
-        post_id = latest_post['_id']
-        new_post_id = post_id + 1
-
-        post = {}
-
-        for key, value in request.form.items():
-            if 'postimage' not in str(key):
-                post[str(key)] = str(value)
-
-        if 'postimage' in request.files:
-            image = request.files['postimage']
-            secured_image = secure_filename(image.filename)
-            # saves file to mongodb
-            mongo.save_file(secured_image, image)
-            post['postimage'] = secured_image
-
-        post["_id"] = new_post_id
-        mongo.db.posts.insert_one(post)
-
-        mongo.db.users.update_one({"username": username}, {
-                                  "$addToSet": {"posts": new_post_id}})
-        flash("Post Uploaded!")
-        return redirect(url_for('index'))
-    return render_template("createpost.html")
-
-
-# like post
-@app.route("/posts/<author>/<username>/like_post/",
-           methods=["GET", "POST"])
-def likePost(author, username):
-    ''' Likes post '''
-    print(author)
-    print(username)
-    return redirect(url_for('newsFeed'))
 
 
 # edit profile picture
@@ -643,41 +717,6 @@ def editPersonalDetails(username):
                     'profile',
                     username=request.form.
                     get("username").lower()))
-
-
-# like recipe
-@app.route("/recipes/<recipeName>/<username>/like_recipe/",
-           methods=["GET", "POST"])
-def like(recipeName, username):
-    ''' likes / dislikes recipe '''
-    if username == 'None':
-        flash("Please Sign in to like / unlike recipe")
-        return redirect(url_for('recipe'))
-    else:
-        user = mongo.db.users.find_one({"username": username})
-        query = mongo.db.users.find_one({"likedRecipes": {"$exists": True}})
-        recipe = mongo.db.recipes.find_one({"recipeName": recipeName})
-        likes = recipe['likes']
-        usersWithLikedRecipes = mongo.db.users.find(query)
-
-        if usersWithLikedRecipes:
-            usersLikedRecipes = user['likedRecipes']
-            if recipeName not in usersLikedRecipes:
-                newLikes = likes + 1
-                mongo.db.users.update_one({"username": username}, {
-                    "$push": {"likedRecipes": recipeName}})
-                print("Updated liked recipes")
-                updateLikes = {"$set": {"likes": newLikes}}
-                mongo.db.recipes.update_one(recipe, updateLikes)
-            else:
-                newLikes = likes - 1
-                mongo.db.users.update_one(
-                    {"username": username}, {
-                        "$pull": {"likedRecipes": recipeName}})
-                updateLikes = {"$set": {"likes": newLikes}}
-                mongo.db.recipes.update_one(recipe, updateLikes)
-
-        return redirect(url_for('fullrecipe', recipeName=recipeName))
 
 
 # deletes profile pic

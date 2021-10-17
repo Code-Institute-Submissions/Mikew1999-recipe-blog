@@ -2,8 +2,12 @@
 {% block content %}
 <main>
   <div class="text-center">
-    <h1>News Feed</h1>
-    <a class="btn btn-lg btn-primary" href="{{ url_for('create_post', username=session.user) }}">Create New Post</a>
+    <h1 class="display-1">News Feed</h1>
+    {% if session.user %}
+      <a class="btn btn-lg btn-primary" href="{{ url_for('create_post', username=session.user) }}">Create New Post</a>
+    {% else %}
+      <a class="btn btn-lg btn-primary" href="{{ url_for('create_post', username='None') }}">Create New Post</a>
+    {% endif %}
   </div>
 
   <div class="container-fluid">
@@ -100,21 +104,13 @@
         </div>
       </div>
       <div class="col">
-        <div class="container">
-          <div class="row">
-            <div class="col text-center mb-4">
-
-            </div>
-          </div>
-        </div>
-
         <div class="container my-posts" id="my-posts">
           {% for post in posts %}
           <div class="row mb-4">
 
             <div class="col-12">
               <div>
-                {% if post.postimage != 'None' %}
+                {% if post.postimage != 'None' or '' %}
                 <div class="text-center">
                   <img class="post-image" src="{{ url_for('file', filename=post.postimage) }}" alt="Post Image">
                 </div>
@@ -133,8 +129,14 @@
             <div class="col-12">
               <ul class="list-inline">
                 <li class="list-inline-item">
-                  <img
-                    src="https://img.icons8.com/external-flatart-icons-outline-flatarticons/64/000000/external-like-project-management-and-development-flatart-icons-outline-flatarticons.png" />
+                  {% if session.user %}
+                  <form method="POST" action="{{ url_for('like_post', post_title=post.posttitle, username=session.user) }}">
+                    <input name="like" type="hidden">
+                    <button type="submit"><img
+                      src="https://img.icons8.com/external-flatart-icons-outline-flatarticons/64/000000/external-like-project-management-and-development-flatart-icons-outline-flatarticons.png" /></button>
+                  </form>
+                  {% endif %}
+                  
                 </li>
                 <li class="list-inline-item">
                   <a>
