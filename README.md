@@ -21,6 +21,7 @@ The site enables the user to create a profile, recipes, make social media style 
         * As a First Time Visitor, I want to be able to browse for a specific user, perhaps one of their friends who uses the website.
 
         * As a First Time Visitor, I want to have the option to sign up for the website in order to post or like a recipe
+        * As a First time visitor, I would like to be able to see the newsfeed pages
 
     * Returning Visitor Goals
         * As a returning visitor, I would like to view recipes I may have missed since last time I browsed the page
@@ -28,6 +29,8 @@ The site enables the user to create a profile, recipes, make social media style 
         * As a returning visitor, I would like to be able to delete my profile
         * As a returning visitor, I would like to be able to delete my recipes
         * As a returning visitor, I would like to be able amend my personal details
+        * As a returning visitor, I would like to be able amend my recipes
+        * As a returning visitor, I would like to be able amend my posts
         * As a returning visitor, I would like to be able to see how many likes I have on my recipes and posts
 
     * Frequent Users Goals
@@ -50,7 +53,7 @@ The site enables the user to create a profile, recipes, make social media style 
         This draws the user in and hopefully will attract them to keep coming back for more recipes
 
 * Wireframes
-    * Please see my [wireframes](foodspacewireframes.pdf)
+    * Please see my [wireframes](wireframes/foodspacewireframes.pdf)
 
 # Features
 
@@ -76,9 +79,8 @@ The site enables the user to create a profile, recipes, make social media style 
 *   Delete Post - Allows user to delete one of their posts
 
 * Future Features
-    * Top posts section
-    * Like posts
     * Scheduled deletion of files which don't have a fileID in fs.chunks (Didn't have time to implement)
+    * Link recipes to 
  
 # Technologies Used
 
@@ -141,29 +143,49 @@ The site enables the user to create a profile, recipes, make social media style 
 
     * The site allows the user to upload as many recipes as possible
 
+    * The site allows the user to like recipe / post
+
+    * The site allows the user to edit recipe / post
+
 * functionality testing
     * The navbar is responsive on all devices and compressing nav works
-    * search forms work for recipes and users - works by typing author, recipeName e.t.c
+    * search forms work 
+    * Can edit posts, users profile and recipes
     * login, signup forms work perfectly - with and without profile pic
-    * create recipe - works perfectly
+    * create recipe - works when logged in and reverts user to login page if not
 
 The site was delevoped defensively so the site will not advise a user if it is their username / password which is incorrect
 
 * performance testing
     * the site was tested on multiple browser (chrome and edge) and all functionality appears to be working. (some style issues on edge)
+    * Logged in on multiple sessions at once with no reduction in responsivness
 
 
 ## Known Bugs
-Some style issues in edge
+* Drop-downs don't work on internet explorer 
+* Some style issues on edge
 
 # Deployment
+
+## Local
+
+To run the app locally: 
+
+1. Install dependancies by typing 'pip3 -r requirements.txt' into the terminal
+1. Create environment file by typing 'touch env.py', enter environment variables (these are secret)
+1. Run server locally by typing 'python3 app.py' into the terminal
 
 ## Heroku App
 
 This website was deployed on Heroku App by following the below steps:
 
-1.  https://devcenter.heroku.com/articles/github-integration#enabling-github-integration
-1.  https://devcenter.heroku.com/articles/github-integration#automatic-deploys
+1.  Freeze dependancies into requirements file by typing 'pip3 freeze --local > requirements.txt'
+1.  Create Procfile for Heroku by typing 'echo web: python app.py > Procfile'
+1.  Create App on Heroku (signup to heroku, create app)
+1.  Set deployment method to Github and connect profile
+1.  Set environment variables via heroku app > settings > config vars
+1.  Commit repository to github ('git add requirements.txt' then git commit -m "commit message", 'git add Procfile' then git commit -m "commit message" > git push)
+1.  Enable automatic deployments via heroku app > deploy > enable automatic deployments
 
 # Credits
 

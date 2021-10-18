@@ -549,7 +549,7 @@ def create_post(username):
     ''' Create post page '''
     if not session.get('user') is None:
         if username == 'None':
-            flash("Please login to like create post")
+            flash("Please login to create post")
             return redirect(url_for('log_in'))
         if request.method == "POST":
             latest_post = mongo.db.posts.find_one(
@@ -588,6 +588,43 @@ def create_post(username):
         return render_template("createpost.html")
     else:
         flash("Please login to like create post")
+        return redirect(url_for('log_in'))
+
+
+@app.route("/<username>/<posttitle>/edit_post", methods=["GET", "POST"])
+def edit_post(username, posttitle):
+    ''' Create post page '''
+    if not session.get('user') is None:
+        if username == 'None':
+            flash("Please login to edit post")
+            return redirect(url_for('log_in'))
+        if request.method == "POST":
+            post = mongo.db.posts.find_one_or_404(
+                {"posttitle": request.form.get("posttitle")})
+            updates = {}
+            for key, value in request.form.items():
+                if 'postimage' not in str(key):
+                    updates[str(key)] = str(value)
+
+            if 'postimage' in request.files:
+                image = request.files['postimage']
+                secured_image = secure_filename(image.filename)
+                # saves file to mongodb
+                mongo.save_file(secured_image, image)
+                updates['postimage'] = secured_image
+            else:
+                updates['postimage'] = post['postimage']
+
+            mongo.db.posts.update_one(
+                post, {"$set": updates})
+            flash("Post Updated!")
+            return redirect(url_for('posts'))
+        post = mongo.db.posts.find_one_or_404({"posttitle": posttitle})
+        return render_template(
+            "editpost.html",
+            post=post)
+    else:
+        flash("Please login to like edit post")
         return redirect(url_for('log_in'))
 
 
