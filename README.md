@@ -106,6 +106,21 @@ The site enables the user to create a profile, recipes, make social media style 
 1.
     [Jinja](https://jinja.palletsprojects.com/en/3.0.x/) - Jinja was used to write python inline, to loop over lists and arrays and to render my pages
 
+# Data Models
+The database for this project consists of:
+1. Users collection
+1. Recipes collection
+1. Posts collection
+1. File collections
+
+The Users collection contains personal details of the user, their liked recipes, uploaded recipes and uploaded posts
+
+The recipes collection contains all recipes and their author
+
+The Posts collection contains all posts and their author
+
+The collections are linked by a commonnality between them, for example recipe author = username.
+
 # Testing
 
 ## Code Validity
