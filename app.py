@@ -112,7 +112,7 @@ def sign_up():
                     "posts": [],
                     "likedRecipes": [],
                     "liked_posts": []
-                    }
+                }
 
                 # inserts new user info into users collection
                 mongo.db.users.insert_one(create_account)
@@ -256,9 +256,12 @@ def index():
 @app.route("/recipes", methods=["GET", "POST"])
 def recipe():
     ''' Recipes page '''
-    top_recipes = mongo.db.recipes.find().limit(4).sort("likes", -1)
+    results = None
+    query = None
+    search = None
     recipes = mongo.db.recipes.find()
     username = None
+
     if not session.get('user') is None:
         username = session['user']
         user = mongo.db.users.find_one({"username": username})
@@ -271,25 +274,39 @@ def recipe():
         list_of_liked_recipes = None
 
     if request.method == "POST":
+        selected_category = None
+        top_recipes = None
         all_recipes = mongo.db.recipes
-        mongo.db.recipes.create_index(
-            [
-                ("recipeName", "text"),
-                ("recipeDescription", "text"),
-                ("author", "text")])
+        if 'category' in request.form:
+            selected_category = request.form.get("category")
+            category_results = mongo.db.recipes.find(
+                {"categories": {"$all": [str(selected_category)]}})
+        elif 'toprecipes' in request.form:
+            selected_category = None
+            top_recipes = mongo.db.recipes.find().limit(4).sort("likes", -1)
+        else:
+            selected_category = None
+            mongo.db.recipes.create_index(
+                [
+                    ("recipeName", "text"),
+                    ("recipeDescription", "text"),
+                    ("author", "text")])
 
-        # gets text input from search form
-        query = request.form.get("q")
+            # gets text input from search form
+            query = request.form.get("q")
 
-        # performs search
-        search = ({"$text": {"$search": query}})
-        # finds results
-        results = mongo.db.recipes.find(search)
+            # performs search
+            search = ({"$text": {"$search": query}})
+            # finds results
+            results = mongo.db.recipes.find(search)
 
         return render_template(
             "recipes.html",
             user=user,
+            selected_category=selected_category,
+            category_results=category_results,
             results=results,
+            top_recipes=top_recipes,
             list_of_liked_recipes=list_of_liked_recipes,
             categories=categories,
             categoryList=categoryList,
@@ -300,7 +317,6 @@ def recipe():
             "recipes.html",
             recipes=recipes,
             list_of_liked_recipes=list_of_liked_recipes,
-            top_recipes=top_recipes,
             categories=categories,
             categoryList=categoryList,
             user=user,
@@ -523,7 +539,7 @@ def posts():
     all_posts = mongo.db.posts.find().sort("_id", -1)
     return render_template(
         "newsfeed.html",
-        posts=all_posts)
+        posts=all_posts)#
 
 
 @app.route("/<username>/create_post", methods=["GET", "POST"])

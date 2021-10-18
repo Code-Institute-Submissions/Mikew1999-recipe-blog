@@ -77,18 +77,55 @@
                             <li class="list-inline-item">
                                 {% set username = session.user %}
                                 <div class="btn-group">
-                                    <button type="button" class="btn btn-primary"><a class="text-white" href="{{ url_for('profile', username=username) }}">Profile</a></button>
-                                    <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <button type="button" class="btn btn-primary"><a class="text-white"
+                                            href="{{ url_for('profile', username=username) }}">Profile</a></button>
+                                    <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split"
+                                        data-bs-toggle="dropdown" aria-expanded="false">
                                     </button>
                                     <ul class="dropdown-menu dropdown-menu-end dropdown-menu-lg-start">
-                                      <li><a class="dropdown-item" href="#">Personal Details</a></li>
-                                      <li><a class="dropdown-item" href="#">My Recipes</a></li>
-                                      <li><a class="dropdown-item" href="#">My Posts</a></li>
-                                      <li><a class="dropdown-item" href="">Liked Recipes</a></li>
-                                      <li><hr class="dropdown-divider"></li>
-                                      <li><a class="dropdown-item" href="{{ url_for('logout') }}"> Logout</a></li>
+                                        <li>
+                                            <a class="dropdown-item btn">
+                                                <form class="profile-select-form" method="POST"
+                                                    action="{{ url_for('profile', username=username) }}">
+                                                    <input type="hidden" name="personal_details">
+                                                    <button style="padding: 0;" class="btn" type="submit">Personal
+                                                        Details</button>
+                                                </form>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item btn">
+                                                <form class="profile-select-form" method="POST"
+                                                    action="{{ url_for('profile', username=username) }}">
+                                                    <input type="hidden" name="my_recipes">
+                                                    <button style="padding: 0;" class="btn" type="submit">My Recipes</button>
+                                                </form>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item btn">
+                                                <form class="profile-select-form" method="POST"
+                                                    action="{{ url_for('profile', username=username) }}">
+                                                    <input type="hidden" name="my_posts">
+                                                    <button style="padding: 0;" class="btn" type="submit">My Posts</button>
+                                                </form>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item btn">
+                                                <form class="profile-select-form" method="POST"
+                                                    action="{{ url_for('profile', username=username) }}">
+                                                    <input type="hidden" name="liked_recipes">
+                                                    <button style="padding: 0;" class="btn" type="submit">Liked Recipes</button>
+                                                </form>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <hr class="dropdown-divider">
+                                        </li>
+                                        <li><a class="dropdown-item" href="{{ url_for('logout') }}"> Logout</a></li>
                                     </ul>
-                                  </div>
+                                </div>
                             </li>
                             {% endif %}
                             {% if not session.user %}
@@ -116,7 +153,14 @@
                     </button>
                     <ul class="dropdown-menu" aria-labelledby="recipedropdown">
                         <li><a class="dropdown-item btn" href="{{ url_for('recipe') }}">All Recipes</a></li>
-                        <li><a class="dropdown-item" href="#">Top Recipes</a></li>
+                        <li>
+                            <a class="dropdown-item btn">
+                                <form method="POST" action="{{ url_for('recipe') }}">
+                                    <input type="hidden" name="toprecipes">
+                                    <button style="padding: 0;" class="btn" type="submit">Top Recipes</button>
+                                </form>
+                            </a>
+                        </li>
                         <li><a class="dropdown-item" href="{{ url_for('create_recipe') }}">Add another recipe</a></li>
                     </ul>
                 </div>
@@ -133,9 +177,11 @@
                     <ul class="dropdown-menu" aria-labelledby="newsfeeddropdown">
                         <li><a class="dropdown-item" href="{{ url_for('posts') }}">News Feed</a></li>
                         {% if session.user %}
-                            <li><a class="dropdown-item" href="{{ url_for('create_post', username=session.user) }}">Make a new post</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('create_post', username=session.user) }}">Make a
+                                new post</a></li>
                         {% else %}
-                            <li><a class="dropdown-item" href="{{ url_for('create_post', username='None') }}">Make a new post</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('create_post', username='None') }}">Make a new
+                                post</a></li>
                         {% endif %}
                     </ul>
                 </div>
@@ -146,19 +192,20 @@
     </nav>
 
     {% with messages = get_flashed_messages() %}
-        {% if messages %}
-            {% for message in messages %}
-            <div class="mt-4">
-                <p class="text-center">
-                    {% if message == 'Please Sign in to like recipe' %}
-                    <strong>Please <a href="{{ url_for('log_in') }}">Sign in</a> Or <a href="{{ url_for('sign_up') }}">Sign up</a> to like recipe</strong>
-                    {% else %}
-                    <strong>{{ message }}</strong>
-                    {% endif %}
-                </p>
-            </div>
-            {% endfor %}
-        {% endif %}
+    {% if messages %}
+    {% for message in messages %}
+    <div class="mt-4">
+        <p class="text-center">
+            {% if message == 'Please Sign in to like recipe' %}
+            <strong>Please <a href="{{ url_for('log_in') }}">Sign in</a> Or <a href="{{ url_for('sign_up') }}">Sign
+                    up</a> to like recipe</strong>
+            {% else %}
+            <strong>{{ message }}</strong>
+            {% endif %}
+        </p>
+    </div>
+    {% endfor %}
+    {% endif %}
     {% endwith %}
 
     {% block content %}
