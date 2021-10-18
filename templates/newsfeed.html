@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
-<main style="background-image: url('/static/images/platter.jpg'); background-position: center; background-repeat: no-repeat; background-size: cover;">
+<main
+  style="background-image: url('/static/images/platter.jpg'); background-position: center; background-repeat: no-repeat; background-size: cover;">
   <div class="text-center mb-4">
     <h1 class="display-1 main-header">News Feed</h1>
     {% if session.user %}
@@ -30,7 +31,7 @@
         <div class="container my-posts" id="my-posts">
           {% for post in posts %}
           <div class="card mt-2 mb-4">
-            <div class="card-body">
+            <div class="card-body pt-1">
               <div class="row mb-4">
 
                 <div class="col-12">
@@ -59,7 +60,7 @@
                       <form method="POST"
                         action="{{ url_for('like_post', posttitle=post.posttitle, username=session.user) }}">
                         <input name="like" type="hidden">
-                        <button type="submit"><img
+                        <button class="btn btn-primary" type="submit"><img
                             src="https://img.icons8.com/external-flatart-icons-outline-flatarticons/64/000000/external-like-project-management-and-development-flatart-icons-outline-flatarticons.png" /></button>
                       </form>
                       {% else %}
@@ -72,35 +73,48 @@
                       {% endif %}
 
                     </li>
-                    {% if session.user %}
-                    <li class="list-inline-item">
-
-                      <div class="dropdown">
-                        <button class="btn dropdown-toggle" type="button" id="commentdropdown" data-bs-toggle="dropdown"
-                          aria-expanded="false">
-                          <img
-                            src="https://img.icons8.com/external-sbts2018-outline-sbts2018/58/000000/external-comment-social-media-basic-1-sbts2018-outline-sbts2018.png" />
-                        </button>
-                        <ul class="dropdown-menu" aria-labelledby="commentdropdown">
-                          <form action="{{ url_for('post_comment', posttitle=post.posttitle, username=session.user) }}"
-                            method="POST">
-                            <div class="mb-2">
-                              <label for="title">Comment Title:</label>
-                              <input class="form-control" type="text" name="title">
-                            </div>
-                            <div class="mb-2">
-                              <label for="comment">Comment Text:</label>
-                              <input class="form-control" type="text" name="comment">
-                            </div>
-                            <div class="mb-2 text-center">
-                              <button class="btn btn-primary" type="submit">Submit Comment</button>
-                            </div>
-                          </form>
-                        </ul>
-                      </div>
-                    </li>
-                    {% endif %}
                   </ul>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col">
+                  <h2 class="text-center">Comments</h2>
+                  <div class="box">
+                    <ul class="list-group list-group-flush">
+                      {% for comment in post.comments %}
+                      <li class="list-group-item">
+                        <h4>{{ comment.title }}</h4>
+                        <p class="lead">
+                          {{ comment.comment }}
+                          <br>
+                          <span class="text-muted">Written by: {{ comment.author }}</span>
+                        </p>
+
+                        {% if comment.author == session.user %}
+                        <a class="btn btn-primary" href="">Edit comment</a>
+                        {% endif %}
+                      </li>
+                      {% endfor %}
+                      {% if session.user %}
+                      <a class="btn btn-primary add-comment-button">Add comment</a>
+                      <form class="comment-form d-none"
+                        action="{{ url_for('post_comment', posttitle=post.posttitle, username=session.user) }}"
+                        method="POST">
+                        <div class="mb-2">
+                          <label for="title">Comment Title:</label>
+                          <input class="form-control" type="text" name="title">
+                        </div>
+                        <div class="mb-2">
+                          <label for="comment">Comment Text:</label>
+                          <input class="form-control" type="text" name="comment">
+                        </div>
+                        <div class="mb-2 text-center">
+                          <button class="btn btn-primary" type="submit">Submit Comment</button>
+                        </div>
+                      </form>
+                      {% endif %}
+                    </ul>
+                  </div>
                 </div>
               </div>
             </div>
@@ -111,4 +125,15 @@
     </div>
   </div>
 </main>
+
+<script type="text/javascript">
+  $('.add-comment-button').click(function(){
+    if ($(this).next().css('display') == 'none'){
+      $(this).next('.comment-form').removeClass('d-none');
+    }
+    else {
+      $(this).next('.comment-form').addClass('d-none');
+    }
+  })
+</script>
 {% endblock %}

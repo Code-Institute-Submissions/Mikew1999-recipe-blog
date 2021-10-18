@@ -4,15 +4,15 @@
 <!-- links back to various pages -->
 <ul class="list-inline text-center">
     <li class="list-inline-item">
-        <a class="btn" href="{{ url_for('recipe') }} ">
+        <a class="btn btn-primary" href="{{ url_for('recipe') }} ">
             All Recipes</a>
     </li>
     <li class="list-inline-item">
-        <a class="btn" href="{{ url_for('index') }}">Home</a>
+        <a class="btn btn-primary" href="{{ url_for('index') }}">Home</a>
     </li>
     {% if session.user %}
     <li class="list-inline-item">
-        <a class="btn btn-outline-primary" href="{{ url_for('profile', username=user.username) }}">Profile</a>
+        <a class="btn btn-primary" href="{{ url_for('profile', username=user.username) }}">Profile</a>
     </li>
     {% endif %}
 </ul>

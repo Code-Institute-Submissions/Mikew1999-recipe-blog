@@ -259,6 +259,7 @@ def recipe():
     results = None
     query = None
     search = None
+    category_results = None
     recipes = mongo.db.recipes.find()
     username = None
 
@@ -537,9 +538,10 @@ def delete_recipe(recipe_name, username):
 def posts():
     ''' Newfeed page '''
     all_posts = mongo.db.posts.find().sort("_id", -1)
+    
     return render_template(
         "newsfeed.html",
-        posts=all_posts)#
+        posts=all_posts)
 
 
 @app.route("/<username>/create_post", methods=["GET", "POST"])
@@ -769,35 +771,6 @@ def delete_profile(username):
         return redirect(url_for('index'))
     else:
         return redirect(url_for('profile', username=username))
-
-
-@app.route("/get_in_touch", methods=['GET', 'POST'])
-def get_in_touch():
-    ''' Get in touch form '''
-    if request.method == 'POST':
-        full_name = str(request.form.get("full_name"))
-        if 'username' in request.form:
-            username = str(request.form.get("username"))
-        else:
-            username = None
-
-        email = str(request.form.get("email"))
-        message = str(request.form.get("message"))
-
-        items = {
-            'full_name': full_name,
-            'username': username,
-            'email': email,
-            'message': message
-        }
-
-        session['email_items'] = items
-
-        return redirect(url_for('contact_us'))
-
-    else:
-        return render_template(
-            "contact.html")
 
 
 if __name__ == "__main__":

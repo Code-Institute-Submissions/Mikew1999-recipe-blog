@@ -1,9 +1,10 @@
 {% extends "base.html" %}
 {% block content %}
 
+<main style="background-image: url('/static/images/platter.jpg'); background-position: center; background-repeat: no-repeat; background-size: cover;">
 <div class="container">
     <div class="row">
-        <div class="col mt-4">
+        <div class="col mt-4 mb-4">
             <div class="card">
                 <div class="card-body" style="background-color: #fff;">
                     <h2 class="text-center">Create Post</h2>
@@ -19,8 +20,7 @@
                             <input type="file" name="postimage">
                         </div>
                         <div class="mb-2">
-                            <h4 class="mt-4">Post Text</h4>
-        
+                            <label for="posttext">Post Text:</label>
                             <textarea name="posttext" class="form-control" required></textarea>
                             
                         </div>
@@ -36,6 +36,7 @@
         </div>
     </div>
 </div>
+</main>
 
 
 {% endblock %}
