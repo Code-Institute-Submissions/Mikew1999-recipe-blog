@@ -6,12 +6,6 @@ h3 {
     font-family: 'Lobster', cursive;
 }
 
-.main-header {
-    color: rgb(255, 255, 255);
-    -webkit-text-stroke: 1px black;
-    text-shadow: 1px 1px 1px rgb(255 255 255), 2px -2px 2px rgb(255 255 255), -1px 1px 1px rgb(0 0 0), 1px 1px 1px rgb(0 0 0);
-}
-
 .uppercase {
     text-transform: uppercase;
 }
@@ -174,11 +168,6 @@ h3 {
 
 .ingredient-list {
     list-style-type: circle;
-}
-
-.card-img-top {
-    width: 100% !important;
-    height: 50vh;
 }
 
 .my-recipes-img {

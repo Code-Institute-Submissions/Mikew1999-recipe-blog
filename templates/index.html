@@ -1,20 +1,21 @@
 {% extends "base.html" %}
 {% block content %}
 
+{% block extra_title %}Home{% endblock %}
 <!-- Background image -->
 <div class="text-white" style="background-image: url('static/images/platter.jpg'); height: 60vh;">
     <div class="mb-4">
         <div class="col text-center">
-            <h1 class="display-2 main-header p-4">Food Space</h1>
+            <h1 class="display-2 p-4">Food Space</h1>
 
             <p class="lead display-6 mt-4 fst-italic">
                 <b>
                     {% if user != None %}
-                        Welcome back {{ username }}
+                    Welcome back {{ username }}
                     {% else %}
-                        Find, create and share recipes!
-                        <br>
-                        Join our growing list of users to make friends and find great food!
+                    Find, create and share recipes!
+                    <br>
+                    Join our growing list of users to make friends and find great food!
                     {% endif %}
                 </b>
             </p>
@@ -23,12 +24,12 @@
 
             <div class="col">
                 {% if user %}
-                    <a class="btn btn-primary btn-xl rounded-pill mb-4"
-                        href="{{ url_for('profile', username=user.username)}}">Go to my profile</a>
+                <a class="btn btn-primary btn-xl rounded-pill mb-4"
+                    href="{{ url_for('profile', username=user.username)}}">Go to my profile</a>
                 {% else %}
-                    <a class="btn btn-primary btn-xl rounded-pill mb-4" href="{{ url_for('sign_up')}}">
-                        Sign up
-                    </a>
+                <a class="btn btn-primary btn-xl rounded-pill mb-4" href="{{ url_for('sign_up')}}">
+                    Sign up
+                </a>
                 {% endif %}
             </div>
         </div>
@@ -52,7 +53,7 @@
 
 <!-- Top Recipes -->
 <div>
-    <h1 class="display-3 main-header text-center">Top Recipes</h1>
+    <h1 class="display-3 text-center">Top Recipes</h1>
 
     <div class="container-fluid">
         <div class="row">
@@ -61,8 +62,9 @@
 
                 <div class="card mb-4 mt-4">
                     {% set recipeName = recipe.recipeName %}
-                    <img class="card-img-top" src="{{ url_for('file', filename=recipe.recipeImageName) }}" alt="recipe Image">
-                    <div class="card-body height-85">
+                    <img class="card-img-top" src="{{ url_for('file', filename=recipe.recipeImageName) }}"
+                        alt="recipe Image">
+                    <div class="card-body">
                         <!-- Recipe Name -->
                         <h4 class="card-title text-center">{{ recipe.recipeName }}</h4>
 
@@ -77,13 +79,13 @@
                         </p>
 
                         {% if recipe.categories %}
-                <div class="mb-4 recipe-categories">
-                    <h6>Categories</h6>
-                    {% set categories = recipe.categories %}
-                    {% if categories|length > 1 %}
-                    <ul class="list-inline">
-                        {% for category in categories %}
-                            {% if category == "vegetarian" %}
+                        <div class="mb-4 recipe-categories">
+                            <h6>Categories</h6>
+                            {% set categories = recipe.categories %}
+                            {% if categories|length > 1 %}
+                            <ul class="list-inline">
+                                {% for category in categories %}
+                                {% if category == "vegetarian" %}
                                 <li class="list-inline-item">
                                     {{ category }} <i class="fas fa-carrot"></i>
                                 </li>
@@ -95,12 +97,12 @@
                                 <li class="list-inline-item">
                                     {{ category }}
                                 </li>
-                            {% endif %}
-                        {% endfor %}
-                    </ul>
-                    {% else %}
-                        <ul class="list-inline">
-                            {% if categories[0] == "vegetarian" %}
+                                {% endif %}
+                                {% endfor %}
+                            </ul>
+                            {% else %}
+                            <ul class="list-inline">
+                                {% if categories[0] == "vegetarian" %}
                                 <li class="list-inline-item">
                                     {{ categories[0] }} <i class="fas fa-carrot"></i>
                                 </li>
@@ -112,20 +114,20 @@
                                 <li class="list-inline-item">
                                     {{ categories[0] }}
                                 </li>
+                                {% endif %}
+                            </ul>
                             {% endif %}
-                        </ul>
-                    {% endif %}
-                </div>
-                {% else %}
-                <div class="mb-4 recipe-categories">
-                    <h6>Categories</h6>
-                    <ul class="list-inline">
-                        <li class="list-inline-item">
-                            <p class="text-muted">No categories selected</p>
-                        </li>
-                    </ul>
-                </div>
-                {% endif %}
+                        </div>
+                        {% else %}
+                        <div class="mb-4 recipe-categories">
+                            <h6>Categories</h6>
+                            <ul class="list-inline">
+                                <li class="list-inline-item">
+                                    <p class="text-muted">No categories selected</p>
+                                </li>
+                            </ul>
+                        </div>
+                        {% endif %}
 
                         <h5 class="margin-top-1">Recipe Description</h5>
 
@@ -139,31 +141,35 @@
                         </div>
                         <p class="mt-4 text-center">
                             {% if user %}
-                                {% if list_of_liked_recipes != None %}
-                                    {% if recipe.recipeName in list_of_liked_recipes %}
-                                        <a class="likes" href="{{ url_for('like', recipe_name=recipe.recipeName, username=user.username) }}">
-                                            <i class="fas fa-heart"></i>
-                                        </a>
-                                    
-                                        <span>Likes: {{recipe.likes }} </span>
-                                    {% else %}
-                                        <a class="likes" href="{{ url_for('like', recipe_name=recipe.recipeName, username=user.username) }}">
-                                            <i class="far fa-heart"></i>
-                                        </a>
-                                        
-                                        <span>Likes: {{recipe.likes }} </span>
-                                    {% endif %}
-                                {% else %}
-                                    <a class="likes" href="{{ url_for('like', recipe_name=recipe.recipeName, username=user.username) }}">
-                                        <i class="far fa-heart"></i>
-                                    </a>
-                                    <span>Likes: {{recipe.likes }} </span>
-                                {% endif %}
+                            {% if list_of_liked_recipes != None %}
+                            {% if recipe.recipeName in list_of_liked_recipes %}
+                            <a class="likes"
+                                href="{{ url_for('like', recipe_name=recipe.recipeName, username=user.username) }}">
+                                <i class="fas fa-heart"></i>
+                            </a>
+
+                            <span>Likes: {{recipe.likes }} </span>
                             {% else %}
-                                <a class="likes" href="{{ url_for('like', recipe_name=recipe.recipeName, username='None') }}">
-                                    <i class="far fa-heart"></i>
-                                </a>
-                                <span>Likes: {{recipe.likes }} </span>
+                            <a class="likes"
+                                href="{{ url_for('like', recipe_name=recipe.recipeName, username=user.username) }}">
+                                <i class="far fa-heart"></i>
+                            </a>
+
+                            <span>Likes: {{recipe.likes }} </span>
+                            {% endif %}
+                            {% else %}
+                            <a class="likes"
+                                href="{{ url_for('like', recipe_name=recipe.recipeName, username=user.username) }}">
+                                <i class="far fa-heart"></i>
+                            </a>
+                            <span>Likes: {{recipe.likes }} </span>
+                            {% endif %}
+                            {% else %}
+                            <a class="likes"
+                                href="{{ url_for('like', recipe_name=recipe.recipeName, username='None') }}">
+                                <i class="far fa-heart"></i>
+                            </a>
+                            <span>Likes: {{recipe.likes }} </span>
                             {% endif %}
                         </p>
 
@@ -176,7 +182,32 @@
             </div>
             {% endfor %}
         </div>
+        <div class="row">
+            <div class="col">
+                <form method="post" class="text-center">
+                    <button class="btn btn-primary btn-xl rounded-pill mb-4" type="submit" name="more_recipes">More
+                        Recipes</button>
+                </form>
+            </div>
+        </div>
+    
     </div>
 </div>
+
+{% if recently_viewed %}
+    <hr class="width-80">
+
+    <h1 class="display-3 text-center">Recently viewed</h1>
+
+    <div class="container-fluid">
+        <div class="row">
+            {% for item in recently_viewed %}
+                <div class="col-4">
+                    <img class="w-100" src="{{ url_for('file', filename=item.recipeImageName) }}" alt="">
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endif %}
 
 {% endblock %}

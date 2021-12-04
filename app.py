@@ -1,3 +1,4 @@
+''' Main app routes '''
 import os
 from flask import (
     Flask, render_template, flash,
@@ -5,6 +6,9 @@ from flask import (
 from flask_pymongo import PyMongo
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
+
+from user_contexts import user_context
+from recently_viewed import recent
 if os.path.exists("env.py"):
     import env
 
@@ -182,18 +186,21 @@ def profile(username):
     ''' Renders profile page '''
     if session["user"]:
         # grab the session users username from db
-        user = mongo.db.users.find_one_or_404({"username": username})
-        user_recipes = mongo.db.recipes.find({"author": username})
-        my_posts = mongo.db.posts.find({"author": username})
+        item = user_context()
+        user = item['user']
+        user_recipes = mongo.db.recipes.find({"author": item['username']})
+        my_posts = mongo.db.posts.find({"author": item['username']})
 
         profile_image = user['profileImageName']
         if profile_image == 'None':
             profile_image = None
 
         list_of_liked_recipes = []
-        for item in user['likedRecipes']:
-            a_recipe = mongo.db.recipes.find_one({"recipeName": item})
-            list_of_liked_recipes.append(a_recipe)
+        if item['list_of_liked_recipes'] is not None:
+            for recipe_item in item['list_of_liked_recipes']:
+                a_recipe = mongo.db.recipes.find_one(
+                    {"recipeName": recipe_item})
+                list_of_liked_recipes.append(a_recipe)
 
         selected = 'personal_details'
         if 'personal_details' in request.form:
@@ -228,10 +235,16 @@ def file(filename):
 
 
 # home page
-@app.route("/")
+@app.route("/", methods=['GET', 'POST'])
 def index():
     ''' Home page '''
-    top_recipes = mongo.db.recipes.find().limit(4).sort("likes", -1)
+    recently_viewed = recent()['recently_viewed_recipes']
+    number = 3
+
+    if request.method == "POST":
+        if 'more_recipes' in request.form:
+            number += 3
+    top_recipes = mongo.db.recipes.find().limit(number).sort("likes", -1)
     if not session.get('user') is None:
         username = session['user']
         user = mongo.db.users.find_one({"username": username})
@@ -249,7 +262,9 @@ def index():
         user=user,
         username=username,
         top_recipes=top_recipes,
-        list_of_liked_recipes=list_of_liked_recipes)
+        list_of_liked_recipes=list_of_liked_recipes,
+        recently_viewed=recently_viewed
+        )
 
 
 # recipes page
@@ -417,6 +432,14 @@ def fullrecipe(recipe_name):
 
     all_categories = mongo.db.categories.find_one()
     category_list = all_categories['categories']
+
+    # Adds recipe to recently viewed recipes session variable
+    if not session.get('recently_viewed') is None:
+        recently_viewed_recipes = session['recently_viewed']
+        recently_viewed_recipes.append(selected_recipe['recipe_id'])
+        session['recently_viewed'] = recently_viewed_recipes
+    else:
+        session['recently_viewed'] = selected_recipe['recipe_id']
 
     return render_template(
         "fullrecipe.html",
@@ -813,4 +836,4 @@ def delete_profile(username):
 if __name__ == "__main__":
     app.run(host=os.environ.get("IP"),
             port=int(os.environ.get("PORT")),
-            debug=False)
+            debug=True)
