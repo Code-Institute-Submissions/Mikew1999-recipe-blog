@@ -27,6 +27,46 @@ categories = mongo.db.categories.find_one()
 categoryList = categories['categories']
 
 
+# function to retrieve file
+@app.route('/file/<filename>')
+def file(filename):
+    ''' Returns file '''
+    return mongo.send_file(filename)
+
+
+# home page
+@app.route("/", methods=['GET', 'POST'])
+def index():
+    ''' Home page '''
+    recently_viewed = recent()['recently_viewed_recipes']
+    number = 3
+
+    if request.method == "POST":
+        if 'more_recipes' in request.form:
+            number += 3
+    top_recipes = mongo.db.recipes.find().limit(number).sort("likes", -1)
+    if not session.get('user') is None:
+        username = session['user']
+        user = mongo.db.users.find_one({"username": username})
+        if user['likedRecipes']:
+            list_of_liked_recipes = user['likedRecipes']
+        else:
+            list_of_liked_recipes = None
+    else:
+        user = None
+        username = None
+        list_of_liked_recipes = None
+
+    return render_template(
+        "index.html",
+        user=user,
+        username=username,
+        top_recipes=top_recipes,
+        list_of_liked_recipes=list_of_liked_recipes,
+        recently_viewed=recently_viewed
+        )
+
+
 # log in page
 @app.route("/log-in", methods=["GET", "POST"])
 def log_in():
@@ -185,6 +225,8 @@ def change_password():
 def profile(username):
     ''' Renders profile page '''
     if session["user"]:
+        # Recently viewed
+        recently_viewed = recent()['recently_viewed_recipes']
         # grab the session users username from db
         item = user_context()
         user = item['user']
@@ -214,6 +256,7 @@ def profile(username):
 
         return render_template(
             "profile.html",
+            recently_viewed=recently_viewed,
             profile_image=profile_image,
             my_posts=my_posts,
             selected=selected,
@@ -225,46 +268,6 @@ def profile(username):
     else:
         flash("Please login to view your profile")
         return render_template("login.html")
-
-
-# function to retrieve file
-@app.route('/file/<filename>')
-def file(filename):
-    ''' Returns file '''
-    return mongo.send_file(filename)
-
-
-# home page
-@app.route("/", methods=['GET', 'POST'])
-def index():
-    ''' Home page '''
-    recently_viewed = recent()['recently_viewed_recipes']
-    number = 3
-
-    if request.method == "POST":
-        if 'more_recipes' in request.form:
-            number += 3
-    top_recipes = mongo.db.recipes.find().limit(number).sort("likes", -1)
-    if not session.get('user') is None:
-        username = session['user']
-        user = mongo.db.users.find_one({"username": username})
-        if user['likedRecipes']:
-            list_of_liked_recipes = user['likedRecipes']
-        else:
-            list_of_liked_recipes = None
-    else:
-        user = None
-        username = None
-        list_of_liked_recipes = None
-
-    return render_template(
-        "index.html",
-        user=user,
-        username=username,
-        top_recipes=top_recipes,
-        list_of_liked_recipes=list_of_liked_recipes,
-        recently_viewed=recently_viewed
-        )
 
 
 # recipes page
@@ -435,9 +438,10 @@ def fullrecipe(recipe_name):
 
     # Adds recipe to recently viewed recipes session variable
     if not session.get('recently_viewed') is None:
-        recently_viewed_recipes = session['recently_viewed']
-        recently_viewed_recipes.append(selected_recipe['recipe_id'])
-        session['recently_viewed'] = recently_viewed_recipes
+        recently_viewed_recipes = list(session['recently_viewed'])
+        if selected_recipe['recipe_id'] not in recently_viewed_recipes:
+            recently_viewed_recipes.append(selected_recipe['recipe_id'])
+            session['recently_viewed'] = recently_viewed_recipes
     else:
         session['recently_viewed'] = selected_recipe['recipe_id']
 
@@ -831,6 +835,13 @@ def delete_profile(username):
         return redirect(url_for('index'))
     else:
         return redirect(url_for('profile', username=username))
+
+
+# Contact me page
+@app.route('/contact', methods=['GET', 'POST'])
+def contact():
+    ''' Contact me page '''
+    return render_template('contact.html')
 
 
 if __name__ == "__main__":

@@ -1,26 +1,8 @@
 {% extends "base.html" %}
+{% block extra_title %}Contact us{% endblock %}
 {% block content %}
 
-<script type="text/javascript">
-    window.onload = function() {
-        $('#send-email-button').click(function(event) {
-            event.preventDefault();
-            emailjs.sendForm('contact_service', 'contact_form', this)
-                .then(function() {
-                    console.log('SUCCESS!');
-                }, function(error) {
-                    console.log('FAILED...', error);
-                });
-        });
-    }
-</script>
-
 <div class="container">
-    <div class="row">
-        <div class="col text-center">
-            
-        </div>
-    </div>
     <div class="row">
         <div class="col">
             <div class="card mt-4 mb-4">

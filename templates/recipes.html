@@ -1,8 +1,8 @@
 {% extends "base.html" %}
+{% block extra_title %}Recipes{% endblock %}
 {% block content %}
 
-<main
-    style="background-image: url('/static/images/platter.jpg'); background-position: center; background-repeat: no-repeat; background-size: cover;">
+<main>
     <div class="text-center mb-4">
         <div class="container">
             <div class="row">
@@ -16,13 +16,13 @@
                                 </button>
                                 <ul class="dropdown-menu" aria-labelledby="categorydropdown">
                                     {% for item in categoryList %}
-                                    <a class="dropdown-item btn">
+                                        <a class="dropdown-item btn">
 
-                                        <form method="POST" action="{{ url_for('recipe') }}">
-                                            <input type="hidden" name="category" value="{{ item }}">
-                                            <button style="padding: 0;" class="btn" type="submit">{{ item }}</button>
-                                        </form>
-                                    </a>
+                                            <form method="POST" action="{{ url_for('recipe') }}">
+                                                <input type="hidden" name="category" value="{{ item }}">
+                                                <button style="padding: 0;" class="btn" type="submit">{{ item }}</button>
+                                            </form>
+                                        </a>
                                     {% endfor %}
                                 </ul>
                             </div>

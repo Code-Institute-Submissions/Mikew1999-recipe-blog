@@ -25,5 +25,5 @@
    "[python]": {
       "editor.defaultFormatter": "ms-python.python"
    },
-   "python.pythonPath": "/home/gitpod/.pyenv/versions/3.8.12/bin/python",
+   "python.pythonPath": "/bin/python3",
 }

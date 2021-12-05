@@ -1,7 +1,8 @@
 {% extends "base.html" %}
-{% block content %}
 
 {% block extra_title %}Home{% endblock %}
+
+{% block content %}
 <!-- Background image -->
 <div class="text-white" style="background-image: url('static/images/platter.jpg'); height: 60vh;">
     <div class="mb-4">
@@ -69,7 +70,6 @@
                         <h4 class="card-title text-center">{{ recipe.recipeName }}</h4>
 
                         <!-- Recipe Details -->
-
                         <p class="card-text">
                             <i class="fas fa-utensils"></i> Serves {{ recipe.serves }}
                             <br>
@@ -78,6 +78,7 @@
                             <i class="far fa-clock"></i> Cooking time: {{ recipe.cookingTime }}
                         </p>
 
+                        <!-- Recipe categories -->
                         {% if recipe.categories %}
                         <div class="mb-4 recipe-categories">
                             <h6>Categories</h6>
@@ -177,7 +178,6 @@
                             Author: {{ recipe.author }}
                         </p>
                     </div>
-
                 </div>
             </div>
             {% endfor %}
@@ -199,11 +199,13 @@
 
     <h1 class="display-3 text-center">Recently viewed</h1>
 
-    <div class="container-fluid">
+    <div class="container">
         <div class="row">
             {% for item in recently_viewed %}
-                <div class="col-4">
-                    <img class="w-100" src="{{ url_for('file', filename=item.recipeImageName) }}" alt="">
+                <div class="col-4 mb-2">
+                    <a href="{{ url_for('fullrecipe', recipe_name=item.recipeName)}}">
+                        <img class="card-img-top" src="{{ url_for('file', filename=item.recipeImageName) }}" alt="Recipe Image">
+                    </a>
                 </div>
             {% endfor %}
         </div>
