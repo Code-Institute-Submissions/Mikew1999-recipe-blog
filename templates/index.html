@@ -199,14 +199,28 @@
 
     <h1 class="display-3 text-center">Recently viewed</h1>
 
-    <div class="container">
-        <div class="row">
+    <div class="container-fluid recent-recipes">
+        <div class="row p-4">
             {% for item in recently_viewed %}
-                <div class="col-4 mb-2">
+                <div class="prev">
+                    Hi
+                </div>
+                
+                <div class="next">
+                    Hi
+                </div>
+
+                <div class="col-3 p-4 mb-2 first-carousel">
                     <a href="{{ url_for('fullrecipe', recipe_name=item.recipeName)}}">
                         <img class="card-img-top" src="{{ url_for('file', filename=item.recipeImageName) }}" alt="Recipe Image">
                     </a>
                 </div>
+                <div class="col-4 p-4 mb-2 d-none second-carousel">
+                    <a href="{{ url_for('fullrecipe', recipe_name=item.recipeName)}}">
+                        <img class="card-img-top" src="{{ url_for('file', filename=item.recipeImageName) }}" alt="Recipe Image">
+                    </a>
+                </div>
+                
             {% endfor %}
         </div>
     </div>

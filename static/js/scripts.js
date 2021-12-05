@@ -1,3 +1,14 @@
+// Sets top attribute for prev and next buttons
+function prevNext() {
+    let recentRecipes = $('.recent-recipes');
+    let height = recentRecipes.height() / 2;
+    let elementOffset = $('.recent-recipes').offset().top;
+    let topheight = height + elementOffset;
+    $('.prev').css("top", topheight);
+    $('.next').css("top", topheight);
+}
+prevNext();
+
 // adds another ingredient label and input
 function moreIngredients() {
     // counts number of ingredients in form
