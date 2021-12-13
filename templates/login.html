@@ -2,27 +2,34 @@
 {% block extra_title %}Login{% endblock %}
 {% block content %}
 
-<!--Sign up form with background image-->
+<!--Login form with background image-->
 <main class="mb-4 height-80">
     <div class="container mt-4">
         <h3 class="text-center uppercase text-primary login-title">Login</h3>
 
-        <!--Login Form-->
         <form method="POST" action="{{ url_for('log_in') }}">
-            <!--Username-->
             <div class="mb-2">
-                <label for="username">Username</label><br>
-                <input type="text" class="form-control" id="username" name="username">
+                {{ form.csrf_token }}
+                {% for error in form.username.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+                {{ form.username.label(class_='upper') }}
+                {{ form.username(class_='form-control') }}
             </div>
-
-            <!--Password-->
+            
             <div class="mb-2">
-                <label for="password">Password</label><br>
-                <input type="password" class="form-control" id="password" name="password">
+                {% for error in form.password.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+                {{ form.password.label(class_='upper') }}
+                {{ form.password(class_='form-control') }}
             </div>
-            <!--Submit Button-->
-            <input class="btn btn-primary w-100" type="submit" value="Log In">
+        
+            <div class="mb-2">
+                <input class="btn btn-primary w-100" type="submit" value="Log In">
+            </div>
         </form>
+
         <!--Link to login page-->
         <p class="text-center">Don't have an account? <a href="{{ url_for('sign_up') }}">Signup</a></p>
         <p class="text-center"><a href="{{ url_for('change_password') }}">Need help logging in?</a></p>

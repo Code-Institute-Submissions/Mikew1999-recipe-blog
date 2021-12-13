@@ -12,10 +12,9 @@ from recently_viewed import recent
 if os.path.exists("env.py"):
     import env
 
+from forms import LoginForm
 
 app = Flask(__name__)
-app.config["MONGO_URI"] = "mongodb://localhost:27017/myDatabase"
-
 
 app.config["MONGO_DBNAME"] = os.environ.get("MONGO_DBNAME")
 app.config["MONGO_URI"] = os.environ.get("MONGO_URI")
@@ -38,24 +37,22 @@ def file(filename):
 @app.route("/", methods=['GET', 'POST'])
 def index():
     ''' Home page '''
+    # User contexts
+    item = user_context()
+    user = item['user']
+    username = item['username']
+    list_of_liked_recipes = item['list_of_liked_recipes']
     recently_viewed = recent()['recently_viewed_recipes']
+
+    # Sets initial number of top recipes
     number = 3
 
+    # Shows more recipes
     if request.method == "POST":
         if 'more_recipes' in request.form:
             number += 3
+
     top_recipes = mongo.db.recipes.find().limit(number).sort("likes", -1)
-    if not session.get('user') is None:
-        username = session['user']
-        user = mongo.db.users.find_one({"username": username})
-        if user['likedRecipes']:
-            list_of_liked_recipes = user['likedRecipes']
-        else:
-            list_of_liked_recipes = None
-    else:
-        user = None
-        username = None
-        list_of_liked_recipes = None
 
     return render_template(
         "index.html",
@@ -71,15 +68,18 @@ def index():
 @app.route("/log-in", methods=["GET", "POST"])
 def log_in():
     ''' Renders login page '''
-    if request.method == "POST":
+    form = LoginForm()
+    if form.validate_on_submit():
+        username = form.username.data.strip().lower()
+        password = form.password.data.strip().lower()
         is_user = mongo.db.users.find_one(
-            {"username": request.form.get("username").lower()})
+            {"username": username})
         if is_user:
             if check_password_hash(
                 is_user["password"],
-                    request.form.get("password")):
-                session["user"] = request.form.get("username").lower()
-                flash("Welcome, {}".format(request.form.get("username")))
+                    password):
+                session["user"] = username
+                flash(f'Welcome {is_user["fname"]}!')
                 return redirect(url_for("profile", username=session["user"]))
 
             else:
@@ -88,8 +88,7 @@ def log_in():
         else:
             flash("Incorrect username / password")
             return redirect(url_for("log_in"))
-
-    return render_template("login.html")
+    return render_template("login.html", form=form)
 
 
 # sign up page
@@ -177,7 +176,7 @@ def sign_up():
 def logout():
     ''' logs user out '''
     session.pop("user")
-    return render_template("login.html")
+    return redirect(url_for('log_in'))
 
 
 # changes users password
@@ -411,7 +410,7 @@ def create_recipe():
 
 # shows full recipe
 @app.route("/recipes/<recipe_name>", methods=['GET', 'POST'])
-def fullrecipe(recipe_name):
+def view_recipe(recipe_name):
     ''' Full recipe '''
     selected_recipe = mongo.db.recipes.find_one({"recipeName": recipe_name})
     author = selected_recipe['author'].lower()
@@ -446,7 +445,7 @@ def fullrecipe(recipe_name):
         session['recently_viewed'] = selected_recipe['recipe_id']
 
     return render_template(
-        "fullrecipe.html",
+        "view_recipe.html",
         edit_recipe=can_edit_recipe,
         user=user,
         author=author,
@@ -491,7 +490,7 @@ def like(recipe_name, username):
                 mongo.db.recipes.update_one(selected_recipe, update_likes)
                 flash("Unliked recipe")
 
-        return redirect(url_for('fullrecipe', recipe_name=recipe_name))
+        return redirect(url_for('view_recipe', recipe_name=recipe_name))
 
 
 @app.route("/recipes/<recipe_name>/edit_recipe", methods=['GET', 'POST'])
@@ -538,7 +537,7 @@ def edit_recipe(recipe_name):
             changes["$set"]['recipeImageName'] = secured_image
 
         mongo.db.recipes.update_one(recipe, changes)
-    return redirect(url_for('fullrecipe', recipe_name=recipe_name))
+    return redirect(url_for('view_recipe', recipe_name=recipe_name))
 
 
 @app.route("/recipes/<recipe_name>/<username>/delete_recipe",
