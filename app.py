@@ -12,7 +12,7 @@ from recently_viewed import recent
 if os.path.exists("env.py"):
     import env
 
-from forms import LoginForm
+from forms import LoginForm, RegisterForm
 
 app = Flask(__name__)
 
@@ -61,7 +61,7 @@ def index():
         top_recipes=top_recipes,
         list_of_liked_recipes=list_of_liked_recipes,
         recently_viewed=recently_viewed
-        )
+    )
 
 
 # log in page
@@ -95,10 +95,12 @@ def log_in():
 @app.route("/signup", methods=["GET", "POST"])
 def sign_up():
     ''' Renders signup page '''
-    if request.method == "POST":
+    form = RegisterForm()
+    if form.validate_on_submit():
+        username = form.username.data
         # checks if username exists in db
         is_user = mongo.db.users.find_one(
-            {"username": request.form.get("username").lower()})
+            {"username": username})
 
         # if user exists flash message and return to login page
         if is_user:
@@ -106,69 +108,45 @@ def sign_up():
             return redirect(url_for("log_in"))
 
         else:
-            profile_image = request.files['profilepic']
+            profile_image = form.profile_pic.data
             # checks if profile image has been selected
             if profile_image:
                 # generates secure filename
                 secured_image = secure_filename(profile_image.filename)
                 # saves file to mongodb
                 mongo.save_file(secured_image, profile_image)
-
-                # document to insert to users collection
-                create_account = {
-                    "profileImageName": secured_image,
-                    "username": request.form.get("username").lower(),
-                    "fname": request.form.get("fname").lower(),
-                    "lname": request.form.get("lname").lower(),
-                    "email": request.form.get("email").lower(),
-                    "password": generate_password_hash(
-                        request.form.get("password")),
-                    "posts": [],
-                    "likedRecipes": [],
-                    "likedPosts": []
-                }
-
-                # inserts new user info into users collection
-                mongo.db.users.insert_one(create_account)
-
-                new_user = mongo.db.users.find_one({
-                    "username": request.form.get("username").lower()})
-
-                # creates user session cookie
-                session["user"] = request.form.get("username").lower()
-                # flashes message to new user
-                flash("Registration Successful!")
-                return redirect(url_for(
-                    "profile",
-                    username=new_user["username"]))
-            # if no profile image has been selected
             else:
-                # document to insert to users collection
-                create_account = {
-                    "profileImageName": 'None',
-                    "username": request.form.get("username").lower(),
-                    "fname": request.form.get("fname").lower(),
-                    "lname": request.form.get("lname").lower(),
-                    "email": request.form.get("email").lower(),
-                    "password": generate_password_hash(
-                        request.form.get("password")),
-                    "posts": [],
-                    "likedRecipes": [],
-                    "liked_posts": []
-                }
+                secured_image = 'None'
 
-                # inserts new user info into users collection
-                mongo.db.users.insert_one(create_account)
+            # document to insert to users collection
+            create_account = {
+                "profileImageName": secured_image,
+                "username": form.username.data.lower(),
+                "fname": form.fname.data.lower(),
+                "lname": form.lname.data.lower(),
+                "email": form.email.data.lower(),
+                "password": generate_password_hash(
+                    form.password.data),
+                "posts": [],
+                "likedRecipes": [],
+                "likedPosts": []
+            }
 
-                # creates user session cookie
-                session["user"] = request.form.get("username").lower()
-                # flashes message to new user
-                flash("Registration Successful!")
-                return redirect(url_for(
-                    "profile",
-                    username=session["user"]))
+            # inserts new user info into users collection
+            mongo.db.users.insert_one(create_account)
 
-    return render_template("signup.html")
+            new_user = mongo.db.users.find_one({
+                "username": request.form.get("username").lower()})
+
+            # creates user session cookie
+            session["user"] = request.form.get("username").lower()
+            # flashes message to new user
+            flash("Registration Successful!")
+            return redirect(url_for(
+                "profile",
+                username=new_user["username"]))
+
+    return render_template("signup.html", form=form)
 
 
 # logs user out

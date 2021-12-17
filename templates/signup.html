@@ -4,49 +4,61 @@
 
 <!--Sign up form with background image-->
 <main class="mb-4" style="background-image: url('/static/images/platter.jpg'); background-position: center; background-repeat: no-repeat; background-size: cover;">
-    <div class="container mt-4">
+    <div class="container mb-4">
         <!--Sign Up Form-->
-        <div class="card">
+        <div class="card p-4">
             <div class="card-body" style="height: auto;">
                 <h1 class="text-center"><strong>Sign Up</strong></h1>
                 <form class="mb-2" method="POST" action="{{ url_for('sign_up') }}" autocomplete="off" aria-autocomplete="none"
                     enctype="multipart/form-data">
                     <!--Username-->
                     <div class="mb-2">
-                        <label for="username">Username</label><br>
-                        <input required aria-required="true" type="text" class="form-control" id="username"
-                            name="username">
+                        {{ form.csrf_token }}
+                        {% for error in form.username.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                        {{ form.username.label(class_='upper') }}
+                        {{ form.username(class_='form-control') }}
+                    </div>
+                    
+                    <div class="mb-2">
+                        {% for error in form.profile_pic.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                        <label for="profile_pic">Profile image (optional)</label>
+                        {{ form.profile_pic() }}
                     </div>
 
-                    <!--Profile pic -->
                     <div class="mb-2">
-                        <label for="profilepic">Profile Picture</label>
-                        <input type="file" name="profilepic" accept="image/jpg">
+                        {% for error in form.fname.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                        <label for="fname">First name</label>
+                        {{ form.fname(class='form-control') }}
                     </div>
-                    <!--First name-->
+
                     <div class="mb-2">
-                        <label for="fname">First name</label><br>
-                        <input required aria-required="true" type="text" class="form-control" id="fname" name="fname"
-                            placeholder="John">
+                        {% for error in form.lname.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                        <label for="fname">Surname</label>
+                        {{ form.lname(class='form-control') }}
                     </div>
-                    <!--Surname-->
+
                     <div class="mb-2">
-                        <label for="lname">Surname</label><br>
-                        <input required aria-required="true" type="text" class="form-control" id="lname" name="lname"
-                            placeholder="Doe">
+                        {% for error in form.email.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                        <label for="email">Email Address:</label>
+                        {{ form.email(class='form-control') }}
                     </div>
-                    <!--Email Address-->
+
                     <div class="mb-2">
-                        <label for="email">Email address</label><br>
-                        <input required aria-required="true" type="email" class="form-control" id="email" name="email"
-                            placeholder="name@example.com">
-                    </div>
-                    <!--Password-->
-                    <div>
-                        <label for="password">Password</label><br>
-                        <input required aria-required="true" type="password" class="form-control" id="password"
-                            name="password" placeholder="Password">
-                        <br>
+                        {% for error in form.password.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                        <label for="password">Password:</label>
+                        {{ form.password(class='form-control') }}
                     </div>
                     <!--Submit Button-->
                     <input class="btn btn-primary w-100" type="submit" value="Register">

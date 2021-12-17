@@ -1,10 +1,10 @@
 {% extends "base.html" %}
-{% block extra_title %}Newsfeed{% endblock %}
+{% block extra_title %}News Feed{% endblock %}
 {% block content %}
 <main
   style="background-image: url('/static/images/platter.jpg'); background-position: center; background-repeat: no-repeat; background-size: cover;">
   <div class="text-center mb-4">
-    <h1 class="display-1 main-header">News Feed</h1>
+    <h1 class="display-1 main-header text-white">News Feed</h1>
     {% if session.user %}
     <a class="btn btn-lg btn-primary" href="{{ url_for('create_post', username=session.user) }}">Create New Post</a>
     {% else %}
@@ -106,7 +106,8 @@
               </div>
               <div class="row">
                 <div class="col text-center">
-                  <a class="btn btn-primary" href="{{ url_for('edit_post', username=session.user, posttitle=post.posttitle) }}">Edit Post</a>
+                  {{ session.user }}
+                  <!-- <a class="btn btn-primary" href="{{ url_for('edit_post', username=session.user, posttitle=post.posttitle) }}">Edit Post</a> -->
                 </div>
               </div>
             </div>
