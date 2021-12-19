@@ -153,7 +153,7 @@
                         </p>
 
                         <div class="text-center">
-                            <form method="get" action="{{ url_for('fullrecipe', recipe_name=recipe.recipeName) }}">
+                            <form method="get" action="{{ url_for('view_recipe', recipe_name=recipe.recipeName) }}">
                                 <button class="btn btn-primary" type="submit">Go to / Edit recipe</button>
                             </form>
                         </div>
@@ -220,7 +220,7 @@
                 </p>
 
                 <div class="text-center">
-                    <form method="get" action="{{ url_for('fullrecipe', recipe_name=recipe.recipeName) }}">
+                    <form method="get" action="{{ url_for('view_recipe', recipe_name=recipe.recipeName) }}">
                         <button class="btn btn-primary" type="submit">Go to / Edit recipe</button>
                     </form>
                 </div>
@@ -285,7 +285,7 @@
         <div class="row">
             {% for item in recently_viewed %}
                 <div class="col-3 mb-2">
-                    <a href="{{ url_for('fullrecipe', recipe_name=item.recipeName)}}">
+                    <a href="{{ url_for('view_recipe', recipe_name=item.recipeName)}}">
                         <img class="card-img-top" src="{{ url_for('file', filename=item.recipeImageName) }}" alt="Recipe Image">
                     </a>
                 </div>

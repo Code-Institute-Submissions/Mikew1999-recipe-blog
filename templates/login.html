@@ -3,36 +3,42 @@
 {% block content %}
 
 <!--Login form with background image-->
-<main class="mb-4 height-80">
-    <div class="container mt-4">
-        <h3 class="text-center uppercase text-primary login-title">Login</h3>
+<main class="mb-4"
+    style="background-image: url('/static/images/platter.jpg'); background-position: center; background-repeat: no-repeat; background-size: cover;">
+    <div class="container p-4">
+        <!--Sign Up Form-->
+        <div class="card p-4">
+            <div class="card-body" style="min-height: 60vh;">
+                <h3 class="text-center uppercase text-primary login-title">Login</h3>
 
-        <form method="POST" action="{{ url_for('log_in') }}">
-            <div class="mb-2">
-                {{ form.csrf_token }}
-                {% for error in form.username.errors %}
-                    <li>{{ error }}</li>
-                {% endfor %}
-                {{ form.username.label(class_='upper') }}
-                {{ form.username(class_='form-control') }}
-            </div>
-            
-            <div class="mb-2">
-                {% for error in form.password.errors %}
-                    <li>{{ error }}</li>
-                {% endfor %}
-                {{ form.password.label(class_='upper') }}
-                {{ form.password(class_='form-control') }}
-            </div>
-        
-            <div class="mb-2">
-                <input class="btn btn-primary w-100" type="submit" value="Log In">
-            </div>
-        </form>
+                <form method="POST" action="{{ url_for('log_in') }}">
+                    <div class="mb-2">
+                        {{ form.csrf_token }}
+                        {% for error in form.username.errors %}
+                        <li>{{ error }}</li>
+                        {% endfor %}
+                        {{ form.username.label(class_='upper') }}
+                        {{ form.username(class_='form-control') }}
+                    </div>
 
-        <!--Link to login page-->
-        <p class="text-center">Don't have an account? <a href="{{ url_for('sign_up') }}">Signup</a></p>
-        <p class="text-center"><a href="{{ url_for('change_password') }}">Need help logging in?</a></p>
+                    <div class="mb-2">
+                        {% for error in form.password.errors %}
+                        <li>{{ error }}</li>
+                        {% endfor %}
+                        {{ form.password.label(class_='upper') }}
+                        {{ form.password(class_='form-control') }}
+                    </div>
+
+                    <div class="mb-2">
+                        <input class="btn btn-primary w-100" type="submit" value="Log In">
+                    </div>
+                </form>
+
+                <!--Link to login page-->
+                <p class="text-center">Don't have an account? <a href="{{ url_for('sign_up') }}">Signup</a></p>
+                <p class="text-center"><a href="{{ url_for('change_password') }}">Need help logging in?</a></p>
+            </div>
+        </div>
     </div>
 </main>
 

@@ -23,7 +23,13 @@ app.secret_key = os.environ.get("SECRET_KEY")
 mongo = PyMongo(app)
 
 categories = mongo.db.categories.find_one()
-categoryList = categories['categories']
+category_list = categories['categories']
+
+mongo.db.recipes.create_index(
+    [
+        ("recipeName", "text"),
+        ("recipeDescription", "text"),
+        ("author", "text")])
 
 
 # function to retrieve file
@@ -39,14 +45,8 @@ def index():
     ''' Home page '''
     # User contexts
     item = user_context()
-    user = item['user']
-    username = item['username']
-    list_of_liked_recipes = item['list_of_liked_recipes']
-    recently_viewed = recent()['recently_viewed_recipes']
-
     # Sets initial number of top recipes
     number = 3
-
     # Shows more recipes
     if request.method == "POST":
         if 'more_recipes' in request.form:
@@ -56,11 +56,11 @@ def index():
 
     return render_template(
         "index.html",
-        user=user,
-        username=username,
+        user=item['user'],
+        username=item['username'],
         top_recipes=top_recipes,
-        list_of_liked_recipes=list_of_liked_recipes,
-        recently_viewed=recently_viewed
+        list_of_liked_recipes=item['list_of_liked_recipes'],
+        recently_viewed=recent()['recently_viewed_recipes']
     )
 
 
@@ -139,7 +139,7 @@ def sign_up():
                 "username": request.form.get("username").lower()})
 
             # creates user session cookie
-            session["user"] = request.form.get("username").lower()
+            session["user"] = new_user["username"]
             # flashes message to new user
             flash("Registration Successful!")
             return redirect(url_for(
@@ -153,7 +153,7 @@ def sign_up():
 @app.route("/logout")
 def logout():
     ''' logs user out '''
-    session.pop("user")
+    session.clear()
     return redirect(url_for('log_in'))
 
 
@@ -192,9 +192,8 @@ def change_password():
         else:
             flash("Password and Confirm new password boxes do not match!")
             return redirect(url_for('change_password'))
-    username = session['user']
-    user = mongo.db.users.find_one_or_404({"username": username})
-    return render_template('resetpassword.html', user=user)
+
+    return render_template('resetpassword.html')
 
 
 # profile page
@@ -251,43 +250,26 @@ def profile(username):
 @app.route("/recipes", methods=["GET", "POST"])
 def recipe():
     ''' Recipes page '''
-    results = None
-    query = None
-    search = None
-    category_results = None
-    recipes = mongo.db.recipes.find()
-    username = None
+    # User contexts
+    user_info = user_context()
+    user = user_info['user']
+    list_of_liked_recipes = user_info['list_of_liked_recipes']
 
-    if not session.get('user') is None:
-        username = session['user']
-        user = mongo.db.users.find_one({"username": username})
-        if user['likedRecipes']:
-            list_of_liked_recipes = user['likedRecipes']
-        else:
-            list_of_liked_recipes = None
-    else:
-        user = None
-        list_of_liked_recipes = None
+    recipes = mongo.db.recipes.find()
+
+    # initial variables
+    results = recipes
+    query = 'All Recipes'
 
     if request.method == "POST":
-        selected_category = None
-        top_recipes = None
-        all_recipes = mongo.db.recipes
         if 'category' in request.form:
-            selected_category = request.form.get("category")
-            category_results = mongo.db.recipes.find(
-                {"categories": {"$all": [str(selected_category)]}})
+            query = request.form.get("category")
+            results = mongo.db.recipes.find(
+                {"categories": {"$all": [str(query)]}})
         elif 'toprecipes' in request.form:
-            selected_category = None
-            top_recipes = mongo.db.recipes.find().limit(4).sort("likes", -1)
+            query = 'Top Recipes'
+            results = mongo.db.recipes.find().limit(4).sort("likes", -1)
         else:
-            selected_category = None
-            mongo.db.recipes.create_index(
-                [
-                    ("recipeName", "text"),
-                    ("recipeDescription", "text"),
-                    ("author", "text")])
-
             # gets text input from search form
             query = request.form.get("q")
 
@@ -299,24 +281,20 @@ def recipe():
         return render_template(
             "recipes.html",
             user=user,
-            selected_category=selected_category,
-            category_results=category_results,
             results=results,
-            top_recipes=top_recipes,
             list_of_liked_recipes=list_of_liked_recipes,
             categories=categories,
-            categoryList=categoryList,
-            query=query,
-            db=all_recipes)
-    else:
-        return render_template(
-            "recipes.html",
-            recipes=recipes,
-            list_of_liked_recipes=list_of_liked_recipes,
-            categories=categories,
-            categoryList=categoryList,
-            user=user,
-            db=mongo.db.recipes)
+            category_list=category_list,
+            query=query)
+
+    return render_template(
+        "recipes.html",
+        results=results,
+        list_of_liked_recipes=list_of_liked_recipes,
+        categories=categories,
+        category_list=category_list,
+        user=user,
+        query=query)
 
 
 # create recipe page
@@ -380,7 +358,7 @@ def create_recipe():
 
         return render_template(
             "createrecipe.html",
-            categoryList=categoryList)
+            category_list=category_list)
     else:
         flash("Please login to create recipe")
         return redirect(url_for('log_in'))
@@ -415,12 +393,12 @@ def view_recipe(recipe_name):
 
     # Adds recipe to recently viewed recipes session variable
     if not session.get('recently_viewed') is None:
-        recently_viewed_recipes = list(session['recently_viewed'])
+        recently_viewed_recipes = session['recently_viewed']
         if selected_recipe['recipe_id'] not in recently_viewed_recipes:
             recently_viewed_recipes.append(selected_recipe['recipe_id'])
             session['recently_viewed'] = recently_viewed_recipes
     else:
-        session['recently_viewed'] = selected_recipe['recipe_id']
+        session['recently_viewed'] = [selected_recipe['recipe_id']]
 
     return render_template(
         "view_recipe.html",
