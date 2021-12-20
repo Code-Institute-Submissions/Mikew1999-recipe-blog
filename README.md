@@ -6,22 +6,6 @@ The main goals of the site are to allow users to view and share great recipes wi
 
 The site enables the user to create a profile, recipes, make social media style blog posts and view other users posts and recipes.
 
-## Database structure
-
-The database for this website is mongodb.
-The database is comprised of the following collections: 
-    1) Categories
-    2) fs.chunks
-    3) fs.files
-    4) posts
-    5) recipes
-    6) users
-
-Mongodb is a non relational database but data is linked via common values in different collections - for example, the users liked recipes in the users collection will contain a reference to a recipe name in the recipes collection.
-
-The categories collection is comprised of a list of the categories available when uploading a recipe.
-The fs.chunks and fs.files collections are for storing files uploaded by the user
-
 <!-- User Experience (UX) -->
 # User Experience (UX)
 
@@ -82,8 +66,6 @@ The fs.chunks and fs.files collections are for storing files uploaded by the use
 *   Shows top recipes based on number of likes - As above
 *   Search recipes based on text input - Allows user to search for a recipe by text input
 *   Search recipes based on category - Allows user to search for a recipe by selecting a category (e.g. vegerarian)
-*   Search Users based on text input - Allows user to search for other user based on text input
-*   View Users functionality - Allows user to view the Searched Users profile
 *   Create Post functionality - Allows user to create a social media esque post
 *   Edit Post - Allows user to edit post
 *   View all posts - Allows user to see all posts
@@ -93,10 +75,12 @@ The fs.chunks and fs.files collections are for storing files uploaded by the use
 *   Delete Profile - Allows user to delete their profile (this doesn't remove the recipes as this would remove content from the site, as the user base builds up I will amend the function to delete all recipes uploaded by user)
 *   Delete Recipe - Allows user to delete one of their recipes
 *   Delete Post - Allows user to delete one of their posts
+*   Recently viewed recipes
 
 * Future Features
     * Scheduled deletion of files which don't have a fileID in fs.chunks (Didn't have time to implement)
-    * Link recipes to 
+    * Meal planner
+    * Calorie counter
  
 # Technologies Used
 
@@ -121,13 +105,24 @@ The fs.chunks and fs.files collections are for storing files uploaded by the use
     [OS](https://docs.python.org/3/library/os.html) - OS was used to determine if my environment file (for configuring my mongodb settings e.t.c.) is present
 1.
     [Jinja](https://jinja.palletsprojects.com/en/3.0.x/) - Jinja was used to write python inline, to loop over lists and arrays and to render my pages
+1.
+    [FlaskWTF](https://flask-wtf.readthedocs.io/en/1.0.x/) - Used to create secure forms
 
-# Data Models
-The database for this project consists of:
-1. Users collection
-1. Recipes collection
-1. Posts collection
-1. File collections
+## Database structure
+
+The database for this website is mongodb.
+The database is comprised of the following collections: 
+    1) Categories
+    2) fs.chunks
+    3) fs.files
+    4) posts
+    5) recipes
+    6) users
+
+Mongodb is a non relational database but data is linked via common values in different collections - for example, the users liked recipes in the users collection will contain a reference to a recipe name in the recipes collection.
+
+The categories collection is comprised of a list of the categories available when uploading a recipe.
+The fs.chunks and fs.files collections are for storing files uploaded by the user
 
 The Users collection contains personal details of the user, their liked recipes, uploaded recipes and uploaded posts
 
@@ -155,8 +150,6 @@ The collections are linked by a commonnality between them, for example recipe au
     * The site is easy to navigate with several nav buttons
                 
     * The site allows the user to browse recipes
-                
-    * The site allows the user to search users
 
     * The site allows the user to signup
 
@@ -205,6 +198,8 @@ To run the app locally:
 1. Install dependancies by typing 'pip3 -r requirements.txt' into the terminal
 1. Create environment file by typing 'touch env.py', enter environment variables (these are secret)
 1. Run server locally by typing 'python3 app.py' into the terminal
+
+Things to note when running locally - 
 
 ## Heroku App
 

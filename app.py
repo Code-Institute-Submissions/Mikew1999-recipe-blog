@@ -7,6 +7,9 @@ from flask_pymongo import PyMongo
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 
+import smtplib
+import ssl
+
 from user_contexts import user_context
 from recently_viewed import recent
 if os.path.exists("env.py"):
@@ -134,8 +137,8 @@ def log_in():
         password = form.password.data.strip().lower()
         is_user = mongo.db.users.find_one(
             {"username": username})
-        users_password = is_user['password']
         if is_user:
+            users_password = is_user['password']
             if check_password_hash(users_password, password):
                 session["user"] = username
                 flash(f'Welcome {is_user["fname"]}!')
@@ -222,8 +225,10 @@ def change_password():
                 users_email = is_user['email']
                 email = form.email.data
                 if str(email) == users_email:
-                    mongo.db.users.update_one({"username": username}, {
-                                              "$set": {"password": str(generate_password_hash(password))}})
+                    mongo.db.users.update_one(
+                        {"username": username}, {
+                            "$set": {"password": str(
+                                generate_password_hash(password))}})
                     session['user'] = form.username.data.lower()
                     flash("Password updated!")
                     return redirect(url_for(
@@ -316,15 +321,12 @@ def create_recipe():
                 form_keys = request.form.keys()
 
                 # containers for keys and values
-
                 ingredient_keys = []
                 # contains ingredients inputted by user
                 ingredient_values = []
-
                 step_keys = []
                 # contains steps inputted by user
                 step_values = []
-
                 # loops over keys in form items dictionary
                 # where ingredient is in the key name
                 for key in form_keys:
@@ -357,7 +359,6 @@ def create_recipe():
                 }
 
                 mongo.db.recipes.insert_one(recipe_details)
-
         return render_template(
             "createrecipe.html",
             category_list=category_list)
@@ -370,6 +371,7 @@ def create_recipe():
 @ app.route("/recipes/<recipe_name>", methods=['GET', 'POST'])
 def view_recipe(recipe_name):
     ''' Full recipe '''
+    item = user_context()
     selected_recipe = mongo.db.recipes.find_one({"recipeName": recipe_name})
     author = selected_recipe['author'].lower()
 
@@ -381,15 +383,8 @@ def view_recipe(recipe_name):
     else:
         can_edit_recipe = False
 
-    if not session.get('user') is None:
-        user = mongo.db.users.find_one({"username": session['user']})
-        list_of_liked_recipes = user['likedRecipes']
-        if len(list_of_liked_recipes) == 0:
-            list_of_liked_recipes = None
-    else:
-        user = None
-        list_of_liked_recipes = None
-
+    user = item['user']
+    list_of_liked_recipes = item['list_of_liked_recipes']
     all_categories = mongo.db.categories.find_one()
     category_list = all_categories['categories']
 
@@ -416,7 +411,7 @@ def view_recipe(recipe_name):
 
 # like recipe
 @ app.route("/recipes/<recipe_name>/<username>/like_recipe/",
-           methods=["GET", "POST"])
+            methods=["GET", "POST"])
 def like(recipe_name, username):
     ''' likes / dislikes recipe '''
     if username == 'None':
@@ -455,7 +450,7 @@ def like(recipe_name, username):
 def edit_recipe(recipe_id):
     ''' Edit recipe form handling '''
     selected_recipe = mongo.db.recipes.find_one_or_404(
-            {"recipe_id": int(recipe_id)})
+        {"recipe_id": int(recipe_id)})
     if request.method == "POST":
         changes = {"$set": {}}
         steps = []
@@ -500,8 +495,10 @@ def edit_recipe(recipe_id):
             if secured_image != '':
                 mongo.save_file(secured_image, recipe_image)
                 changes["$set"]['recipeImageName'] = secured_image
-        updated_doc = mongo.db.recipes.find_one_and_update({"recipe_id": int(recipe_id)}, changes)
-        recipe_name = mongo.db.recipes.find_one({'recipe_id': int(recipe_id)})['recipeName']
+        mongo.db.recipes.find_one_and_update(
+            {"recipe_id": int(recipe_id)}, changes)
+        recipe_name = mongo.db.recipes.find_one(
+            {'recipe_id': int(recipe_id)})['recipeName']
         return redirect(url_for('view_recipe', recipe_name=recipe_name))
     return render_template('editrecipe.html', recipe=selected_recipe)
 
@@ -627,7 +624,7 @@ def edit_post(username, posttitle):
 
 # like post
 @ app.route("/posts/<posttitle>/<username>/like_post/",
-           methods=["GET", "POST"])
+            methods=["GET", "POST"])
 def like_post(posttitle, username):
     ''' Likes post '''
     if username == 'None':
@@ -637,7 +634,6 @@ def like_post(posttitle, username):
         if request.method == "POST":
             user = mongo.db.users.find_one({"username": username})
             post = mongo.db.posts.find_one({"posttitle": posttitle})
-            print(post)
             if posttitle in user['likedPosts']:
                 likes = post['likes']
                 likes -= 1
@@ -685,7 +681,8 @@ def post_comment(posttitle, username):
 
 
 # edit profile picture
-@ app.route("/profile/<username>/edit_profile_picture", methods=["GET", "POST"])
+@app.route("/profile/<username>/edit_profile_picture",
+           methods=["GET", "POST"])
 def edit_profile_picture(username):
     ''' Edits profile pic '''
     user = mongo.db.users.find_one_or_404({"username": username})
@@ -721,7 +718,8 @@ def edit_profile_picture(username):
 
 
 # deletes profile picture
-@ app.route("/profile/<username>/delete_profile_image", methods=["GET", "POST"])
+@app.route("/profile/<username>/delete_profile_image",
+           methods=["GET", "POST"])
 def delete_profile_image(username):
     ''' Deletes profile pic '''
     # grabs users account
@@ -746,7 +744,7 @@ def delete_profile_image(username):
 
 # edits personal details
 @ app.route("/profile/<username>/edit_personal_details",
-           methods=["GET", "POST"])
+            methods=["GET", "POST"])
 def edit_personal_details(username):
     ''' Edits personal details '''
     if request.method == "POST":
@@ -813,6 +811,23 @@ def contact():
     ''' Contact me page '''
     form = ContactForm()
 
+    if form.validate_on_submit():
+        full_name = form.full_name.data
+        username = form.username.data
+        email = form.email.data
+        message = form.message.data
+
+        try:
+            mongo.db.messages.insert_one({
+                "full_name": full_name,
+                "username": username,
+                "email": email,
+                "message": message
+                })
+            flash("Message sent!")
+            return redirect(url_for('index'))
+        except:
+            flash("message not sent, please try again later or email mikewalters1234@gmail.com")
     return render_template('contact.html', form=form)
 
 

@@ -41,17 +41,15 @@
                     <li><a class="dropdown-item" href="#">Category name</a></li>
                 </ul>
             </div>
-            <br>
-            <a href="">Create new recipes</a>
+            <div class="text-center">
+                <a class="btn" href="{{ url_for('create_recipe') }}">Create new recipes</a>
+            </div>
         </div>
     </div>
 </div>
 
 {% if results %}
 
-<!-- Number of results -->
-<div class="text-center mb-2">results found </div>
-<!-- Loops through results and renders card for each -->
 <div class="container-fluid">
     <div class="row">
         {% for recipe in results %}

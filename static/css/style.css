@@ -244,8 +244,8 @@ h3 {
 }
 
 .post-image {
-    width: 60%;
-    height: 50vh;
+    width: 40%;
+    height: 30vh;
 }
 
 @media only screen and (max-width: 800px) {
