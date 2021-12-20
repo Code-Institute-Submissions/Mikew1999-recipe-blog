@@ -2,124 +2,136 @@
 {% block extra_title %}Create Recipe{% endblock %}
 {% block content %}
 
-<main class="mb-4"
-    style="background-image: url('/static/images/platter.jpg'); background-position: center; background-repeat: no-repeat; background-size: cover;">
-    <div class="container pt-4 mb-4 p-4">
-        <div class="card">
-            <div class="card-body">
-                <div class="row">
-                    <div class="col">
-                        <h1 class="display-3 text-center">Create Recipe</h1>
-                    </div>
+<div class="text-white"
+    style="min-height: 40vh; background-image: url('/static/images/platter.jpg'); background-position: center; background-repeat: no-repeat; background-size: cover;">
+    <div class="col text-center">
+        <h1 class="display-2 p-4">FOOD SPACE</h1>
+
+        <h4>Create new recipe</h4>
+    </div>
+</div>
+
+<div class="container pt-4 mb-4 p-4">
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col">
+                    <h1 class="display-3 text-center">Create Recipe</h1>
                 </div>
-                <div class="row">
-                    <div class="col">
-                        <form class=" position-relative" method="POST" action="{{ url_for('create_recipe') }}"
-                            enctype="multipart/form-data">
-                            <div id="recipe-details">
-                                <!-- Recipe Name -->
-                                <label for="recipeName">Recipe Name:</label>
-                                <input class="form-control" type="text" name="recipeName" required>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <form class=" position-relative" method="POST" action="{{ url_for('create_recipe') }}"
+                        enctype="multipart/form-data">
+                        <div id="recipe-details">
+                            <!-- Recipe Name -->
+                            <label for="recipeName">Recipe Name:</label>
+                            <input class="form-control" type="text" name="recipeName" required>
 
-                                <br>
+                            <br>
 
-                                <!-- Recipe Image-->
-                                <label for="recipeImage">Recipe Image:</label>
-                                <br>
-                                <input type="file" name="recipeImage" accept="image/jpg" required>
-                                <br>
-                                <small>Must be .jpg and under 16Mb</small>
+                            <!-- Recipe Image-->
+                            <label for="recipeImage">Recipe Image:</label>
+                            <br>
+                            <input type="file" name="recipeImage" accept="image/jpg, image/png" required>
+                            <br>
+                            <small>Must be .jpg and under 16Mb</small>
 
-                                <hr class="w-100">
+                            <hr class="w-100">
 
-                                <!-- Recipe Details -->
-                                <h4 class="text-center uppercase">Recipe Details</h4>
+                            <!-- Recipe Details -->
+                            <h4 class="text-center uppercase">Recipe Details</h4>
 
-                                <label for="serves">Serves:</label>
-                                <input class="form-control" type="text" name="serves" required>
+                            <label for="serves">Serves:</label>
+                            <input class="form-control" type="text" name="serves" required>
 
-                                <label for="prepTime">Preparation Time</label>
-                                <input class="form-control" type="text" name="prepTime" required>
+                            <label for="prepTime">Preparation Time</label>
+                            <input class="form-control" type="text" name="prepTime" required>
 
-                                <label for="cookingTime">Cooking Time:</label>
-                                <input class="form-control" type="text" name="cookingTime" required>
+                            <label for="cookingTime">Cooking Time:</label>
+                            <input class="form-control" type="text" name="cookingTime" required>
 
-                                <label for="recipeDescription">Recipe Description:</label>
-                                <textarea class="form-control" type="text" name="recipeDescription" required></textarea>
+                            <label for="recipeDescription">Recipe Description:</label>
+                            <textarea class="form-control" type="text" name="recipeDescription" required></textarea>
 
-                                <hr class="w-100">
+                            <hr class="w-100">
 
-                                <!-- Categories / Dietary Requirements -->
-                                <h4 class="text-center">Categories / dietary requirements</h4>
+                            <!-- Categories / Dietary Requirements -->
+                            <h4 class="text-center">Categories / dietary requirements</h4>
 
-                                <p class="text-center">Please select any that apply</p>
+                            <p class="text-center">Please select any that apply</p>
 
-                                <div class="text-center">
-                                    {% for category in categoryList %}
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="checkbox" value="{{category}}" name="category">
-                                        <label class="form-check-label" for="{{category}}">{{category}}</label>
-                                    </div>
-                                    {% endfor %}
-
-                                    <hr>
-
+                            <div class="text-center">
+                                {% for category in category_list %}
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" value="{{category}}"
+                                        name="category">
+                                    <label class="form-check-label" for="{{category}}">{{category}}</label>
                                 </div>
-                            </div>
-
-                            <!-- Ingredients -->
-                            <div id="ingredients">
-                                <div class="mb-2">
-
-                                    <h4 class="text-center uppercase create-recipe-headers">Ingredients</h4>
-
-                                    <label class="ingredient" for="ingredient1">Ingredient 1:</label>
-                                    <input class="form-control" type="text" name="ingredient1" required>
-
-                                    <label class="ingredient" for="ingredient2">Ingredient 2:</label>
-                                    <input class="form-control" type="text" name="ingredient2" required>
-
-                                    <label class="ingredient" for="ingredient3">Ingredient 3:</label>
-                                    <input class="form-control" type="text" name="ingredient3">
-                                </div>
-                                <!-- Adds another ingredient item -->
-                                <button class="btn btn-primary w-100" onclick="moreIngredients()" id="moreingredientsbutton"
-                                    type="button">Add another
-                                    ingredient</button>
+                                {% endfor %}
 
                                 <hr>
 
                             </div>
+                        </div>
 
-                            <!-- Steps -->
-                            <div id="steps">
+                        <!-- Ingredients -->
+                        <div id="ingredients">
+
+                                <h4 class="text-center uppercase create-recipe-headers">Ingredients</h4>
+
                                 <div class="mb-2">
-                                    <h4 class="text-center uppercase create-recipe-headers">Steps</h4>
-        
-                                    <label class="step" for="step1">Step 1:</label>
-                                    <input class="form-control" type="text" name="step1" required>
-
-                                    <label class="step" for="step2">Step 2:</label>
-                                    <input class="form-control" type="text" name="step2" required>
-
-                                    <label class="step" for="step3">Step 3:</label>
-                                    <input class="form-control" type="text" name="step3">
+                                    <label class="ingredient" for="ingredient1">Ingredient 1:</label>
+                                    <input class="form-control" type="text" name="ingredient1" required>
                                 </div>
-                                <!-- Adds another step item -->
-                                <button class="btn btn-primary w-100" onclick="moresteps()" id="morestepsbutton"
-                                    type="button">Add
-                                    another step</button>
-                            </div>
 
-                            <div class="text-center mt-3">
-                                <button class="btn btn-primary" type="submit">Submit Recipe</button>
-                            </div>
+                                <div class="mb-2">
+                                    <label class="ingredient" for="ingredient2">Ingredient 2:</label>
+                                    <input class="form-control" type="text" name="ingredient2" required>    
+                                </div>
+                                
+                                <div class="mb-2">
+                                    <label class="ingredient" for="ingredient3">Ingredient 3:</label>
+                                    <input class="form-control" type="text" name="ingredient3">
+                                </div>
+                                
+                            <!-- Adds another ingredient item -->
+                            <button class="btn btn-primary w-100" onclick="moreIngredients()" id="moreingredientsbutton"
+                                type="button">Add another
+                                ingredient</button>
 
-                        </form>
-                    </div>
+                            <hr>
+
+                        </div>
+
+                        <!-- Steps -->
+                        <div id="steps">
+                            <div class="mb-2">
+                                <h4 class="text-center uppercase create-recipe-headers">Steps</h4>
+
+                                <label class="step" for="step1">Step 1:</label>
+                                <input class="form-control" type="text" name="step1" required>
+
+                                <label class="step" for="step2">Step 2:</label>
+                                <input class="form-control" type="text" name="step2" required>
+
+                                <label class="step" for="step3">Step 3:</label>
+                                <input class="form-control" type="text" name="step3">
+                            </div>
+                            <!-- Adds another step item -->
+                            <button class="btn btn-primary w-100" onclick="moresteps()" id="morestepsbutton"
+                                type="button">Add
+                                another step</button>
+                        </div>
+
+                        <div class="text-center mt-3">
+                            <button class="btn btn-primary" type="submit">Submit Recipe</button>
+                        </div>
+
+                    </form>
                 </div>
             </div>
         </div>
     </div>
-</main>
+</div>
 {% endblock %}

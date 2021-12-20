@@ -6,6 +6,22 @@ The main goals of the site are to allow users to view and share great recipes wi
 
 The site enables the user to create a profile, recipes, make social media style blog posts and view other users posts and recipes.
 
+## Database structure
+
+The database for this website is mongodb.
+The database is comprised of the following collections: 
+    1) Categories
+    2) fs.chunks
+    3) fs.files
+    4) posts
+    5) recipes
+    6) users
+
+Mongodb is a non relational database but data is linked via common values in different collections - for example, the users liked recipes in the users collection will contain a reference to a recipe name in the recipes collection.
+
+The categories collection is comprised of a list of the categories available when uploading a recipe.
+The fs.chunks and fs.files collections are for storing files uploaded by the user
+
 <!-- User Experience (UX) -->
 # User Experience (UX)
 

@@ -123,22 +123,10 @@
     {% if user_recipes %}
     <div class="container">
         <div class="row">
-            <!-- Counts number of recipes uploaded by this user -->
-            {% set numberOfRecipes = user_recipes.count() %}
-
-            <!-- Check if number of recipes is divisible by 3 -->
-            {% if numberOfRecipes >= 3 %}
-            {% set column = "col-md-12 col-lg-4" %}
-            {% elif numberOfRecipes >= 2 %}
-            {% set column = "col-md-12 col-lg-6" %}
-            {% else %}
-            {% set column = "col-8 offset-2" %}
-            {% endif %}
-
             {% for recipe in user_recipes %}
-            <div class="{{ column }}">
+            <div class="col-12 col-md-6 col-lg-3">
                 <div class="card mb-4 mt-2">
-                    <img class="img-fluid" src="{{ url_for('file', filename=recipe.recipeImageName) }}"
+                    <img class="card-img-top" src="{{ url_for('file', filename=recipe.recipeImageName) }}"
                         alt="recipe Image">
                     <div class="card-body" style="height: auto;">
                         <!-- Recipe Name -->
@@ -183,14 +171,19 @@
                             {% endif %}
                             {% endif %}
                         </p>
-                        <div class="col">
-                            <a class="btn btn-primary" href="{{ url_for('recipe') }}">All recipes</a>
-                        </div>
+
                     </div>
                 </div>
             </div>
+            <div class="text-center">
+                <a class="btn btn-primary" href="{{ url_for('recipe') }}">All recipes</a>
+            </div>
+            {% else %}
+            <div class="col-12 text-center">
+                <p class="lead">You have not uploaded any recipes yet. You can upload a new recipe <a
+                        href="{{ url_for('create_recipe') }}">here</a></p>
+            </div>
             {% endfor %}
-
         </div>
     </div>
     {% else %}
@@ -203,54 +196,51 @@
 {% elif selected == 'liked_recipes' %}
 <div id="liked-recipes">
     <h2 class="text-center">My Liked Recipes</h2>
-    {% for recipe in list_of_liked_recipes %}
-    <div class="col">
-        <div class="card mb-4 mt-2">
-            <img class="img-fluid" src="{{ url_for('file', filename=recipe.recipeImageName) }}" alt="recipe Image">
-            <div class="card-body" style="height: auto;">
-                <!-- Recipe Name -->
-                <h4 class="card-title  text-center">{{ recipe.recipeName }}</h4>
+    <div class="row">
+        {% for recipe in list_of_liked_recipes %}
+        <div class="col-12 col-md-6 col-lg-4">
+            <div class="card mb-4 mt-2">
+                <img class="card-img-top" src="{{ url_for('file', filename=recipe.recipeImageName) }}" alt="recipe Image">
+                <div class="card-body" style="height: auto;">
+                    <!-- Recipe Name -->
+                    <h4 class="card-title  text-center">{{ recipe.recipeName }}</h4>
 
-                <p class="card-text recipe-description">
-                    {{ recipe.recipeDescription }}
-                </p>
+                    <p class="card-text recipe-description">
+                        {{ recipe.recipeDescription }}
+                    </p>
 
-                <p>
-                    <span style="color: black;">Author:</span> {{ recipe.author }}
-                </p>
+                    <p>
+                        <span style="color: black;">Author:</span> {{ recipe.author }}
+                    </p>
 
-                <div class="text-center">
-                    <form method="get" action="{{ url_for('view_recipe', recipe_name=recipe.recipeName) }}">
-                        <button class="btn btn-primary" type="submit">Go to / Edit recipe</button>
-                    </form>
-                </div>
+                    <div class="text-center">
+                        <form method="get" action="{{ url_for('view_recipe', recipe_name=recipe.recipeName) }}">
+                            <button class="btn btn-primary" type="submit">Go to / Edit recipe</button>
+                        </form>
+                    </div>
 
-                <p class="mt-4 text-center">
-                    {% if list_of_liked_recipes != [] %}
-                    <a class="likes" href="{{ url_for('like', recipe_name=recipe.recipeName, username=username) }}">
-                        <i class="fas fa-heart"></i>
-                    </a>
-                    <span>Likes: {{recipe.likes }} </span>
-                    {% endif %}
-                    
-                </p>
-                <div class="col">
-                    <a class="btn btn-primary" href="{{ url_for('recipe') }}">All recipes</a>
+                    <p class="mt-4 text-center">
+                        {% if list_of_liked_recipes != [] %}
+                        <a class="likes" href="{{ url_for('like', recipe_name=recipe.recipeName, username=username) }}">
+                            <i class="fas fa-heart"></i>
+                        </a>
+                        <span>Likes: {{recipe.likes }} </span>
+                        {% endif %}
+
+                    </p>
+
                 </div>
             </div>
         </div>
+        {% endfor %}
     </div>
-    {% endfor %}
+    <div class="text-center">
+        <a class="btn btn-primary" href="{{ url_for('recipe') }}">All recipes</a>
+    </div>
 </div>
 {% elif selected == 'my_posts' %}
 <div class="my-posts mt-4 mb-4" id="my-posts">
     <h2 class="text-center">My Posts</h2>
-    {% if my_posts.count() == "0" %}
-    <div class="text-center">
-        <p>You have not made any posts yet. You can create a new post <a
-                href="{{ url_for('createPost', username=username) }}">here</a></p>
-    </div>
-    {% else %}
     <div class="container">
         {% for post in my_posts %}
         <div class="row">
@@ -268,30 +258,34 @@
                 </div>
             </div>
         </div>
+        {% else %}
+        <div class="text-center">
+            <p>You have not made any posts yet. You can create a new post <a
+                    href="{{ url_for('create_post', username=username) }}">here</a></p>
+        </div>
         {% endfor %}
     </div>
-    {% endif %}
 </div>
 {% else %}
 
 {% endif %}
 
 {% if recently_viewed %}
-    <hr class="width-80">
+<hr class="width-80">
 
-    <h1 class="display-3 text-center">Recently viewed</h1>
+<h1 class="display-3 text-center">Recently viewed</h1>
 
-    <div class="container-fluid">
-        <div class="row">
-            {% for item in recently_viewed %}
-                <div class="col-3 mb-2">
-                    <a href="{{ url_for('view_recipe', recipe_name=item.recipeName)}}">
-                        <img class="card-img-top" src="{{ url_for('file', filename=item.recipeImageName) }}" alt="Recipe Image">
-                    </a>
-                </div>
-            {% endfor %}
+<div class="container-fluid">
+    <div class="row">
+        {% for item in recently_viewed %}
+        <div class="col-6 col-md-3 mb-2">
+            <a href="{{ url_for('view_recipe', recipe_name=item.recipeName)}}">
+                <img class="card-img-top" src="{{ url_for('file', filename=item.recipeImageName) }}" alt="Recipe Image">
+            </a>
         </div>
+        {% endfor %}
     </div>
+</div>
 {% endif %}
 
 <script type="text/javascript">

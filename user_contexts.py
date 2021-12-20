@@ -28,15 +28,18 @@ def user_context():
             list_of_liked_recipes = user['likedRecipes']
         else:
             list_of_liked_recipes = None
+        my_posts = mongo.db.posts.find({"author": username})
     else:
         user = None
         username = None
         list_of_liked_recipes = None
+        my_posts = None
 
     context = {
         'username': username,
         'user': user,
-        'list_of_liked_recipes': list_of_liked_recipes
+        'list_of_liked_recipes': list_of_liked_recipes,
+        'my_posts': my_posts
     }
 
     return context

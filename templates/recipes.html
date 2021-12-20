@@ -11,32 +11,28 @@
     </div>
 </div>
 
-<div class="container">
-    <div class="row">
-        <div class="col mt-4 text-center">
-            <a href="">Create new recipes</a>
-        </div>
-    </div>
-</div>
-
-{% if results %}
 <div class="container-fluid">
     <div class="row">
-        <div class="col">
-            <div class="btn-group p-4">
-                <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+        <div class="col mt-4">
+            <div class="btn-group">
+                <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown"
+                    aria-expanded="false">
                     Categories
                 </button>
                 <ul class="dropdown-menu">
                     {% for item in category_list %}
-                    <li><a class="dropdown-item" href="#">{{ item }}</a></li>
+                    <form action="{{ url_for('recipe') }}" method="post">
+                        <li class="dropdown-item">
+                            <input name="category" type="hidden" value="{{ item }}">
+                            <button class="btn" type="submit">{{ item }}</button>
+                        </li>
+                    </form>
                     {% endfor %}
                 </ul>
             </div>
-        </div>
-        <div class="col">
-            <div class="btn-group float-right p-4">
-                <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+            <div class="btn-group">
+                <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown"
+                    aria-expanded="false">
                     Sort By
                 </button>
                 <ul class="dropdown-menu">
@@ -45,13 +41,16 @@
                     <li><a class="dropdown-item" href="#">Category name</a></li>
                 </ul>
             </div>
-            
+            <br>
+            <a href="">Create new recipes</a>
         </div>
     </div>
 </div>
 
+{% if results %}
+
 <!-- Number of results -->
-<div class="text-center mb-2"> {{ results.count() }} results found </div>
+<div class="text-center mb-2">results found </div>
 <!-- Loops through results and renders card for each -->
 <div class="container-fluid">
     <div class="row">

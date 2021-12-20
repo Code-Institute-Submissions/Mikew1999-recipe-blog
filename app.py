@@ -12,7 +12,7 @@ from recently_viewed import recent
 if os.path.exists("env.py"):
     import env
 
-from forms import LoginForm, RegisterForm
+from forms import LoginForm, RegisterForm, ChangePassword, ContactForm
 
 app = Flask(__name__)
 
@@ -25,6 +25,7 @@ mongo = PyMongo(app)
 categories = mongo.db.categories.find_one()
 category_list = categories['categories']
 
+# Recipe Search index
 mongo.db.recipes.create_index(
     [
         ("recipeName", "text"),
@@ -64,33 +65,6 @@ def index():
     )
 
 
-# log in page
-@app.route("/log-in", methods=["GET", "POST"])
-def log_in():
-    ''' Renders login page '''
-    form = LoginForm()
-    if form.validate_on_submit():
-        username = form.username.data.strip().lower()
-        password = form.password.data.strip().lower()
-        is_user = mongo.db.users.find_one(
-            {"username": username})
-        if is_user:
-            if check_password_hash(
-                is_user["password"],
-                    password):
-                session["user"] = username
-                flash(f'Welcome {is_user["fname"]}!')
-                return redirect(url_for("profile", username=session["user"]))
-
-            else:
-                flash("Incorrect username / password")
-                return redirect(url_for("log_in"))
-        else:
-            flash("Incorrect username / password")
-            return redirect(url_for("log_in"))
-    return render_template("login.html", form=form)
-
-
 # sign up page
 @app.route("/signup", methods=["GET", "POST"])
 def sign_up():
@@ -98,6 +72,7 @@ def sign_up():
     form = RegisterForm()
     if form.validate_on_submit():
         username = form.username.data
+        password = form.password.data.lower().strip()
         # checks if username exists in db
         is_user = mongo.db.users.find_one(
             {"username": username})
@@ -126,7 +101,7 @@ def sign_up():
                 "lname": form.lname.data.lower(),
                 "email": form.email.data.lower(),
                 "password": generate_password_hash(
-                    form.password.data),
+                    password),
                 "posts": [],
                 "likedRecipes": [],
                 "likedPosts": []
@@ -149,51 +124,37 @@ def sign_up():
     return render_template("signup.html", form=form)
 
 
+# log in page
+@app.route("/log-in", methods=["GET", "POST"])
+def log_in():
+    ''' Renders login page '''
+    form = LoginForm()
+    if form.validate_on_submit():
+        username = form.username.data.lower()
+        password = form.password.data.strip().lower()
+        is_user = mongo.db.users.find_one(
+            {"username": username})
+        users_password = is_user['password']
+        if is_user:
+            if check_password_hash(users_password, password):
+                session["user"] = username
+                flash(f'Welcome {is_user["fname"]}!')
+                return redirect(url_for("profile", username=session["user"]))
+            else:
+                flash("Incorrect username / password")
+                return redirect(url_for("log_in"))
+        else:
+            flash("Incorrect username / password")
+            return redirect(url_for("log_in"))
+    return render_template("login.html", form=form)
+
+
 # logs user out
 @app.route("/logout")
 def logout():
     ''' logs user out '''
     session.clear()
     return redirect(url_for('log_in'))
-
-
-# changes users password
-@app.route("/changepassword", methods=["GET", "POST"])
-def change_password():
-    ''' Changes users password '''
-    if request.method == "POST":
-        username = request.form.get("username").lower()
-        is_user = mongo.db.users.find_one({"username": username})
-        new_password = request.form.get("password")
-        confirm_new_password = request.form.get("confirmNewPassword")
-
-        if str(new_password) == str(confirm_new_password):
-            if is_user:
-                users_email = is_user['email']
-                email = request.form.get("email")
-                if str(email) == users_email:
-                    set_new_password = {"$set": {"password":
-                                                 generate_password_hash(
-                                                     new_password)}}
-                    mongo.db.users.update_one(is_user, set_new_password)
-                    session['user'] = request.form.get("username").lower()
-                    flash("Password updated!")
-                    return redirect(url_for(
-                                    'profile',
-                                    username=session['user']))
-                else:
-                    flash("Email address doesn't match our records")
-                    return redirect(url_for('change_password'))
-
-            else:
-                flash(f'Username: {username} does not exist')
-                return redirect(url_for('change_password'))
-
-        else:
-            flash("Password and Confirm new password boxes do not match!")
-            return redirect(url_for('change_password'))
-
-    return render_template('resetpassword.html')
 
 
 # profile page
@@ -207,7 +168,6 @@ def profile(username):
         item = user_context()
         user = item['user']
         user_recipes = mongo.db.recipes.find({"author": item['username']})
-        my_posts = mongo.db.posts.find({"author": item['username']})
 
         profile_image = user['profileImageName']
         if profile_image == 'None':
@@ -234,7 +194,7 @@ def profile(username):
             "profile.html",
             recently_viewed=recently_viewed,
             profile_image=profile_image,
-            my_posts=my_posts,
+            my_posts=item['my_posts'],
             selected=selected,
             username=username,
             user_recipes=user_recipes,
@@ -246,8 +206,46 @@ def profile(username):
         return render_template("login.html")
 
 
+# changes users password
+@app.route("/changepassword", methods=["GET", "POST"])
+def change_password():
+    ''' Changes users password '''
+    form = ChangePassword()
+    if form.validate_on_submit():
+        username = form.username.data.lower()
+        is_user = mongo.db.users.find_one({"username": username})
+        password = request.form.get('password').strip().lower()
+        confirm_new_password = form.confirm_password.data
+
+        if str(password) == str(confirm_new_password):
+            if is_user:
+                users_email = is_user['email']
+                email = form.email.data
+                if str(email) == users_email:
+                    mongo.db.users.update_one({"username": username}, {
+                                              "$set": {"password": str(generate_password_hash(password))}})
+                    session['user'] = form.username.data.lower()
+                    flash("Password updated!")
+                    return redirect(url_for(
+                                    'profile',
+                                    username=session['user']))
+                else:
+                    flash("Email address doesn't match our records")
+                    return redirect(url_for('change_password'))
+
+            else:
+                flash(f'Username: {username} does not exist')
+                return redirect(url_for('change_password'))
+
+        else:
+            flash("Password and Confirm new password boxes do not match!")
+            return redirect(url_for('change_password'))
+
+    return render_template('resetpassword.html', form=form)
+
+
 # recipes page
-@app.route("/recipes", methods=["GET", "POST"])
+@ app.route("/recipes", methods=["GET", "POST"])
 def recipe():
     ''' Recipes page '''
     # User contexts
@@ -298,14 +296,17 @@ def recipe():
 
 
 # create recipe page
-@app.route("/createrecipe", methods=["GET", "POST"])
+@ app.route("/createrecipe", methods=["GET", "POST"])
 def create_recipe():
     ''' Creates recipe '''
     if not session.get('user') is None:
         if request.method == "POST":
             # finds username
             user = session['user']
-
+            item = mongo.db.recipes.find().limit(1).sort("recipe_id", -1)
+            for x in item:
+                item_id = x['recipe_id']
+            item_id += 1
             if 'recipeImage' in request.files:
                 recipe_image = request.files['recipeImage']
                 secured_image = secure_filename(recipe_image.filename)
@@ -341,7 +342,7 @@ def create_recipe():
                     step_values.append(str(item))
 
                 recipe_details = {
-                    "recipeImageName": secured_image,
+                    "recipeImageName": secure_filename(recipe_image.filename),
                     "recipeName": request.form.get("recipeName"),
                     "serves": request.form.get("serves"),
                     "prepTime": request.form.get("prepTime"),
@@ -351,7 +352,8 @@ def create_recipe():
                     "author": user,
                     "ingredients": ingredient_values,
                     "steps": step_values,
-                    "categories": request.form.getlist('category')
+                    "categories": request.form.getlist('category'),
+                    'recipe_id': item_id,
                 }
 
                 mongo.db.recipes.insert_one(recipe_details)
@@ -365,7 +367,7 @@ def create_recipe():
 
 
 # shows full recipe
-@app.route("/recipes/<recipe_name>", methods=['GET', 'POST'])
+@ app.route("/recipes/<recipe_name>", methods=['GET', 'POST'])
 def view_recipe(recipe_name):
     ''' Full recipe '''
     selected_recipe = mongo.db.recipes.find_one({"recipeName": recipe_name})
@@ -413,7 +415,7 @@ def view_recipe(recipe_name):
 
 
 # like recipe
-@app.route("/recipes/<recipe_name>/<username>/like_recipe/",
+@ app.route("/recipes/<recipe_name>/<username>/like_recipe/",
            methods=["GET", "POST"])
 def like(recipe_name, username):
     ''' likes / dislikes recipe '''
@@ -449,24 +451,30 @@ def like(recipe_name, username):
         return redirect(url_for('view_recipe', recipe_name=recipe_name))
 
 
-@app.route("/recipes/<recipe_name>/edit_recipe", methods=['GET', 'POST'])
-def edit_recipe(recipe_name):
+@ app.route("/recipes/<recipe_id>/edit_recipe", methods=['GET', 'POST'])
+def edit_recipe(recipe_id):
     ''' Edit recipe form handling '''
+    selected_recipe = mongo.db.recipes.find_one_or_404(
+            {"recipe_id": int(recipe_id)})
     if request.method == "POST":
-        selected_recipe = mongo.db.recipes.find_one_or_404(
-            {"recipeName": recipe_name})
         changes = {"$set": {}}
         steps = []
         ingredients = []
         recipe_categories = []
+        recipe_name = selected_recipe['recipeName']
 
         for key, value in request.form.items():
             if 'step' in str(key):
                 steps.append(str(value))
             elif 'ingredient' in str(key):
                 ingredients.append(str(value))
+            elif 'recipeDescription' in str(key):
+                changes['$set']['recipeDescription'] = str(value).strip()
             elif 'category' not in str(key):
-                changes["$set"][str(key)] = str(value)
+                if isinstance(value, int):
+                    changes["$set"][str(key)] = int(value)
+                else:
+                    changes["$set"][str(key)] = str(value)
 
         if 'step' in request.form.keys():
             mongo.db.recipes.update_one(
@@ -489,34 +497,41 @@ def edit_recipe(recipe_name):
         if 'recipeImage' in request.files:
             recipe_image = request.files['recipeImage']
             secured_image = secure_filename(recipe_image.filename)
-            mongo.save_file(secured_image, recipe_image)
-            changes["$set"]['recipeImageName'] = secured_image
+            if secured_image != '':
+                mongo.save_file(secured_image, recipe_image)
+                changes["$set"]['recipeImageName'] = secured_image
+        updated_doc = mongo.db.recipes.find_one_and_update({"recipe_id": int(recipe_id)}, changes)
+        recipe_name = mongo.db.recipes.find_one({'recipe_id': int(recipe_id)})['recipeName']
+        return redirect(url_for('view_recipe', recipe_name=recipe_name))
+    return render_template('editrecipe.html', recipe=selected_recipe)
 
-        mongo.db.recipes.update_one(recipe, changes)
-    return redirect(url_for('view_recipe', recipe_name=recipe_name))
 
-
-@app.route("/recipes/<recipe_name>/<username>/delete_recipe",
+@app.route("/recipes/delete_recipe",
            methods=["GET", "POST"])
-def delete_recipe(recipe_name, username):
+def delete_recipe():
     ''' Delete recipe '''
-    recipe_to_delete = mongo.db.recipes.find_one_or_404(
-        {"recipeName": recipe_name})
-    image_name = secure_filename(recipe_to_delete['recipeImageName'])
-    mongo.db.fs.files.delete_one({"filename": image_name})
+    if request.method == "POST":
+        username = request.form.get('username')
+        recipe_id = request.form.get('recipe_id')
+        recipe_to_delete = mongo.db.recipes.find_one_and_delete(
+            {"recipe_id": int(recipe_id)})
+        recipe_name = recipe_to_delete['recipeName']
+        image_name = secure_filename(recipe_to_delete['recipeImageName'])
+        mongo.db.fs.files.delete_one({"filename": image_name})
 
-    mongo.db.recipes.find_one_and_delete(
-        {"$and": [{"author": username}, {"recipeName": recipe_name}]})
+        query = mongo.db.users.find()
 
-    query = mongo.db.users.find()
-    for item in query:
-        user_name = item['username']
-        mongo.db.users.update_one({"username": user_name}, {
-                                  "$pull": {"likedRecipes": recipe_name}})
+        for item in query:
+            mongo.db.users.update_many({}, {
+                "$pull": {"likedRecipes": recipe_name}})
+        session.clear()
+        session['user'] = username
+        flash("Recipe Deleted!")
+        return redirect(url_for('index'))
     return redirect(url_for('recipe'))
 
 
-@app.route("/newsfeed/posts")
+@ app.route("/newsfeed/posts")
 def posts():
     ''' Newfeed page '''
     all_posts = mongo.db.posts.find().sort("_id", -1)
@@ -526,7 +541,7 @@ def posts():
         posts=all_posts)
 
 
-@app.route("/<username>/create_post", methods=["GET", "POST"])
+@ app.route("/<username>/create_post", methods=["GET", "POST"])
 def create_post(username):
     ''' Create post page '''
     if not session.get('user') is None:
@@ -573,7 +588,7 @@ def create_post(username):
         return redirect(url_for('log_in'))
 
 
-@app.route("/<username>/<posttitle>/edit_post", methods=["GET", "POST"])
+@ app.route("/<username>/<posttitle>/edit_post", methods=["GET", "POST"])
 def edit_post(username, posttitle):
     ''' Create post page '''
     if not session.get('user') is None:
@@ -611,7 +626,7 @@ def edit_post(username, posttitle):
 
 
 # like post
-@app.route("/posts/<posttitle>/<username>/like_post/",
+@ app.route("/posts/<posttitle>/<username>/like_post/",
            methods=["GET", "POST"])
 def like_post(posttitle, username):
     ''' Likes post '''
@@ -648,7 +663,7 @@ def like_post(posttitle, username):
     return redirect(url_for('posts'))
 
 
-@app.route("/posts/<posttitle>/<username>/", methods=["GET", "POST"])
+@ app.route("/posts/<posttitle>/<username>/", methods=["GET", "POST"])
 def post_comment(posttitle, username):
     ''' A view to handle the comment form '''
     if request.method == "POST":
@@ -670,7 +685,7 @@ def post_comment(posttitle, username):
 
 
 # edit profile picture
-@app.route("/profile/<username>/edit_profile_picture", methods=["GET", "POST"])
+@ app.route("/profile/<username>/edit_profile_picture", methods=["GET", "POST"])
 def edit_profile_picture(username):
     ''' Edits profile pic '''
     user = mongo.db.users.find_one_or_404({"username": username})
@@ -706,7 +721,7 @@ def edit_profile_picture(username):
 
 
 # deletes profile picture
-@app.route("/profile/<username>/delete_profile_image", methods=["GET", "POST"])
+@ app.route("/profile/<username>/delete_profile_image", methods=["GET", "POST"])
 def delete_profile_image(username):
     ''' Deletes profile pic '''
     # grabs users account
@@ -730,7 +745,7 @@ def delete_profile_image(username):
 
 
 # edits personal details
-@app.route("/profile/<username>/edit_personal_details",
+@ app.route("/profile/<username>/edit_personal_details",
            methods=["GET", "POST"])
 def edit_personal_details(username):
     ''' Edits personal details '''
@@ -760,7 +775,7 @@ def edit_personal_details(username):
 
 
 # deletes profile pic
-@app.route("/profile/<username>/delete_profile", methods=["GET", "POST"])
+@ app.route("/profile/<username>/delete_profile", methods=["GET", "POST"])
 def delete_profile(username):
     ''' Deletes profile '''
     if request.method == "POST":
@@ -793,10 +808,12 @@ def delete_profile(username):
 
 
 # Contact me page
-@app.route('/contact', methods=['GET', 'POST'])
+@ app.route('/contact', methods=['GET', 'POST'])
 def contact():
     ''' Contact me page '''
-    return render_template('contact.html')
+    form = ContactForm()
+
+    return render_template('contact.html', form=form)
 
 
 if __name__ == "__main__":
