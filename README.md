@@ -188,6 +188,7 @@ The site was delevoped defensively so the site will not advise a user if it is t
 ## Known Bugs
 * Drop-downs don't work on internet explorer 
 * Some style issues on edge
+* Change password function currently not working - not generating password hash correctly 
 
 # Deployment
 

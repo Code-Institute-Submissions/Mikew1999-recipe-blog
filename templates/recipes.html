@@ -36,9 +36,18 @@
                     Sort By
                 </button>
                 <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="#">Recently added</a></li>
-                    <li><a class="dropdown-item" href="#">Top rated</a></li>
-                    <li><a class="dropdown-item" href="#">Category name</a></li>
+                    <form action="{{ url_for('recipe') }}" method="get">
+                        <li>
+                            <input type="hidden" name="sort" value="recipe_id">
+                            <button class="btn" type="submit">Recently added</button>
+                        </li>
+                    </form>
+                    <form action="{{ url_for('recipe') }}" method="get">
+                        <li>
+                            <input type="hidden" name="sort" value="likes">
+                            <button class="btn" type="submit">Top rated</button>
+                        </li>
+                    </form>
                 </ul>
             </div>
             <div class="text-center">

@@ -258,7 +258,16 @@ def recipe():
     user = user_info['user']
     list_of_liked_recipes = user_info['list_of_liked_recipes']
 
-    recipes = mongo.db.recipes.find()
+    if 'sort' in request.form:
+        session['selected'] = request.form.get("sort")
+        selected = request.form.get("sort")
+    if not session.get("selected") is None:
+        selected = session['selected']
+    else:
+        session['selected'] = 'likes'
+        selected = 'recipe_id'
+
+    recipes = mongo.db.recipes.find().sort(selected, -1)
 
     # initial variables
     results = recipes
@@ -268,7 +277,7 @@ def recipe():
         if 'category' in request.form:
             query = request.form.get("category")
             results = mongo.db.recipes.find(
-                {"categories": {"$all": [str(query)]}})
+                {"categories": {"$all": [str(query)]}}).sort(selected, -1)
         elif 'toprecipes' in request.form:
             query = 'Top Recipes'
             results = mongo.db.recipes.find().limit(4).sort("likes", -1)
@@ -279,7 +288,7 @@ def recipe():
             # performs search
             search = ({"$text": {"$search": query}})
             # finds results
-            results = mongo.db.recipes.find(search)
+            results = mongo.db.recipes.find(search).sort(selected, -1)
 
         return render_template(
             "recipes.html",
@@ -834,4 +843,4 @@ def contact():
 if __name__ == "__main__":
     app.run(host=os.environ.get("IP"),
             port=int(os.environ.get("PORT")),
-            debug=True)
+            debug=False)
